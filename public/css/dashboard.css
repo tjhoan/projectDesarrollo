@@ -1,0 +1,222 @@
+/* Estilos básicos para el menú del dashboard */
+.menu-dashboard {
+    width: 250px; /* Ancho del menú */
+    height: 100vh; /* Altura del menú, cubriendo toda la pantalla */
+    margin-top: -30px; /* Margen superior negativo */
+    margin-left: -20px; /* Margen izquierdo negativo */
+    background-color: #000000; /* Color de fondo negro */
+    padding: 20px; /* Relleno interno */
+    position: fixed; /* Fijo en la pantalla */
+    transition: transform 0.3s ease; /* Transición suave para la transformación */
+    transform: translateX(0); /* Posición inicial */
+    color: white; /* Color de texto blanco */
+}
+
+/* Estado cerrado del menú */
+.menu-dashboard.closed {
+    transform: translateX(-80%); /* Desplaza el menú hacia la izquierda */
+}
+
+/* Estilos para la parte superior del menú */
+.top-menu {
+    display: flex; /* Flexbox */
+    justify-content: space-between; /* Espacio entre elementos */
+    align-items: center; /* Alineación vertical centrada */
+    margin-bottom: 20px; /* Margen inferior */
+}
+
+/* Estilos para el logo dentro del menú */
+.logo img {
+    width: 50px; /* Ancho del logo */
+    height: 50px; /* Altura del logo */
+    border-radius: 50%; /* Bordes redondeados */
+    margin-right: 10px; /* Margen derecho */
+    margin-top: 10px; /* Margen superior */
+}
+
+/* Estilos para el icono de toggle del menú */
+.toggle i {
+    font-size: 24px; /* Tamaño de fuente grande */
+    cursor: pointer; /* Cursor de mano al pasar */
+}
+
+/* Estilos para el contenedor de enlaces del menú */
+.menu {
+    margin-top: 20px; /* Margen superior */
+}
+
+/* Estilos para los enlaces del menú */
+.enlace {
+    display: flex; /* Flexbox */
+    align-items: center; /* Alineación vertical centrada */
+    margin-bottom: 10px; /* Margen inferior */
+    cursor: pointer; /* Cursor de mano al pasar */
+}
+
+/* Estilos para los iconos dentro de los enlaces */
+.enlace i {
+    font-size: 20px; /* Tamaño de fuente grande */
+    margin-right: 10px; /* Margen derecho */
+}
+
+/* Estilos para el texto dentro de los enlaces */
+.enlace span {
+    font-size: 16px; /* Tamaño de fuente mediano */
+}
+
+/* Estilos para las secciones de categorías y productos */
+.categorias, .productos {
+    display: none; /* Oculta por defecto */
+    margin-top: 20px; /* Margen superior */
+    width: calc(100% - 270px); /* Ancho calculado restando el ancho del menú */
+    margin-left: 270px; /* Margen izquierdo para alinear con el menú */
+    flex-direction: column; /* Dirección de los elementos en columna */
+}
+
+/* Estilos para los encabezados de categorías y productos */
+.categoria-header, .producto-header {
+    display: flex; /* Flexbox */
+    justify-content: flex-end; /* Alineación hacia el final */
+    width: 100%; /* Ancho completo */
+    margin-bottom: 10px; /* Margen inferior */
+}
+
+/* Estilos para las columnas de categorías y productos */
+.categoria-columna, .producto-columna {
+    flex: 1; /* Crece para ocupar espacio disponible */
+    text-align: center; /* Texto centrado */
+}
+
+/* Estilos para las listas de categorías y productos */
+.categoria-lista, .producto-lista {
+    width: 100%; /* Ancho completo */
+    max-height: 300px; /* Altura máxima */
+    overflow-y: auto; /* Desplazamiento vertical automático */
+}
+
+/* Estilos para los elementos de la lista horizontal */
+.categoria-item, .producto-item {
+    display: flex; /* Flexbox */
+    align-items: center; /* Alineación vertical centrada */
+    justify-content: space-between; /* Espacio entre elementos */
+    margin-bottom: 5px; /* Margen inferior */
+    padding: 5px 0; /* Relleno vertical */
+}
+
+/* Estilos para el texto dentro de los elementos de la lista */
+.categoria-item span, .producto-item span {
+    flex: 1; /* Crece para ocupar espacio disponible */
+    text-align: center; /* Texto centrado */
+    margin: 0 5px; /* Márgenes laterales */
+}
+
+/* Estilos para las imágenes dentro de los elementos de la lista */
+.producto-item img, .categoria-item img {
+    max-width: 50px; /* Ancho máximo */
+    max-height: 50px; /* Altura máxima */
+}
+
+/* Estilos para el botón de agregar */
+.btn-agregar {
+    padding: 10px 10px; /* Relleno interno */
+    margin-left: 900px; /* Margen izquierdo grande */
+    background-color: #0b3563; /* Color de fondo */
+    color: #fff; /* Color de texto blanco */
+    border: none; /* Sin borde */
+    border-radius: 3px; /* Bordes redondeados */
+    cursor: pointer; /* Cursor de mano al pasar */
+}
+
+/* Estilos para el modal */
+.modal {
+    display: none; /* Oculto por defecto */
+    position: fixed; /* Fijo en la pantalla */
+    z-index: 1; /* Nivel de apilamiento alto */
+    left: 0; /* Posición izquierda */
+    top: 0; /* Posición superior */
+    width: 100%; /* Ancho completo */
+    height: 100%; /* Altura completa */
+    overflow: auto; /* Desplazamiento automático */
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+}
+
+/* Estilos para el contenido del modal */
+.modal-content {
+    background-color: #fefefe; /* Fondo blanco */
+    margin: 15% auto; /* Margen automático */
+    padding: 20px; /* Relleno interno */
+    border: 1px solid #888; /* Borde */
+    width: 80%; /* Ancho */
+    max-width: 500px; /* Ancho máximo */
+    border-radius: 10px; /* Bordes redondeados */
+    position: relative; /* Posición relativa */
+    display: flex; /* Flexbox */
+    flex-direction: column; /* Dirección de los elementos en columna */
+    align-items: center; /* Alineación centrada */
+}
+
+/* Estilos para el botón de cerrar el modal */
+.close {
+    color: #000000; /* Color negro */
+    float: right; /* Flotante a la derecha */
+    font-size: 28px; /* Tamaño de fuente grande */
+    font-weight: bold; /* Fuente en negrita */
+    cursor: pointer; /* Cursor de mano al pasar */
+}
+
+/* Estilos para el botón de cerrar al pasar el ratón */
+.close:hover,
+.close:focus {
+    color: black; /* Color negro */
+    text-decoration: none; /* Sin subrayado */
+    cursor: pointer; /* Cursor de mano al pasar */
+}
+
+/* Estilos para los inputs dentro del modal */
+.modal-content input {
+    display: block; /* Display en bloque */
+    width: calc(100% - 22px); /* Ancho calculado */
+    padding: 10px; /* Relleno interno */
+    margin: 10px auto; /* Margen automático */
+    border: 1px solid #ccc; /* Borde */
+    border-radius: 5px; /* Bordes redondeados */
+}
+
+/* Estilos para los botones dentro del modal */
+.modal-content button {
+    padding: 10px; /* Relleno interno */
+    background-color: #0b3563; /* Color de fondo */
+    color: white; /* Color de texto blanco */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cursor de mano al pasar */
+    width: calc(100% - 22px); /* Ancho calculado */
+    display: block; /* Display en bloque */
+    margin: 10px auto; /* Margen automático */
+}
+
+/* Estilos de la tabla */
+table {
+    width: 100%; /* Ancho completo */
+    border-collapse: collapse; /* Colapsa los bordes */
+    margin-top: 20px; /* Margen superior */
+}
+
+/* Estilos para las celdas de la tabla */
+table th, table td {
+    border: 1px solid #ffffff; /* Borde */
+    padding: 8px; /* Relleno interno */
+    text-align: left; /* Texto alineado a la izquierda */
+}
+
+/* Estilos para las cabeceras de la tabla */
+table th {
+    background-color: #4c4a52; /* Color de fondo */
+    color: #ffffff; /* Color de texto blanco */
+}
+
+/* Estilos para las imágenes dentro de la tabla */
+table img {
+    max-width: 50px; /* Ancho máximo */
+    max-height: 50px; /* Altura máxima */
+}
