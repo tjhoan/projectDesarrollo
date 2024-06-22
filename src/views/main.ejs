@@ -166,13 +166,14 @@
     </header>
     <main>
       <div class="product-grid">
-        <% images.forEach(image => { %>
+        <% products.forEach(product => { %>
         <div class="product-card">
-          <img src="<%= image.path %>" alt="image_product" class="product-image" />
-          <h2 class="product-name"><%= image.name_product %></h2>
-          <p class="product-price">$<%= image.price %></p>
-          <button class="details-btn" onclick="detalles()" type="button">DETALLES</button>
-          <button class="add-to-cart-btn">AÑADIR AL CARRITO</button>
+          <h2 class="product-name"><%= product.name %></h2>
+          <p class="product-price"><%= product.incart %></p>
+          <p class="product-price">$<%= product.price %></p>
+          <p class="product-price"><%= product._id %></p>
+          <button class="details-btn" type="button">DETALLES</button>
+          <a href="/addCart/<%= product._id %>" class="add-to-cart-btn">AÑADIR AL CARRITO</a>
         </div>
         <% }) %>
       </div>

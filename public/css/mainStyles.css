@@ -137,7 +137,7 @@ nav ul li a, .dropbtn, .icon-btn {
     margin-top: 8px;
 }
 
-.details-btn, .add-to-cart-btn {
+.details-btn {
     background-color: #000;
     color: #fff;
     border: none;
@@ -153,6 +153,23 @@ nav ul li a, .dropbtn, .icon-btn {
 
 .details-btn:hover {
     background-color: #265df2;
+}
+
+.add-to-cart-btn {
+    background-color: #000;
+    color: #fff;
+    border: none; /* No se aplica a <a> */
+    padding: 10px 20px;
+    cursor: pointer; /* No se aplica a <a> */
+    border-radius: 5px;
+    margin-top: 10px;
+    display: block;
+    width: calc(100% - 40px);
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center; /* Alineación del texto */
+    text-decoration: none; /* Elimina subrayado predeterminado en enlaces */
+    line-height: 40px; /* Altura de línea para centrar verticalmente el texto */
 }
 
 .add-to-cart-btn:hover {

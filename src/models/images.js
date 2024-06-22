@@ -1,6 +1,6 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model } = require('mongoose')
 
-const imageSchema = new Schema ({
+const imageSchema = new Schema({
   name_product: { type: String, required: true },
   description: { type: String, required: true },
   category: { type: String, required: true },
