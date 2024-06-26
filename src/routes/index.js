@@ -4,9 +4,9 @@ const controllers = require('../controllers/forms')
 const upload = require('../config/multerConfig')
 
 router.get('/', controllers.main)
+router.get('/logout', controllers.destroySession);
 router.get('/admin', controllers.admin)
 router.get('/details', controllers.details)
-
 router.get('/addCart/:id', controllers.addCart)
 
 router.post('/form-login-cliente', controllers.loginFormCustomer)

@@ -12,8 +12,6 @@ const customerSchema = new Schema({
   created_at: { type: Date, default: Date.now }
 })
 
-// db.customers.insertOne({ first_name: "Juan", second_name: "Pablo", last_name: "Pérez", email: "juanperez@example.com", cedula: 1234567890, password: "clave_segura", address: "Calle Principal #123", phone: 1122334455, created_at: new Date() })
-
 const Customers = model('customers', customerSchema)
 
 module.exports = Customers

@@ -1,30 +1,29 @@
 const express = require('express')
-const bodyParser = require('body-parser')
 const path = require('path')
 const morgan = require('morgan')
 const session = require('express-session')
+require('dotenv').config()
 
 // initializations
 const app = express()
 require('./database')
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
-
 // Importing routes
 const Routes = require('./routes/index')
 
 // settings
-app.set('port', 3000)
+app.set('port', process.env.PORT || 3000)
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
 // middlewares
 app.use(morgan('dev'))
+app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 app.use(session({
-  secret: 'your_secret_key_alalalal123',
+  secret: process.env.SESSION_SECRET || 'your_secret_key',
+
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false }

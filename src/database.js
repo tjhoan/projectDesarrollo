@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://localhost/node_test')
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('DB is connected'))
-  .catch(err => console.error(err));
+  .catch(err => console.error(err))

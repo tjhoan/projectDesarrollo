@@ -1,4 +1,5 @@
 const controller = {}
+const { ObjectId } = require('mongoose').Types
 const Image = require('../models/images')
 const Customers = require('../models/customers')
 const Admin = require('../models/admins')
@@ -6,9 +7,107 @@ const Product = require('../models/products')
 const Cart = require('../models/cart')
 
 controller.main = async (req, res) => {
-  const products = await Product.find()
-  res.render('main', { products })
+  let alerta = req.session.alerta
+  const productShow = await Product.find()
+  let productCart = []
+  try {
+    if (req.session.customerId) {
+      try {
+        let cart = await Cart.findOne({ customer: req.session.customerId }).populate('products.product')
+
+        if (!cart) {
+          const customerId = new ObjectId(req.session.customerId)
+          cart = await Cart.create({
+            customer: customerId,
+            products: []
+          })
+        }
+
+        if (cart.products.length > 0) {
+          for (const product of cart.products) {
+            const productDetails = await Product.findById(product.product)
+            if (productDetails) {
+              productCart.push({
+                details: productDetails,
+                quantity: product.quantity
+              })
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching cart or products:', error)
+        return res.status(500).send(error.message)
+      }
+    }
+
+    res.render('main', {
+      customerId: req.session.customerId || 'No customer id',
+      customerName: req.session.customerName || 'No customer name',
+      productShow,
+      productCart,
+      alerta
+    })
+  } catch (error) {
+    res.status(500).send(error.message)
+  }
 }
+
+controller.addCart = async (req, res) => {
+  try {
+    const productId = req.params.id
+    const product = await Product.findById(productId)
+    const customerId = req.session.customerId
+
+    if (!product) {
+      return res.status(404).send('Product not found')
+    }
+
+    if (!customerId) {
+      console.log('Customer not logged in')
+      req.session.alerta = 'Customer not logged in'
+      return res.redirect('/')
+    }
+
+    let cart = await Cart.findOne({ customer: new ObjectId(customerId) })
+
+    if (!cart) {
+      cart = new Cart({
+        customer: new ObjectId(customerId),
+        products: []
+      })
+    }
+
+    const existingProductIndex = cart.products.findIndex(p => p.product.equals(new ObjectId(productId)))
+
+    if (existingProductIndex > -1) {
+      cart.products[existingProductIndex].quantity += 1
+    } else {
+      cart.products.push({
+        product: new ObjectId(productId),
+        quantity: 1
+      })
+    }
+
+    await cart.save()
+
+    res.redirect('/')
+  } catch (error) {
+    console.error('Error adding product to cart:', error)
+    res.status(500).send(error.message)
+  }
+}
+
+
+controller.destroySession = (req, res) => {
+  console.log('El cliente ha cerrado sesión')
+  req.session.destroy(err => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      return res.status(500).send('Error destroying session');
+    }
+    res.redirect('/');
+  });
+};
 
 controller.admin = (req, res) => {
   res.render('dashboard')
@@ -18,99 +117,40 @@ controller.details = (req, res) => {
   res.render('detalles')
 }
 
-controller.addCart = async (req, res) => {
-  const { id } = req.params
-  const customerId = req.session.customerId
-
-  if (!customerId) {
-    return res.status(401).send('Usuario no autenticado')
-  }
-
-  try {
-    const product = await Product.findById(id)
-    if (!product) {
-      return res.status(404).send('Producto no encontrado')
-    }
-
-    // Asumamos que tienes un modelo Cart que asocia productos con clientes
-    let cart = await Cart.findOne({ customerId })
-
-    if (!cart) {
-      // Si no existe un carrito para el cliente, crea uno nuevo
-      cart = new Cart({ customerId, products: [] })
-    }
-
-    // Agregar el producto al carrito
-    cart.products.push({ productId: product._id, quantity: 1 }) // Aquí puedes ajustar la lógica según sea necesario
-    await cart.save()
-
-    // Marcar el producto como añadido al carrito (opcional)
-    product.incart = true
-    await product.save()
-
-    res.redirect('/')
-  } catch (error) {
-    console.error(error)
-    res.status(500).send('Error al agregar el producto al carrito')
-  }
-}
-
 controller.loginFormCustomer = async (req, res) => {
   try {
     const data = req.body
 
-    // Validación de cédula
     const cedulaCustomer = Number(data.cedula_Customer)
     if (isNaN(cedulaCustomer)) {
-      throw new Error('INVALID_CEDULA')
+      req.session.alerta = 'El campo cédula debe ser un número'
+      return res.redirect('/')
     }
 
-    // Validación de first_name
     if (typeof data.first_name !== 'string' || !isNaN(data.first_name)) {
-      throw new Error('INVALID_FIRST_NAME')
+      req.session.alerta = 'El campo nombre debe ser texto'
+      return res.redirect('/')
     }
 
-    // Consulta a la base de datos
     const cliente = await Customers.find({
       first_name: data.first_name,
       email: data.email_Customer,
       cedula: cedulaCustomer
     })
 
-    // Manejo de la respuesta de la consulta
     if (!cliente.length) {
-      return res.render('main', {
-        alerta: 'Los datos ingresados no son correctos',
-        images: await Image.find({ category: 'a' })
-      })
+      req.session.alerta = 'Los datos ingresados no son correctos'
+      return res.redirect('/')
     } else {
+      req.session.customerId = cliente[0]._id.toString()
+      req.session.customerName = cliente[0].first_name
       console.log('El cliente ha ingresado correctamente')
-      req.session.customerId = cliente._id
-      req.session.customerName = cliente.first_name
-      return res.render('main', {
-        images: await Image.find({ category: 'a' })
-      })
+      return res.redirect('/')
     }
   } catch (error) {
-    // Manejo de errores
-    switch (error.message) {
-      case 'INVALID_CEDULA':
-        return res.render('main', {
-          alerta: 'El campo cédula debe ser un número',
-          images: await Image.find({ category: 'a' })
-        })
-      case 'INVALID_FIRST_NAME':
-        return res.render('main', {
-          alerta: 'El campo nombre debe ser texto',
-          images: await Image.find({ category: 'a' })
-        })
-      default:
-        console.error(error)
-        return res.status(500).render('main', {
-          alerta: 'Ocurrió un error inesperado',
-          images: await Image.find({ category: 'a' })
-        })
-    }
+    console.error(error)
+    req.session.alerta = 'Ocurrió un error inesperado'
+    return res.redirect('/')
   }
 }
 
@@ -118,23 +158,19 @@ controller.loginFormAdmin = async (req, res) => {
   try {
     const data = req.body
 
-    // Validación de admin_name
     if (typeof data.admin_name !== 'string' || !isNaN(data.admin_name)) {
       throw new Error('INVALID_ADMIN_NAME')
     }
 
-    // Validación de admin_password
     if (typeof data.admin_password !== 'string') {
       throw new Error('INVALID_ADMIN_PASSWORD')
     }
 
-    // Consulta a la base de datos
     const admin = await Admin.find({
       name: data.admin_name,
       password: data.admin_password
     })
 
-    // Manejo de la respuesta de la consulta
     if (!admin.length) {
       return res.render('main', {
         alerta: 'Los datos ingresados no son correctos',
@@ -145,7 +181,6 @@ controller.loginFormAdmin = async (req, res) => {
       return res.redirect('/admin')
     }
   } catch (error) {
-    // Manejo de errores
     switch (error.message) {
       case 'INVALID_ADMIN_NAME':
         return res.render('main', {

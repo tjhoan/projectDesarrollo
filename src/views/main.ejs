@@ -14,7 +14,7 @@
     <header>
       <nav class="top-nav">
         <ul>
-          <li><a class="titulo" href="index.html">URBAN STREET</a></li>
+          <li><a class="titulo" href="/">URBAN STREET</a></li>
           <div class="icon-container">
             <li>
               <button id="cartBtn" class="icon-btn">
@@ -26,6 +26,13 @@
                 <i class="fas fa-user-plus"></i>
               </button>
             </li>
+            <li>
+              <a href="/logout" style="padding: 0">
+                <button class="icon-btn">
+                  <i class="fas fa-sign-out-alt"></i>
+                </button>
+              </a>
+            </li>
           </div>
         </ul>
       </nav>
@@ -35,14 +42,17 @@
           <span class="close">&times;</span>
           <h2>Contenido del carrito</h2>
           <div class="cart-items">
+            <% productCart.forEach(item => { %>
             <div class="cart-item">
-              <img src="product-image.jpg" alt="Producto" class="product-image-cart" />
+              <!-- <img src="product-image.jpg" alt="Producto" class="product-image-cart" /> -->
               <div class="product-info">
-                <p class="product-name">Nombre del producto</p>
-                <p class="product-price">$20.00</p>
+                <p class="product-name"><%= item.details.name %></p>
+                <p class="product-price">$<%= item.details.price %></p>
+                <p class="product-quantity">Cantidad: <%= item.quantity %></p>
               </div>
               <span class="remove-item">&times;</span>
             </div>
+            <% }) %>
             <div class="btn-cart">
               <button class="Finalizar-cart">Finalizar Compra</button>
               <button class="Main-cart">Main</button>
@@ -76,7 +86,6 @@
             <input type="password" name="admin_password" class="input-field" placeholder="Ingrese su contraseña" />
             <button class="Ingresar-btn" type="submit">Ingresar</button>
           </form>
-
         </div>
       </div>
 
@@ -166,14 +175,12 @@
     </header>
     <main>
       <div class="product-grid">
-        <% products.forEach(product => { %>
+        <% productShow.forEach(product => { %>
         <div class="product-card">
           <h2 class="product-name"><%= product.name %></h2>
-          <p class="product-price"><%= product.incart %></p>
           <p class="product-price">$<%= product.price %></p>
-          <p class="product-price"><%= product._id %></p>
           <button class="details-btn" type="button">DETALLES</button>
-          <a href="/addCart/<%= product._id %>" class="add-to-cart-btn">AÑADIR AL CARRITO</a>
+          <a href="/addCart/<%= product._id %>?customerId=<%= customerId %>" class="add-to-cart-btn">AÑADIR AL CARRITO</a>
         </div>
         <% }) %>
       </div>
@@ -195,20 +202,16 @@
       var userModal = document.getElementById("userModal");
 
       var cartBtn = document.getElementById("cartBtn");
-      var userBtn = document.getElementById("userBtn");
-
-      var closeBtns = document.getElementsByClassName("close");
-
-      // Cuando el usuario haga clic en los botones, abrir las ventanas modales correspondientes
       cartBtn.onclick = function () {
         cartModal.style.display = "block";
       };
 
+      var userBtn = document.getElementById("userBtn");
       userBtn.onclick = function () {
         userModal.style.display = "block";
       };
 
-      // Cuando el usuario haga clic en (x), cerrar las ventanas modales
+      var closeBtns = document.getElementsByClassName("close");
       for (var i = 0; i < closeBtns.length; i++) {
         closeBtns[i].onclick = function () {
           this.parentElement.parentElement.style.display = "none";
