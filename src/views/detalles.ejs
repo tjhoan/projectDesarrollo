@@ -12,184 +12,39 @@
     <header>
       <nav class="top-nav">
         <ul>
-          <li><a class="titulo" href="main.html">URBAN STREET</a></li>
-          <div class="icon-container">
-            <li>
-              <button id="cartBtn" class="icon-btn"><i class="fas fa-shopping-cart"></i></button>
-            </li>
-            <li>
-              <button id="userBtn" class="icon-btn"><i class="fas fa-user-plus"></i></button>
-            </li>
-          </div>
-        </ul>
-      </nav>
-
-      <!-- Ventana emergente para el carrito -->
-      <div id="cartModal" class="modal">
-        <div class="modal-content">
-          <span class="close">&times;</span>
-          <h2>Contenido del carrito</h2>
-          <div class="cart-items">
-            <div class="cart-item">
-              <img src="product-image.jpg" alt="Producto" class="product-image-cart" />
-              <div class="product-info">
-                <p class="product-name">Nombre del producto</p>
-                <p class="product-price">$20.00</p>
-              </div>
-              <span class="remove-item">&times;</span>
-            </div>
-            <div class="btn-cart">
-              <button class="Finalizar-cart">Finalizar Compra</button>
-              <button class="Main-cart">Main</button>
-            </div>
-            <!-- Puedes duplicar el div cart-item para más productos -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Ventana emergente para el usuario -->
-      <div id="userModal" class="modal">
-        <div class="modal-content">
-          <span class="close">&times;</span>
-          <h2>LOGIN CLIENTE</h2>
-          <div class="DatosLogin">
-            <label for="NomCliente">Nombre</label>
-            <input type="text" id="NomCliente" class="input-field" placeholder="Ingrese su nombre" />
-            <label for="CorreoCliente">Correo</label>
-            <input type="email" id="CorreoCliente" class="input-field" placeholder="Ingrese su correo" />
-            <label for="ContrCliente">Contraseña</label>
-            <input type="password" id="ContrCliente" class="input-field" placeholder="Ingrese su contraseña" />
-            <button id="registerBtn" class="register-btn">Registrar</button>
-            <div id="error-message" class="error-message"></div>
-          </div>
-
-          <div class="DatosAdmin">
-            <h2>LOGIN ADMINISTRADOR</h2>
-            <label for="NomAdmin">Nombre</label>
-            <input type="text" id="NomAdmin" class="input-field" placeholder="Ingrese su nombre" />
-            <label for="ContrAdmin">Contraseña</label>
-            <input type="password" id="ContrAdmin" class="input-field" placeholder="Ingrese su contraseña" />
-            <button id="IngrasarBtn" class="Ingresar-btn" onclick="loguear()" type="button">Ingresar</button>
-          </div>
-        </div>
-      </div>
-
-      <nav class="category-nav">
-        <ul>
-          <li class="dropdown">
-            <button class="dropbtn">Camiseta</button>
-            <div class="dropdown-content">
-              <a href="#">Hombre</a>
-              <a href="#">Dama</a>
-            </div>
-          </li>
-          <li class="dropdown">
-            <button class="dropbtn">Sudadera</button>
-            <div class="dropdown-content">
-              <a href="#">Hombre</a>
-              <a href="#">Dama</a>
-            </div>
-          </li>
-          <li class="dropdown">
-            <button class="dropbtn">Pantalones</button>
-            <div class="dropdown-content">
-              <a href="#">Hombre</a>
-              <a href="#">Dama</a>
-            </div>
-          </li>
-          <li class="dropdown">
-            <button class="dropbtn">Sacos</button>
-            <div class="dropdown-content">
-              <a href="#">Hombre</a>
-              <a href="#">Dama</a>
-            </div>
-          </li>
-          <li class="dropdown">
-            <button class="dropbtn">Gorras</button>
-            <div class="dropdown-content">
-              <a href="#">Hombre</a>
-            </div>
-          </li>
-          <li class="dropdown">
-            <button class="dropbtn">Ropa Interior</button>
-            <div class="dropdown-content">
-              <a href="#">Hombre</a>
-              <a href="#">Dama</a>
-            </div>
-          </li>
-          <li class="dropdown">
-            <button class="dropbtn">Lociones</button>
-            <div class="dropdown-content">
-              <a href="#">Hombre</a>
-              <a href="#">Dama</a>
-            </div>
-          </li>
-          <li class="dropdown">
-            <button class="dropbtn">Accesorios</button>
-            <div class="dropdown-content">
-              <a href="#">Hombre</a>
-            </div>
-          </li>
-          <li class="dropdown">
-            <button class="dropbtn">Blusas</button>
-            <div class="dropdown-content">
-              <a href="#">Dama</a>
-            </div>
-          </li>
-          <li class="dropdown">
-            <button class="dropbtn">Pantalonetas</button>
-            <div class="dropdown-content">
-              <a href="#">Hombre</a>
-            </div>
-          </li>
-          <li class="dropdown">
-            <button class="dropbtn">Billeteras</button>
-            <div class="dropdown-content">
-              <a href="#">Hombre</a>
-            </div>
-          </li>
-          <li class="dropdown">
-            <button class="dropbtn">Gafas</button>
-            <div class="dropdown-content">
-              <a href="#">Hombre</a>
-              <a href="#">Dama</a>
-            </div>
-          </li>
+          <li><a class="titulo" href="/">URBAN STREET</a></li>
         </ul>
       </nav>
     </header>
     <main>
-      <h3 class="titulo2">Nombre Producto</h3>
+      <h3 class="titulo2"><%= product.name %></h3>
       <div class="carousel">
         <button class="prev"><</button>
         <div class="carousel-track-container">
           <div class="carousel-track">
-            <div class="carousel-slide">3</div>
-            <div class="carousel-slide">4</div>
-            <div class="carousel-slide">0</div>
-            <div class="carousel-slide">1</div>
-            <div class="carousel-slide">2</div>
+            <% for (let i = 0; i < product.imagePaths.length; i++) { %>
+              <div class="carousel-slide">
+                <img src="<%= product.imagePaths[i] %>" alt="Imagen del producto">
+              </div>
+            <% } %>
           </div>
         </div>
         <button class="next">></button>
       </div>
-
       <h3 class="titulo3">Características</h3>
-
-      <!-- Nueva sección de características -->
       <section class="features">
         <div class="left-column">
           <div class="feature-row">
             <label for="price">Precio:</label>
-            <input type="text" id="price" value="Precio del producto por unidad" readonly />
+            <input type="text" id="price" value="<%= product.price %>" readonly />
           </div>
           <div class="feature-row">
             <label for="available-quantity">Cantidades disponibles:</label>
-            <input type="text" id="available-quantity" value="Cantidades disponibles del producto" readonly />
+            <input type="text" id="available-quantity" value="<%= product.quantity %>" readonly />
           </div>
           <div class="feature-row">
             <label for="description">Descripción:</label>
-            <textarea id="description" readonly>Descripción del producto</textarea>
+            <textarea id="description" readonly><%= product.description %></textarea>
           </div>
         </div>
         <div class="right-column">
@@ -201,12 +56,10 @@
           </div>
         </div>
       </section>
-
       <div class="button-row">
-        <button class="action-btn1" id="add-to-cart">Añadir al carrito</button>
-        <button class="action-btn2" id="go-to-main">Regresar al main</button>
+        <a href="/go-to-main" class="action-btn2" id="go-to-main">Regresar al main</a>
       </div>
-    </main>
+    </main>    
     <footer>
       <div class="footer-content">
         <a href="https://www.facebook.com/tupagina"><i class="fab fa-facebook"></i></a>

@@ -149,6 +149,7 @@ nav ul li a, .dropbtn, .icon-btn {
     width: calc(100% - 40px);
     margin-left: auto;
     margin-right: auto;
+    text-decoration: none;
 }
 
 .details-btn:hover {
@@ -478,6 +479,7 @@ h2 {
     font-size: 16px;  
     border: none;
     width: 40%;
+    text-decoration: none;
 }
 
 .Main-cart{
@@ -491,6 +493,7 @@ h2 {
     transition: background-color 0.3s ease;
     width: 40%;
     margin-left: 10px;
+    text-decoration: none;
 }
 
 

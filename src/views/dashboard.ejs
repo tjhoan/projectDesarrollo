@@ -4,28 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
-    <!-- Enlace al archivo CSS para estilos personalizados -->
     <link rel="stylesheet" href="../../public/css/dashboard.css" />
-
-    <!-- Enlace a la biblioteca Font Awesome para íconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
   </head>
   <body>
-    <!-- Contenedor principal del menú del dashboard -->
     <div class="menu-dashboard" id="menuDashboard">
-      <!-- Sección superior del menú -->
       <div class="top-menu">
         <div class="logo">
-          <!-- Logotipo del dashboard -->
           <img src="https://cdn-icons-png.flaticon.com/128/1721/1721923.png" alt="" />
           <span>Urban Street Admin</span>
         </div>
-        <!-- Botón para colapsar o expandir el menú -->
         <div class="toggle" onclick="toggleMenu()">
           <i class="fa fa-bars"></i>
         </div>
       </div>
-      <!-- Opciones del menú -->
       <div class="menu">
         <div class="enlace" onclick="irAPagina_indice()">
           <i class="fa fa-list"></i>
@@ -41,70 +33,82 @@
         </div>
       </div>
     </div>
-
-    <!-- Sección de categorías, oculta por defecto -->
     <div class="categorias" id="categorias" style="display: none">
-      <!-- Botón para abrir el modal de agregar categoría -->
       <button class="btn-agregar" onclick="openModal('categoriaModal')">Agregar Categoría</button>
-      <!-- Tabla para listar las categorías -->
       <table id="tablaCategorias">
         <thead>
           <tr>
-            <th>Imagen</th>
             <th>ID</th>
             <th>Nombre</th>
             <th>Eliminar</th>
           </tr>
         </thead>
-        <tbody id="categoriaListaTabla">
-          <!-- Aquí se generan dinámicamente las categorías -->
-        </tbody>
+        <tbody id="categoriaListaTabla"></tbody>
       </table>
     </div>
-
-    <!-- Sección de productos, oculta por defecto -->
     <div class="productos" id="productos" style="display: none">
-      <!-- Botón para abrir el modal de agregar producto -->
       <button class="btn-agregar" onclick="openModal('productoModal')">Agregar Producto</button>
-      <!-- Tabla para listar los productos -->
       <table id="tablaProductos">
         <thead>
           <tr>
-            <th>Imagen</th>
+            <th>Imagenes</th>
             <th>Nombre</th>
-            <th>Descripción</th>
+            <th>Categoría</th>
             <th>Precio</th>
             <th>Cantidad</th>
-            <th>Categoría</th>
-            <th>Eliminar</th>
+            <th>Marca</th>
+            <th>Descripción</th>
           </tr>
         </thead>
         <tbody id="productoListaTabla">
-          <!-- Aquí se generan dinámicamente los productos -->
+          <% product.forEach(item => { %>
+          <tr>
+            <td>
+              <div class="image-container">
+                <% item.imagePaths.forEach(imagePath => { %>
+                <img src="<%= imagePath %>" alt="image_product" class="product-image" onmouseover="showLargeImage(event, '<%= imagePath %>')" onmouseout="hideLargeImage()" />
+                <% }); %>
+              </div>
+            </td>
+            <td><%= item.name %></td>
+            <td><%= item.category %></td>
+            <td><%= item.price %></td>
+            <td><%= item.quantity %></td>
+            <td><%= item.brand %></td>
+            <td class="description_btn">
+              <span><%= item.description %></span>
+              <div class="icons">
+                <a href="/product/edit/<%= item._id %>">
+                  <img src="/public/icon/editar.png" alt="icon-edit" class="btn-edit_delete">
+                </a>
+                <a href="/product/delete/<%= item._id %>">
+                  <img src="/public/icon/borrar.png" alt="icon-delete" class="btn-edit_delete">
+                </a>
+              </div>
+            </td>            
+          </tr>
+          <% }) %>
         </tbody>
       </table>
-    </div>
-
-    <!-- Modal para agregar una nueva categoría -->
+      <div id="largeImageContainer" class="large-image-container">
+        <img id="largeImage" src="" alt="large_image" />
+      </div>
+    </div>    
     <div class="modal" id="categoriaModal">
       <div class="modal-content">
         <span class="close" onclick="closeModal('categoriaModal')">&times;</span>
         <h2>Agregar Categoría</h2>
-        <!-- Formulario para agregar una nueva categoría -->
         <input type="file" id="imagenCategoriaInput" accept="image/*" />
         <input type="text" id="idInput" placeholder="ID" />
         <input type="text" id="nombreInput" placeholder="Nombre" />
         <button onclick="agregarCategoria()">+ Agregar</button>
       </div>
     </div>
-
-    <!-- Modal para agregar un nuevo producto -->
     <form class="modal" id="productoModal" action="/subirProducto" method="post" enctype="multipart/form-data">
       <div class="modal-content">
         <span class="close" onclick="closeModal('productoModal')">&times;</span>
         <h2>Agregar Producto</h2>
-        <!-- Formulario para agregar un nuevo producto -->
-        <input type="file" name="images" multiple/>
+        <input type="file" name="images" multiple />
         <input type="text" name="name_product" placeholder="Nombre" />
         <input type="text" name="description" placeholder="Descripción" />
         <input type="text" name="category" placeholder="Categoría" />
@@ -115,6 +119,21 @@
       </div>
     </form>
     <script>
+      function showLargeImage(event, src) {
+        var largeImageContainer = document.getElementById("largeImageContainer");
+        var largeImage = document.getElementById("largeImage");
+
+        largeImage.src = src;
+        largeImageContainer.style.display = "block";
+        largeImageContainer.style.top = event.pageY + "px";
+        largeImageContainer.style.left = event.pageX + "px";
+      }
+
+      function hideLargeImage() {
+        var largeImageContainer = document.getElementById("largeImageContainer");
+        largeImageContainer.style.display = "none";
+      }
+
       // Función para abrir el modal
       function openModal(modalId) {
         document.getElementById(modalId).style.display = "block";

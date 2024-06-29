@@ -52,16 +52,14 @@
               </div>
               <span class="remove-item">&times;</span>
             </div>
-            <% }) %>
             <div class="btn-cart">
-              <button class="Finalizar-cart">Finalizar Compra</button>
-              <button class="Main-cart">Main</button>
+              <a href="/formulario/<%= customerId %>" class="Finalizar-cart">Finalizar Compra</a>
+              <a href="/" class="Main-cart">Main</a>
             </div>
-            <!-- Puedes duplicar el div cart-item para más productos -->
+            <% }) %>
           </div>
         </div>
       </div>
-
       <!-- Ventana emergente para el usuario -->
       <div id="userModal" class="modal">
         <div class="modal-content">
@@ -88,7 +86,6 @@
           </form>
         </div>
       </div>
-
       <nav class="category-nav">
         <ul>
           <li class="dropdown">
@@ -177,9 +174,10 @@
       <div class="product-grid">
         <% productShow.forEach(product => { %>
         <div class="product-card">
+          <img src="<%= product.imagePaths[0] %>" alt="image_product" class="product-image" />
           <h2 class="product-name"><%= product.name %></h2>
           <p class="product-price">$<%= product.price %></p>
-          <button class="details-btn" type="button">DETALLES</button>
+          <a href="detalles/<%= product._id %>" class="details-btn">DETALLES</a>
           <a href="/addCart/<%= product._id %>?customerId=<%= customerId %>" class="add-to-cart-btn">AÑADIR AL CARRITO</a>
         </div>
         <% }) %>
@@ -197,7 +195,6 @@
       </div>
     </footer>
     <script>
-      // Obtener los elementos del DOM
       var cartModal = document.getElementById("cartModal");
       var userModal = document.getElementById("userModal");
 
@@ -218,7 +215,6 @@
         };
       }
 
-      // Cuando el usuario haga clic fuera de las ventanas modales, cerrarlas
       window.onclick = function (event) {
         if (event.target == cartModal) {
           cartModal.style.display = "none";

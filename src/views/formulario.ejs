@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tienda Online / Formulario de Pago</title>
+    <link rel="stylesheet" href="/public/css/formulario.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>Formulario Cliente Pago</header>
+      <form action="#" id="myForm">
+        <div class="form-first">
+          <div class="details personal">
+            <span class="title">Datos Personales</span>
+            <div class="fields">
+              <div class="input-field">
+                <label>Nombre Completo</label>
+                <input type="text" placeholder="Ingresa tu nombre y apellido" required />
+              </div>
+              <div class="input-field">
+                <label>Cédula ciudadana</label>
+                <input type="number" placeholder="Ingresa tu cédula ciudadana" required />
+              </div>
+              <div class="input-field">
+                <label>Correo Electrónico</label>
+                <input type="email" placeholder="Ingresa tu correo electrónico" required />
+              </div>
+              <div class="input-field">
+                <label>Número Celular</label>
+                <input type="number" placeholder="Ingresa tu celular" required />
+              </div>
+              <div class="input-field">
+                <label>Género</label>
+                <input type="text" placeholder="Ingresa tu género" required />
+              </div>
+              <div class="input-field">
+                <label>Fecha Actual</label>
+                <input type="date" placeholder="Ingresa la fecha actual" required />
+              </div>
+            </div>
+          </div>
+          <div class="details ID">
+            <span class="title">Datos Dirección Envio</span>
+            <div class="fields">
+              <div class="input-field">
+                <label>País</label>
+                <input type="text" placeholder="Ingresa tu país" required />
+              </div>
+
+              <div class="input-field">
+                <label>Ciudad</label>
+                <input type="text" placeholder="Ingresa tu ciudad" required />
+              </div>
+
+              <div class="input-field">
+                <label>Barrio</label>
+                <input type="text" placeholder="Ingresa tu barrio" required />
+              </div>
+
+              <div class="input-field">
+                <label>Dirección Envio</label>
+                <input type="text" placeholder="Ingresa tu dirección de envio" required />
+              </div>
+
+              <div class="input-field">
+                <label>Ubicación Geográfica</label>
+                <input type="text" placeholder="Ingresa tu ubicación" required />
+              </div>
+
+              <div class="input-field">
+                <label>Código Postal</label>
+                <input type="number" placeholder="Ingresa tu código postal" required />
+              </div>
+            </div>
+          </div>
+          <div class="details metodo-pago">
+            <span class="title">Metodología de Pago</span>
+            <div class="fields">
+              <div class="input-field">
+                <label>Banco</label>
+                <select id="banco" name="banco">
+                  <option>Bancolombia</option>
+                  <option>Davivienda</option>
+                </select>
+              </div>
+              <div class="input-field">
+                <label>Tipo de Pago</label>
+                <select id="tipoPago" name="tipoPago">
+                  <option value="transferencia">Bancolombia a la mano</option>
+                  <option value="transferencia">DaviPlata</option>
+                </select>
+              </div>
+              <div class="input-field">
+                <label>Número de Cuenta</label>
+                <input type="number" placeholder="Ingresa número de cuenta" required />
+              </div>
+            </div>
+            <div class="buttons">
+              <div onclick="irAPagina_Principal()" class="backBtn1">
+                <img class="navigator" src="proximo.png" />
+                <span class="btnText">Regresar al indice</span>
+              </div>
+              <button class="nextBtn1">
+                <span class="btnText">Continuar</span>
+                <img class="navigator" src="proximo.png" />
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="form-second">
+          <div class="details address">
+            <h1>!Gracias por completar el formulario de pago!</h1>
+            <img class="background" src="./fotos ropa/bien.png" alt="" />
+            <h2>Ya se completo el formulario</h2>
+            <h3>Si necesitas realizar algún cambio pulsa el boton "Regresar"</h3>
+            <h3>Si estas seguro de tus datos pulsa el boton "Continuar"</h3>
+            <h3>Ahora puedes reclamar tu factura de compra</h3>
+            <div class="buttons">
+              <div class="backBtn2">
+                <img class="navigator" src="./fotos ropa/proximo.png" />
+                <span class="btnText">Regresar</span>
+              </div>
+              <button onclick="irAPagina_QR()" type="button" class="nextBtn2">
+                <span class="btnText">Continuar</span>
+                <img class="navigator" src="./fotos ropa/proximo.png" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <script>
+      // funciones para los botones para direccionar a la otra pagina
+      function irAPagina_Principal() {
+        window.location.href = "index.html";
+      }
+
+      function irAPagina_QR() {
+        window.location.href = "transferencia.html";
+      }
+
+      // aqui crea el evento para poder regresar a la primera parte del fomulario si el usuario quiere modificar algun dato
+      const form = document.querySelector("form"),
+        nextBtn1 = document.querySelector(".nextBtn1"),
+        nextBtn2 = document.querySelector(".nextBtn2"),
+        backBtn2 = document.querySelector(".backBtn2"),
+        allInput = document.querySelectorAll(".first input");
+
+      nextBtn1.addEventListener("click", () => {
+        allInput.forEach((input) => {
+          if (input.value == "") {
+            form.classList.add("secActive");
+          } else {
+            form.classList.remove("secActive");
+          }
+        });
+      });
+
+      backBtn2.addEventListener("click", () => form.classList.remove("secActive"));
+
+      // aqui se crea un evento que al momento de darle click continuar verifica que todos los campos este bien digitalizados
+      // y si estan correctamente, entonces oculta la primera parte del formulario y hace aparecer la segunda parte del mensaje
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("myForm");
+        const nextBtn1 = document.querySelector(".nextBtn1");
+        const formFirst = document.querySelector(".form-first");
+        const formSecond = document.querySelector(".form-second");
+
+        nextBtn1.addEventListener("click", function (e) {
+          e.preventDefault(); // Prevenir que el formulario se envíe
+
+          // Obtener todos los campos de entrada
+          const inputs = form.querySelectorAll("input[required], select[required]");
+
+          // Variable para rastrear la validez del formulario
+          let isValid = true;
+
+          // Eliminar mensajes de error previos
+          const errorMessages = form.querySelectorAll(".error-message");
+          errorMessages.forEach((error) => error.remove());
+
+          // Validar cada campo
+          inputs.forEach((input) => {
+            if (!input.checkValidity()) {
+              isValid = false;
+
+              // Crear mensaje de error
+              const errorMessage = document.createElement("div");
+              errorMessage.className = "error-message";
+              errorMessage.style.color = "red";
+              errorMessage.textContent = obtenerMensajeDeError(input);
+
+              // Insertar el mensaje de error después del campo de entrada
+              input.parentElement.appendChild(errorMessage);
+            }
+          });
+
+          if (isValid) {
+            // Ocultar la primera parte del formulario y mostrar la segunda
+            formFirst.style.display = "none";
+            formSecond.style.display = "block";
+          }
+        });
+
+        backBtn2.addEventListener("click", function () {
+          // Mostrar la primera parte del formulario y ocultar la segunda
+          formFirst.style.display = "block";
+          formSecond.style.display = "none";
+        });
+
+        // aqui se hace una funcion para cada uno de los caso de los inputs incorrectos
+        function obtenerMensajeDeError(input) {
+          switch (input.type) {
+            case "text":
+              return "Este campo es obligatorio.";
+            case "email":
+              return "Por favor, ingresa un correo electrónico válido.";
+            case "number":
+              return "Por favor, ingresa un número válido.";
+            case "date":
+              return "Por favor, ingresa una fecha válida.";
+            default:
+              return "Este campo es obligatorio.";
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
