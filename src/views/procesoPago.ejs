@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Urban Street</title>
+    <link rel="stylesheet" href="/public/css/procesoPago.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <header>
+      <nav class="top-nav">
+        <ul>
+          <li><a class="titulo" href="index.html">URBAN STREET</a></li>
+        </ul>
+      </nav>
+      <!-- Ventana emergente para el QRBancolombia -->
+      <div id="QRBancolombiaModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>QR Bancolombia a la mano</h2>
+          <div class="cart-item">
+            <div class="product-info2">
+              <img src="/public/qr/QRBancolombiaALaMano.jpg" class="product-image-cart2" />
+              <p class="product-name2">urbanstreet</p>
+              <p class="product-price2">03204657890</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Ventana emergente para el QRDavivienda -->
+      <div id="QRDaviviendaModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>QR Daviplata</h2>
+          <div class="cart-item">
+            <div class="product-info2">
+              <img src="/public/qr/QRDaviPlata.jpg" class="product-image-cart2" />
+              <p class="product-name2">URBAN STREET</p>
+              <p class="product-price2">3204657890</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <h1>CANCELACIÓN DE COMPRA</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>PRODUCTO</th>
+            <th>PRECIO</th>
+            <th>CANTIDAD</th>
+            <th>SUBTOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% products.forEach(product => { %>
+          <tr>
+            <td><%= product.name %></td>
+            <td>$ <%= product.price.toLocaleString() %></td>
+            <td><%= product.quantity %></td>
+            <td>$ <%= product.subtotal.toLocaleString() %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <div class="total-to-pay">
+        <h2 class="tittle-total">Total a Pagar: <span class="total-amount">$ <%= totalAmount.toLocaleString() %></span></h2>
+      </div>
+      <div class="payment-options">
+        <button id="QRBtnBanc" class="payment-option-btn1">Bancolombia a la mano</button>
+        <button id="QRBtnDavi" class="payment-option-btn2">Daviplata</button>
+        <a href="/" class="payment-option-btn4">Main</a>
+      </div>
+    </main>
+    <footer>
+      <div class="footer-content">
+        <a href="https://www.facebook.com/tupagina"><i class="fab fa-facebook"></i></a>
+        <a href="https://wa.me/+573146218858?text"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://www.instagram.com/urbanstreet737?igsh=MWJ3cWZmZ29sdDczdA=="><i class="fab fa-instagram"></i></a>
+        <p>
+          Dirección: Carrera 23 # 14-55 / La Unión, Valle del Cauca<br />Numero: +57 3298784556<br />Correo electrónico: urban.street@gmail.com<br />&copy; J.J.L.S - 2024 Tienda Online. Todos los
+          derechos reservados.
+        </p>
+      </div>
+    </footer>
+    <script>
+      var closeBtns = document.getElementsByClassName("close");
+
+      QRBtnBanc.onclick = function () {
+        QRBancolombiaModal.style.display = "block";
+      };
+
+      QRBtnDavi.onclick = function () {
+        QRDaviviendaModal.style.display = "block";
+      };
+
+      // Cuando el usuario haga clic en (x), cerrar las ventanas modales
+      for (var i = 0; i < closeBtns.length; i++) {
+        closeBtns[i].onclick = function () {
+          this.parentElement.parentElement.style.display = "none";
+        };
+      }
+
+      //Funciones temporarizadores para el control de aparicion de la factura
+      document.getElementById("QRBtnBanc").addEventListener("click", function () {
+        setTimeout(function () {
+          // Redirigir a 'transferenciaExitosa.html' después de 10 segundos
+          window.location.href = "factura.html";
+        }, 10000); // 10000 milisegundos = 10 segundos
+      });
+
+      document.getElementById("QRBtnDavi").addEventListener("click", function () {
+        setTimeout(function () {
+          // Redirigir a 'transferenciaExitosa.html' después de 10 segundos
+          window.location.href = "factura.html";
+        }, 10000); // 10000 milisegundos = 10 segundos
+      });
+    </script>
+  </body>
+</html>

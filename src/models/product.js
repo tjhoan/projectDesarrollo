@@ -7,10 +7,9 @@ const ProductSchema = new Schema({
   brand: { type: String, required: true },
   category: { type: String, required: true },
   description: { type: String, required: true },
-  imgs: [{ type: Schema.Types.ObjectId, ref: 'images' }],
-  imagePaths: [{ type: String }]
-})
+  imagePaths: [{ type: String, required: true }],
+}, { collection: 'product' })
 
-const Product = model('products', ProductSchema)
+const Product = model('product', ProductSchema)
 
 module.exports = Product

@@ -188,6 +188,7 @@ form .fields .input-field {
   background-color: #00ad00;
   transition: all 0.3s linear;
   cursor: pointer;
+  text-decoration: none;
 }
 
 /* Estilos adicionales para los botones */

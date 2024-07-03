@@ -47,16 +47,16 @@
               <!-- <img src="product-image.jpg" alt="Producto" class="product-image-cart" /> -->
               <div class="product-info">
                 <p class="product-name"><%= item.details.name %></p>
-                <p class="product-price">$<%= item.details.price %></p>
+                <p class="product-price">Unidad: $<%= item.details.price %></p>
                 <p class="product-quantity">Cantidad: <%= item.quantity %></p>
               </div>
               <span class="remove-item">&times;</span>
             </div>
+            <% }) %>
             <div class="btn-cart">
               <a href="/formulario/<%= customerId %>" class="Finalizar-cart">Finalizar Compra</a>
               <a href="/" class="Main-cart">Main</a>
             </div>
-            <% }) %>
           </div>
         </div>
       </div>
@@ -69,9 +69,9 @@
             <label for="NomCliente">Primer Nombre</label>
             <input type="text" name="first_name" class="input-field" placeholder="Ingrese su nombre" />
             <label for="CorreoCliente">Correo</label>
-            <input type="email" name="email_Customer" class="input-field" placeholder="Ingrese su correo" />
+            <input type="email" name="email_customer" class="input-field" placeholder="Ingrese su correo" />
             <label for="ContrCliente">Cédula</label>
-            <input type="text" name="cedula_Customer" class="input-field" placeholder="Ingrese su cédula" />
+            <input type="text" name="cedula_customer" class="input-field" placeholder="Ingrese su cédula" />
             <button class="register-btn" type="submit">Registrar</button>
             <div id="error-message" class="error-message"></div>
           </form>
@@ -223,12 +223,12 @@
         }
       };
     </script>
-    <% if (typeof alerta !=='undefined' ) { %> <% console.log(alerta) %>
+    <% if (typeof alert !=='undefined' ) { %> <% console.log(alert) %>
     <script>
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "<%= alerta %>",
+        text: "<%= alert %>",
       });
     </script>
     <% } %>

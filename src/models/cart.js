@@ -1,15 +1,15 @@
 const { Schema, model } = require('mongoose')
 
 const cartSchema = new Schema({
-  customer: { type: Schema.Types.ObjectId, ref: 'customers', required: true },
-  products: [
-    {
-      product: { type: Schema.Types.ObjectId, ref: 'products', required: true },
+  customer: { type: Schema.Types.ObjectId, ref: 'customer', required: true },
+  products: {
+    type: [{
+      product: { type: Schema.Types.ObjectId, ref: 'product', required: true },
       quantity: { type: Number, required: true, default: 1 }
-    }
-  ],
+    }], required: true
+  },
   created_at: { type: Date, default: Date.now }
-})
+}, { collection: 'cart' });
 
 const Cart = model('cart', cartSchema)
 

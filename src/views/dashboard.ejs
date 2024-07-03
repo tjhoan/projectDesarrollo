@@ -43,7 +43,9 @@
             <th>Eliminar</th>
           </tr>
         </thead>
-        <tbody id="categoriaListaTabla"></tbody>
+        <tbody id="categoriaListaTabla">
+
+        </tbody>
       </table>
     </div>
     <div class="productos" id="productos" style="display: none">
@@ -78,14 +80,11 @@
             <td class="description_btn">
               <span><%= item.description %></span>
               <div class="icons">
-                <a href="/product/edit/<%= item._id %>">
-                  <img src="/public/icon/editar.png" alt="icon-edit" class="btn-edit_delete">
-                </a>
                 <a href="/product/delete/<%= item._id %>">
                   <img src="/public/icon/borrar.png" alt="icon-delete" class="btn-edit_delete">
                 </a>
               </div>
-            </td>            
+            </td>
           </tr>
           <% }) %>
         </tbody>
@@ -93,17 +92,15 @@
       <div id="largeImageContainer" class="large-image-container">
         <img id="largeImage" src="" alt="large_image" />
       </div>
-    </div>    
-    <div class="modal" id="categoriaModal">
+    </div>
+    <form class="modal" id="categoriaModal" action="/crearCategoria" method="post">
       <div class="modal-content">
         <span class="close" onclick="closeModal('categoriaModal')">&times;</span>
         <h2>Agregar Categoría</h2>
-        <input type="file" id="imagenCategoriaInput" accept="image/*" />
-        <input type="text" id="idInput" placeholder="ID" />
-        <input type="text" id="nombreInput" placeholder="Nombre" />
-        <button onclick="agregarCategoria()">+ Agregar</button>
+        <input type="text" name="name" placeholder="Nombre" />
+        <button type="submit">+ Agregar</button>
       </div>
-    </div>
+    </form>
     <form class="modal" id="productoModal" action="/subirProducto" method="post" enctype="multipart/form-data">
       <div class="modal-content">
         <span class="close" onclick="closeModal('productoModal')">&times;</span>
@@ -345,7 +342,7 @@
 
       // se hace una funcion para mandar al usuario a la pagina principal
       function irAPagina_indice() {
-        window.location.href = "index.html";
+        window.location.href = "/";
       }
     </script>
   </body>
