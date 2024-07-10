@@ -150,6 +150,15 @@
   align-items: center; /* Alineación centrada */
 }
 
+/* Estilos para el desplegable */
+.modal-content select {
+  width: calc(100% - 22px);
+  padding: 10px;
+  margin: 10px auto;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
 /* Estilos para el botón de cerrar el modal */
 .close {
   color: #000000; /* Color negro */
@@ -189,6 +198,7 @@
   display: block; /* Display en bloque */
   margin: 10px auto; /* Margen automático */
 }
+
 
 /* ----------------------------------------------------tabla---------------------------------------------------- */
 

@@ -12,7 +12,7 @@
     <header>
       <nav class="top-nav">
         <ul>
-          <li><a class="titulo" href="index.html">URBAN STREET</a></li>
+          <li><a class="titulo" href="/">URBAN STREET</a></li>
         </ul>
       </nav>
       <!-- Ventana emergente para el QRBancolombia -->
@@ -70,8 +70,10 @@
         <h2 class="tittle-total">Total a Pagar: <span class="total-amount">$ <%= totalAmount.toLocaleString() %></span></h2>
       </div>
       <div class="payment-options">
-        <button id="QRBtnBanc" class="payment-option-btn1">Bancolombia a la mano</button>
-        <button id="QRBtnDavi" class="payment-option-btn2">Daviplata</button>
+        <a href="/factura/<%= customerId %>">
+          <button id="QRBtnBanc" class="payment-option-btn1">Bancolombia a la mano</button>
+          <button id="QRBtnDavi" class="payment-option-btn2">Daviplata</button>
+        </a>
         <a href="/" class="payment-option-btn4">Main</a>
       </div>
     </main>
@@ -103,21 +105,6 @@
           this.parentElement.parentElement.style.display = "none";
         };
       }
-
-      //Funciones temporarizadores para el control de aparicion de la factura
-      document.getElementById("QRBtnBanc").addEventListener("click", function () {
-        setTimeout(function () {
-          // Redirigir a 'transferenciaExitosa.html' después de 10 segundos
-          window.location.href = "factura.html";
-        }, 10000); // 10000 milisegundos = 10 segundos
-      });
-
-      document.getElementById("QRBtnDavi").addEventListener("click", function () {
-        setTimeout(function () {
-          // Redirigir a 'transferenciaExitosa.html' después de 10 segundos
-          window.location.href = "factura.html";
-        }, 10000); // 10000 milisegundos = 10 segundos
-      });
     </script>
   </body>
 </html>

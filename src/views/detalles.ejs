@@ -22,11 +22,11 @@
         <button class="prev"><</button>
         <div class="carousel-track-container">
           <div class="carousel-track">
-            <% for (let i = 0; i < product.imagePaths.length; i++) { %>
+            <% product.imagePaths.forEach(image => { %>
               <div class="carousel-slide">
-                <img src="<%= product.imagePaths[i] %>" alt="Imagen del producto">
+                <img src="<%= image.path %>" alt="Imagen del producto">
               </div>
-            <% } %>
+            <% }) %>
           </div>
         </div>
         <button class="next">></button>

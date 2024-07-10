@@ -4,13 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Factura / URBANSATREET</title>
-    <link rel="stylesheet" href="/public/css/factura.css">
+    <link rel="stylesheet" href="/public/css/factura.css" />
   </head>
   <body>
     <div class="container">
       <!-- Encabezado de la factura -->
       <div class="header">
-        <img src="/public/logo/logo_urbanStreet.jpg" alt="Logo" />
+        <a href="/">
+          <img src="/public/logo/logo_urbanStreet.jpg" alt="Logo" />
+        </a>
         <div class="business-info">
           <h1>URBANSTREET</h1>
           <strong>Datos Almacén</strong><br />
@@ -18,7 +20,6 @@
           urban.street@gmail.com<br />
           3298784556<br />
           NIT 4587963<br />
-          www.URBANSATREET
         </div>
       </div>
       <div class="line"></div>
@@ -28,21 +29,13 @@
           <h2>Factura emitida para:</h2>
           <address>
             <strong>Datos Cliente</strong><br />
-            Santiago Rendon<br />
-            calle 10 #56-6<br />
-            Medellin<br />
-            santi@gmail.com<br />
-            C.C 1006852147<br />
-            M.P Bancolombia a la mano<br />
-            232147852<br />
+            <%= customer.first_name %> <%= customer.second_name %> <%= customer.last_name %><br />
+            <%= customer.address %><br />
+            <%= customer.email %><br />
+            C.C <%= customer.cedula %><br />
+            <%= payment.banc %><br />
+            <%= payment.account_number %><br />
           </address>
-        </div>
-        <div class="invoice-info">
-          <div>
-            <strong>FACTURA #: 01</strong><br />
-            <strong>Fecha Compra:</strong><span id="date"></span> 10:17<br />
-            <strong>Fecha Envio:</strong> 15/06/2024
-          </div>
         </div>
       </div>
       <!-- Tabla de productos facturados -->
@@ -58,59 +51,29 @@
           </tr>
         </thead>
         <tbody>
+          <% cart.products.forEach((item, index) => { %>
           <tr>
-            <td>1</td>
-            <td>Camiseta louis vuitton</td>
-            <td>121212</td>
-            <td>$50.000</td>
-            <td>1</td>
-            <td>$50.000</td>
+            <td><%= index + 1 %></td>
+            <td><%= item.product.name %></td>
+            <td><%= item.product.reference %></td>
+            <td>$<%= item.product.price %></td>
+            <td><%= item.quantity %></td>
+            <td>$<%= item.product.price * item.quantity %></td>
           </tr>
-          <tr>
-            <td>2</td>
-            <td>Pantalón Diesel</td>
-            <td>131313</td>
-            <td>$150.000</td>
-            <td>2</td>
-            <td>$300.000</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Gorra NY</td>
-            <td>141414</td>
-            <td>$50.000</td>
-            <td>1</td>
-            <td>$50.000</td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td>Loción Jean Paul Gautier</td>
-            <td>151515</td>
-            <td>$95.000</td>
-            <td>1</td>
-            <td>$95.000</td>
-          </tr>
-          <tr>
-            <td>5</td>
-            <td>Billetera Café</td>
-            <td>161616</td>
-            <td>$15.990</td>
-            <td>2</td>
-            <td>$31.980</td>
-          </tr>
+          <% }) %>
         </tbody>
       </table>
       <div class="line-below-table"></div>
-      <!-- Totales de la factura -->
       <div class="totals">
         <div class="invoice-note">
           <h2>Nota Importante:</h2>
           <p>Esta factura es muy importante en el momento de reclamar su pedido o requerir un reclamo, asegúrese de guardarla. ¡Gracias por su compra!</p>
         </div>
+        <!-- Totales de la factura -->
         <div class="summary">
           <div class="row">
             <div><b>Total:</b></div>
-            <div>$526.980</div>
+            <div>$<%= cart.products.reduce((sum, item) => sum + item.product.price * item.quantity, 0) %></div>
           </div>
           <div class="row">
             <div><b>IVA:</b></div>
@@ -118,48 +81,16 @@
           </div>
           <div class="row">
             <div><b>Total a Pagar:</b></div>
-            <div>$632.376</div>
+            <div>$<%= cart.products.reduce((sum, item) => sum + item.product.price * item.quantity, 0) * 1.2 %></div>
           </div>
         </div>
       </div>
-      <!-- Botones de acciones -->
-      <button onclick="printInvoice()">Imprimir Factura</button>
-      <button class="indice" onclick="irAPagina_index()" type="button">Regresar a la página principal</button>
+      <a href="/generate-invoice-pdf/<%= customer.login_customer_id %>" target="_blank">
+        <button>Imprimir Factura</button>
+      </a>
+      <a href="/">
+        <button>Regresar a la página principal</button>
+      </a>
     </div>
-    <!-- aqui se hace el script para los eventos del js  -->
-    <script>
-      function printInvoice() {
-        window.print();
-      }
-
-      // Obtener la fecha actual y mostrarla en la factura
-      const currentDate = new Date().toLocaleDateString("en-US");
-      document.getElementById("date").innerText = `${currentDate}`;
-
-      // Función para agregar un producto a la factura
-      function addProductToInvoice(productName, price) {
-        const table = document.getElementById("items-table");
-        const row = table.insertRow(-1);
-        const cell1 = row.insertCell(0);
-        const cell2 = row.insertCell(1);
-        cell1.textContent = productName;
-        cell2.textContent = price;
-      }
-
-      // Ejemplo de cómo agregar productos a la factura
-      addProductToInvoice("Producto 1", "$10.00");
-      addProductToInvoice("Producto 2", "$20.00");
-      addProductToInvoice("Producto 3", "$15.00");
-
-      // Calcular el total de la factura
-      const totalAmount = Array.from(document.querySelectorAll("#items-table tr td:nth-child(2)"))
-        .map((td) => parseFloat(td.textContent.replace("$", "")))
-        .reduce((acc, curr) => acc + curr, 0);
-      document.getElementById("total-amount").innerText = `$${totalAmount.toFixed(2)}`;
-
-      function irAPagina_index() {
-        window.location.href = "/";
-      }
-    </script>
   </body>
 </html>

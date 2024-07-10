@@ -3,10 +3,6 @@ const Schema = mongoose.Schema;
 
 const PaymentSchema = new Schema({
   customer_id: { type: Schema.Types.ObjectId, ref: 'customer', required: true },
-  country: { type: String, required: true },
-  city: { type: String, required: true },
-  neighborhood: { type: String, required: true },
-  shipping_address: { type: String, required: true },
   geo_location: { type: String, required: true },
   postal_code: { type: Number, required: true },
   banc: { type: String, required: true },
