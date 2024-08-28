@@ -44,7 +44,6 @@
           <tr>
             <th>#</th>
             <th>Producto</th>
-            <th># Referencia</th>
             <th>Precio Unidad</th>
             <th>Cantidad</th>
             <th>Precio Total</th>
@@ -55,7 +54,6 @@
           <tr>
             <td><%= index + 1 %></td>
             <td><%= item.product.name %></td>
-            <td><%= item.product.reference %></td>
             <td>$<%= item.product.price %></td>
             <td><%= item.quantity %></td>
             <td>$<%= item.product.price * item.quantity %></td>
@@ -85,10 +83,10 @@
           </div>
         </div>
       </div>
-      <a href="/generate-invoice-pdf/<%= customer.login_customer_id %>" target="_blank">
+      <a href="/generate-invoice-pdf/<%= customer.login_customer_id %>" target="_blank" style="text-decoration: none;">
         <button>Imprimir Factura</button>
       </a>
-      <a href="/">
+      <a href="/" style="text-decoration: none;">
         <button>Regresar a la página principal</button>
       </a>
     </div>

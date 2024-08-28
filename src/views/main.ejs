@@ -13,7 +13,7 @@
     <header>
       <nav class="top-nav">
         <ul>
-          <li><a class="titulo" href="/">URBAN STREET</a></li>
+          <li><a class="titulo" href="/index">URBAN STREET</a></li>
           <div class="icon-container">
             <li>
               <button id="cartBtn" class="icon-btn">
@@ -42,16 +42,16 @@
           <h2>Contenido del carrito</h2>
           <div class="cart-items">
             <% productCart.forEach(item => { %>
-            <div class="cart-item">
-              <!-- <img src="product-image.jpg" alt="Producto" class="product-image-cart" /> -->
-              <div class="product-info">
-                <p class="product-name"><%= item.details.name %></p>
-                <p class="product-price">Unidad: $<%= item.details.price %></p>
-                <p class="product-quantity">Cantidad: <%= item.quantity %></p>
+              <div class="cart-item">
+                <img src="<%= item.details.imagePaths[0].path %>" alt="Producto" class="product-image-cart" />
+                <div class="product-info">
+                  <p class="product-name"><%= item.details.name %></p>
+                  <p class="product-price">Precio Unidad: $<%= item.details.price %></p>
+                  <p class="product-quantity">Cantidad: <%= item.quantity %></p>
+                </div>
+                <a href="/delete/productCart/<%= item.details._id %>" class="remove-item">&times;</a>
               </div>
-              <a href="/delete/productCart/<%= item.details._id %>" class="remove-item">&times;</a>
-            </div>
-            <% }) %>
+            <% }) %>            
             <div class="btn-cart">
               <a href="/formulario/<%= customerId %>" class="Finalizar-cart">Finalizar Compra</a>
               <a href="/" class="Main-cart">Main</a>
@@ -74,7 +74,6 @@
             <button class="register-btn" type="submit">Registrar</button>
             <div id="error-message" class="error-message"></div>
           </form>
-
           <form class="DatosAdmin" action="/form-login-admin" method="post">
             <h2>LOGIN ADMINISTRADOR</h2>
             <label for="NomAdmin">Nombre</label>

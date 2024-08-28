@@ -2,10 +2,10 @@ const mongoose = require('mongoose')
 const Admin = require('./models/admin');
 
 // Conexion a la base de datos
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/project') // Cambiar 'project' por el nombre de la base de datos
   .then(() => {
     console.log('DB is connected');
-    initializeAdmin(); // Initialize admin user con un valor predeterminado
+    initializeAdmin(); // Inicializar admin user con un valor predeterminado
   })
   .catch(err => console.error(err));
 

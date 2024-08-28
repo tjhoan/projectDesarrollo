@@ -25,6 +25,7 @@
               <img src="/public/qr/QRBancolombiaALaMano.jpg" class="product-image-cart2" />
               <p class="product-name2">urbanstreet</p>
               <p class="product-price2">03204657890</p>
+              <p class="contador">Tiene 10 segundos para escanear el QR</p>
             </div>
           </div>
         </div>
@@ -39,6 +40,7 @@
               <img src="/public/qr/QRDaviPlata.jpg" class="product-image-cart2" />
               <p class="product-name2">URBAN STREET</p>
               <p class="product-price2">3204657890</p>
+              <p class="contador">Tiene 10 segundos para escanear el QR</p>
             </div>
           </div>
         </div>
@@ -70,10 +72,8 @@
         <h2 class="tittle-total">Total a Pagar: <span class="total-amount">$ <%= totalAmount.toLocaleString() %></span></h2>
       </div>
       <div class="payment-options">
-        <a href="/factura/<%= customerId %>">
-          <button id="QRBtnBanc" class="payment-option-btn1">Bancolombia a la mano</button>
-          <button id="QRBtnDavi" class="payment-option-btn2">Daviplata</button>
-        </a>
+        <button id="QRBtnBanc" class="payment-option-btn1" data-payment="bancolombia">Bancolombia a la mano</button>
+        <button id="QRBtnDavi" class="payment-option-btn2" data-payment="daviplata">Daviplata</button>
         <a href="/" class="payment-option-btn4">Main</a>
       </div>
     </main>
@@ -90,21 +90,101 @@
     </footer>
     <script>
       var closeBtns = document.getElementsByClassName("close");
+      var paymentButtons = document.querySelectorAll("[data-payment]");
+      var navigating = false;
+      var navigationTimer;
+      const tiempoInicial = 10; // Tiempo inicial para el contador
+      let tiempoRestante = tiempoInicial; // Tiempo restante del contador
+      let intervalo;
+      let pElemento;
 
-      QRBtnBanc.onclick = function () {
-        QRBancolombiaModal.style.display = "block";
-      };
+      // Muestra el modal
+      function showModal(modalId) {
+        document.getElementById(modalId).style.display = "block";
+      }
 
-      QRBtnDavi.onclick = function () {
-        QRDaviviendaModal.style.display = "block";
-      };
+      // Oculta el modal
+      function hideModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+      }
 
-      // Cuando el usuario haga clic en (x), cerrar las ventanas modales
+      // Inicia la navegación
+      function startNavigation(customerId, paymentMethod) {
+        navigating = true;
+        navigationTimer = setTimeout(function () {
+          if (navigating) {
+            window.location.href = `/factura/${customerId}?method=${paymentMethod}`;
+          }
+        }, 10000);
+      }
+
+      // Cancela la navegación
+      function cancelNavigation() {
+        navigating = false;
+        clearTimeout(navigationTimer);
+      }
+
+      // Reinicia el contador
+      function resetContador() {
+        tiempoRestante = tiempoInicial;
+        if (pElemento) {
+          pElemento.textContent = `Tiene ${tiempoRestante} segundos para escanear el QR`;
+        }
+
+        clearInterval(intervalo);
+        intervalo = setInterval(() => {
+          tiempoRestante--;
+          if (pElemento) {
+            if (tiempoRestante > 0) {
+              pElemento.textContent = `Tiene ${tiempoRestante} segundos para escanear el QR`;
+            } else {
+              clearInterval(intervalo);
+              pElemento.textContent = `¡Tiempo agotado para el QR!`;
+            }
+          }
+        }, 1000); // Ejecuta cada 1000 ms (1 segundo)
+      }
+
+      // Maneja el clic en los botones de pago
+      paymentButtons.forEach((button) => {
+        button.addEventListener("click", function (e) {
+          e.preventDefault();
+          var paymentMethod = this.getAttribute("data-payment");
+          var modalId = paymentMethod === "bancolombia" ? "QRBancolombiaModal" : "QRDaviviendaModal";
+          showModal(modalId);
+          startNavigation("<%= customerId %>", paymentMethod);
+
+          // Selecciona el elemento del contador para el modal activo
+          pElemento = document.querySelector(`#${modalId} .contador`);
+          resetContador(); // Reinicia el contador al abrir un modal
+        });
+      });
+
+      // Maneja el clic en los botones de cerrar (x)
       for (var i = 0; i < closeBtns.length; i++) {
         closeBtns[i].onclick = function () {
-          this.parentElement.parentElement.style.display = "none";
+          const modalId = this.closest(".modal").id;
+          hideModal(modalId);
+          cancelNavigation();
+          resetContador(); // Reinicia el contador al cerrar un modal
         };
       }
+
+      // Cierra el modal si se hace clic fuera de él
+      window.onclick = function (event) {
+        if (event.target.classList.contains("modal")) {
+          const modalId = event.target.id;
+          hideModal(modalId);
+          cancelNavigation();
+          resetContador(); // Reinicia el contador al cerrar un modal
+        }
+      };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // Inicializa el contador
+        pElemento = document.querySelector(".contador");
+        resetContador(); // Inicializa el contador al cargar el DOM
+      });
     </script>
   </body>
 </html>

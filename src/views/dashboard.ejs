@@ -56,7 +56,7 @@
             <td><%= item.name %></td>
             <td><%= item.subcategories %></td>
             <td>
-              <a href="/categoty/delete/<%= item._id %>">
+              <a href="/admin/category/delete/<%= item._id %>">
                 <img src="/public/icon/borrar.png" alt="icon-delete" class="btn-edit_delete" />
               </a>
             </td>
@@ -88,7 +88,7 @@
             <th>Precio</th>
             <th>Cantidad</th>
             <th>Marca</th>
-            <th>Descripción</th>
+            <th>Descripción/ Eliminar</th>
           </tr>
         </thead>
         <tbody id="productoListaTabla">
@@ -110,7 +110,7 @@
             <td class="description_btn">
               <span><%= item.description %></span>
               <div class="icons">
-                <a href="/product/delete/<%= item._id %>">
+                <a href="/admin/product/delete/<%= item._id %>">
                   <img src="/public/icon/borrar.png" alt="icon-delete" class="btn-edit_delete" />
                 </a>
               </div>
@@ -127,6 +127,7 @@
       <div class="modal-content">
         <span class="close" onclick="closeModal('productoModal')">&times;</span>
         <h2>Agregar Producto</h2>
+        <p style="margin: 0;">Cantidad Máxima 5 y Mínima 3 Imágenes</p>
         <input type="file" name="images" multiple />
         <input type="text" name="name_product" placeholder="Nombre" />
         <input type="text" name="description" placeholder="Descripción" />
@@ -183,8 +184,8 @@
 
       // Función para mostrar y ocultar el menú
       function toggleMenu() {
-        var menuDashboard = document.getElementById("menuDashboard");
-        menuDashboard.style.display = menuDashboard.style.display === "none" ? "block" : "none";
+        var menu = document.getElementById("menuDashboard");
+        menu.classList.toggle("closed");
       }
 
       // Función para mostrar/ocultar productos
@@ -250,6 +251,12 @@
             tr[i].style.display = "none";
           }
         }
+      }
+
+      // Función para eliminar una fila
+      function eliminarFila(button) {
+        var fila = button.parentNode.parentNode;
+        fila.parentNode.removeChild(fila);
       }
     </script>
     <% if (typeof alert !=='undefined' ) { %> <% console.log(alert) %>

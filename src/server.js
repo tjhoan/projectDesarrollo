@@ -22,8 +22,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'your_secret_key',
-
+  secret: process.env.SESSION_SECRET || 'your_secret_key', // procure que sea una cadena larga y compleja
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false }

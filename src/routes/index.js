@@ -1,43 +1,70 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const controllers = require('../controllers/controller');
-const upload = require('../config/multerConfig');
+const upload = require("../config/multerConfig");
+
+// Importar controladores
+const loginFormCustomer = require("../controllers/auth/loginFormCustomer");
+const loginFormAdmin = require("../controllers/auth/loginFormAdmin");
+const destroySession = require("../controllers/auth/destroySession");
+const goToMain = require("../controllers/auth/goToMain");
+
+const addCart = require("../controllers/cart/addCart");
+const deleteProductCart = require("../controllers/cart/deleteProductCart");
+
+const { formulario, paymentForm, formularioError } = require("../controllers/payment/paymentForm");
+const procesoPago = require("../controllers/payment/procesoPago");
+const generatePDF = require("../controllers/pdf/generatePDF");
+const factura = require("../controllers/pdf/factura");
+
+const getProductsByCategory = require("../controllers/product-category/getProductsByCategory");
+const { details, detailsProduct } = require("../controllers/product-category/details-detailsProduct");
+const deleteProduct = require("../controllers/product-category/deleteProduct");
+const saveProduct = require("../controllers/product-category/saveProduct");
+const saveCategory = require("../controllers/product-category/saveCategory");
+const deleteCategory = require("../controllers/product-category/deleteCategory");
+
+const { admin, saveAdmin } = require("../controllers/admin-saveAdmin");
+const main = require("../controllers/main");
+const { index, contact } = require("../controllers/index-contact");
 
 // Rutas GET para productos y categorías
-router.get('/category/:category/:customerId?', controllers.getProductsByCategory);
-router.get('/detalles/:id', controllers.detailsProduct);
+router.get("/category/:category/:customerId?", getProductsByCategory);
+router.get("/detalles/:id", detailsProduct);
 
 // Rutas GET para eliminar productos y categorías
-router.get('/product/delete/:id', controllers.deleteProduct);
-router.get('/category/delete/:id', controllers.deleteCaregory);
+router.get("/admin/product/delete/:id", deleteProduct);
+router.get("/admin/category/delete/:id", deleteCategory);
 
 // Rutas GET para el carrito de compras
-router.get('/addCart/:id', controllers.addCart);
-router.get('/delete/productCart/:productId', controllers.deleteProductCart);
+router.get("/addCart/:id", addCart);
+router.get("/delete/productCart/:productId", deleteProductCart);
 
 // Rutas GET para la sesión y la navegación principal
-router.get('/go-to-main', controllers.goToMain);
-router.get('/logout', controllers.destroySession);
+router.get("/go-to-main", goToMain);
+router.get("/logout", destroySession);
 
 // Rutas GET para formularios y procesos relacionados
-router.get('/formulario/:customerId', controllers.formulario);
-router.get('/procesoPago/:customerId', controllers.procesoPago);
+router.get("/formulario/:customerId", formulario);
+router.get("/formulario/", formularioError);
+router.get("/procesoPago/:customerId", procesoPago);
 
 // Rutas GET para la generación de PDFs y facturas
-router.get('/generate-invoice-pdf/:customerId', controllers.generatePDF);
-router.get('/factura/:customerId', controllers.factura);
+router.get("/generate-invoice-pdf/:customerId", generatePDF);
+router.get("/factura/:customerId", factura);
 
 // Rutas POST para formularios de login y guardado
-router.post('/form-login-cliente', controllers.loginFormCustomer);
-router.post('/form-login-admin', controllers.loginFormAdmin);
-router.post('/saveProduct', upload.array('images', 5), controllers.saveProduct);
-router.post('/saveAdmin', controllers.saveAdmin);
-router.post('/saveCategory', controllers.saveCategory);
-router.post('/paymentForm', controllers.paymentForm);
+router.post("/form-login-cliente", loginFormCustomer);
+router.post("/form-login-admin", loginFormAdmin);
+router.post("/saveProduct", upload.array("images", 5), saveProduct);
+router.post("/saveAdmin", saveAdmin); // Usar saveAdmin para la ruta de creación de admin
+router.post("/saveCategory", saveCategory);
+router.post("/paymentForm", paymentForm); // Usar paymentForm para la ruta del formulario de pago
 
 // Rutas GET para vistas principales y administrativas
-router.get('/', controllers.main);
-router.get('/admin', controllers.admin);
-router.get('/details', controllers.details);
+router.get("/", main);
+router.get("/admin", admin);
+router.get("/details", details);
+router.get("/index", index);
+router.get("/contacto", contact)
 
 module.exports = router;
