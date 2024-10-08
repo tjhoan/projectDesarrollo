@@ -104,7 +104,7 @@
             <td><%= item.name %></td>
             <td><%= item.category.name %></td>
             <td><%= item.category.subcategories %></td>
-            <td><%= item.price %></td>
+            <td><%= item.price %></td>å
             <td><%= item.quantity %></td>
             <td><%= item.brand %></td>
             <td class="description_btn">
@@ -114,8 +114,7 @@
                   <img src="/public/icon/borrar.png" alt="icon-delete" class="btn-edit_delete" />
                 </a>
               </div>
-            </td>
-          </tr>
+            </td
           <% }) %>
         </tbody>
       </table>
@@ -127,7 +126,7 @@
       <div class="modal-content">
         <span class="close" onclick="closeModal('productoModal')">&times;</span>
         <h2>Agregar Producto</h2>
-        <p style="margin: 0;">Cantidad Máxima 5 y Mínima 3 Imágenes</p>
+        <p style="margin: 0">Cantidad Máxima 5 y Mínima 3 Imágenes</p>
         <input type="file" name="images" multiple />
         <input type="text" name="name_product" placeholder="Nombre" />
         <input type="text" name="description" placeholder="Descripción" />
@@ -154,85 +153,85 @@
     </form>
     <script>
       function irAPagina_indice() {
-        window.location.href = "/";
+        window.location.href = '/';
       }
 
       function showLargeImage(event, src) {
-        var largeImageContainer = document.getElementById("largeImageContainer");
-        var largeImage = document.getElementById("largeImage");
+        var largeImageContainer = document.getElementById('largeImageContainer');
+        var largeImage = document.getElementById('largeImage');
 
         largeImage.src = src;
-        largeImageContainer.style.display = "block";
-        largeImageContainer.style.top = event.pageY + "px";
-        largeImageContainer.style.left = event.pageX + "px";
+        largeImageContainer.style.display = 'block';
+        largeImageContainer.style.top = event.pageY + 'px';
+        largeImageContainer.style.left = event.pageX + 'px';
       }
 
       function hideLargeImage() {
-        var largeImageContainer = document.getElementById("largeImageContainer");
-        largeImageContainer.style.display = "none";
+        var largeImageContainer = document.getElementById('largeImageContainer');
+        largeImageContainer.style.display = 'none';
       }
 
       // Función para abrir el modal
       function openModal(modalId) {
-        document.getElementById(modalId).style.display = "block";
+        document.getElementById(modalId).style.display = 'block';
       }
 
       // Función para cerrar el modal
       function closeModal(modalId) {
-        document.getElementById(modalId).style.display = "none";
+        document.getElementById(modalId).style.display = 'none';
       }
 
       // Función para mostrar y ocultar el menú
       function toggleMenu() {
-        var menu = document.getElementById("menuDashboard");
-        menu.classList.toggle("closed");
+        var menu = document.getElementById('menuDashboard');
+        menu.classList.toggle('closed');
       }
 
       // Función para mostrar/ocultar productos
       function toggleProductos() {
-        var productos = document.getElementById("productos");
-        var categorias = document.getElementById("categorias");
-        var adminModal = document.getElementById("adminModal");
+        var productos = document.getElementById('productos');
+        var categorias = document.getElementById('categorias');
+        var adminModal = document.getElementById('adminModal');
 
-        productos.style.display = productos.style.display === "none" ? "block" : "none";
-        categorias.style.display = "none";
-        adminModal.style.display = "none";
+        productos.style.display = productos.style.display === 'none' ? 'block' : 'none';
+        categorias.style.display = 'none';
+        adminModal.style.display = 'none';
       }
 
       // Función para mostrar/ocultar categorías
       function toggleCategories() {
-        var categorias = document.getElementById("categorias");
-        var productos = document.getElementById("productos");
-        var adminModal = document.getElementById("adminModal");
+        var categorias = document.getElementById('categorias');
+        var productos = document.getElementById('productos');
+        var adminModal = document.getElementById('adminModal');
 
-        categorias.style.display = categorias.style.display === "none" ? "block" : "none";
-        productos.style.display = "none";
-        adminModal.style.display = "none";
+        categorias.style.display = categorias.style.display === 'none' ? 'block' : 'none';
+        productos.style.display = 'none';
+        adminModal.style.display = 'none';
       }
 
       // Función para mostrar/ocultar crearAdmin
       function toggleCrearAdmin() {
-        var adminModal = document.getElementById("adminModal");
-        var productos = document.getElementById("productos");
-        var categorias = document.getElementById("categorias");
+        var adminModal = document.getElementById('adminModal');
+        var productos = document.getElementById('productos');
+        var categorias = document.getElementById('categorias');
 
-        adminModal.style.display = adminModal.style.display === "none" ? "block" : "none";
-        productos.style.display = "none";
-        categorias.style.display = "none";
+        adminModal.style.display = adminModal.style.display === 'none' ? 'block' : 'none';
+        productos.style.display = 'none';
+        categorias.style.display = 'none';
       }
 
       function searchTable() {
         // Obtiene el valor de la entrada de búsqueda
-        var input = document.getElementById("searchInput");
+        var input = document.getElementById('searchInput');
         var filter = input.value.toLowerCase();
 
         // Obtiene la tabla y sus filas
-        var table = document.getElementById("tablaProductos");
-        var tr = table.getElementsByTagName("tr");
+        var table = document.getElementById('tablaProductos');
+        var tr = table.getElementsByTagName('tr');
 
         // Recorre todas las filas de la tabla y oculta aquellas que no coinciden con la búsqueda
         for (var i = 1; i < tr.length; i++) {
-          var tdArray = tr[i].getElementsByTagName("td");
+          var tdArray = tr[i].getElementsByTagName('td');
           var displayRow = false;
 
           for (var j = 0; j < tdArray.length; j++) {
@@ -246,9 +245,9 @@
           }
 
           if (displayRow) {
-            tr[i].style.display = "";
+            tr[i].style.display = '';
           } else {
-            tr[i].style.display = "none";
+            tr[i].style.display = 'none';
           }
         }
       }
@@ -262,9 +261,9 @@
     <% if (typeof alert !=='undefined' ) { %> <% console.log(alert) %>
     <script>
       Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "<%= alert %>",
+        icon: 'error',
+        title: 'Error',
+        text: '<%= alert %>'
       });
     </script>
     <% } %>

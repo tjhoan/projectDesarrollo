@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
     // Si el cliente no está logueado, redirigir a la página principal
     if (!customerId) {
       console.log("cliente no logueado");
-      req.session.alert = "cliente no logueado";
+      req.session.alert = "cliente no logueado";D
       return res.redirect("/");
     }
 
