@@ -1,63 +1,64 @@
-# Proyecto Ecommerce Urban Street
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-Este proyecto es una página web estilo ecommerce desarrollada con Node.js, Express, MongoDB(varios módulos) y EJS como motor de plantillas.
+<p align="center">
+<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
-### Requisitos previos
+## About Laravel
 
-Antes de comenzar, asegúrate de tener instalado:
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-1. Node.js: (https://www.youtube.com/watch?v=czFj5zoI5uc)
-2. MongoDB: (https://www.youtube.com/watch?v=eKXIxSZrJfw&t=2s) por cierto, en versiones actuales para poder correr correctamente mongo, se usa el comando mongosh (es un error del video)
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Al terminar los tutoriales, cierre las consolas ya que las tendra que abrir nuevamente desde el visual
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-### Instalación
+## Learning Laravel
 
-1. Descomprimir el archivo, donde desee (puede ser en descargas).
-2. Abre dos cmd de windows, en una ejecute el comando mongod para inicializar el servidor de mongo y en la otra, el comando mongosh para iniciar la shell de mongo.
-3. Ahora en visual debe abrir la carpeta que ha descomprimido.
-4. En visual abra otra consola (importante que este en el directorio del proyecto) y ejecute: "npm init --yes" para inicializar un nuevo proyecto en node.
-5. Ahora, en la misma consola ejecute el siguiente comando para instalar las dependencias: "npm i"
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-### Ejecución del proyecto
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-4. Ahora, en la terminal en visual (directorio del proyecto) ejecute el comando: "npm run dev" para correr el proyecto
-3. Deberías ver el siguiente mensaje en la consola: 
+## Laravel Sponsors
 
-[nodemon] starting node src/server.js
-Server on port 3000
-DB is connected
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
 
-### Acceso a la aplicación
+### Premium Partners
 
-1. Abre tu navegador web y visita: http://localhost:3000/index
+- **[Vehikl](https://vehikl.com/)**
+- **[Tighten Co.](https://tighten.co)**
+- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+- **[64 Robots](https://64robots.com)**
+- **[Cubet Techno Labs](https://cubettech.com)**
+- **[Cyber-Duck](https://cyber-duck.co.uk)**
+- **[Many](https://www.many.co.uk)**
+- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
+- **[DevSquad](https://devsquad.com)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+- **[OP.GG](https://op.gg)**
+- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
+- **[Lendio](https://lendio.com)**
 
-### Configuración inicial
+## Contributing
 
-1. Seleccionar el boton de Iniciar o Entrar para poder acceder al main.
-2. Accede al formulario de administrador que esta en la parte superior derecha.
-3. Ingresa las siguientes credenciales:
-- Nombre: admin
-- Contraseña: 123
-Oprima ingresar para acceder al dashboard del admin.
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-4. En la vista de administrador:
-- Crea una o dos categorías.
-- Crea productos (es obligatorio incluir imagenes y que sean maximo 5), si desea en "/public/fotosRopa" tiene algunas imagenes que puede probar.
+## Code of Conduct
 
-### Uso de la aplicación
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-1. Regresa a la vista principal para ver los productos haciendo click en Menu en la barra lateral izquierda.
-2. Para usar el carrito de compras:
-- Haz login como cliente, puede ingresar sus datos o ficticios.
-- Añade productos al carrito.
-- Completa el proceso de pago.
-- Visualiza la factura.
+## Security Vulnerabilities
 
-3. En el admin, en la seccion de productos existe la funcionalidad de busqueda la cual sirve para cada uno de los atributos del producto
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-### Notas importantes
+## License
 
-- Asegúrate de iniciar MongoDB antes de ejecutar la aplicación.
-- El servidor se ejecuta en el puerto 3000.
-- Es necesario crear productos desde la vista de administrador antes de poder visualizarlos en la página principal.
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
