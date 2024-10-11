@@ -4,7 +4,7 @@
     <div class="container mx-auto my-10 px-4">
         <h1 class="text-4xl font-bold mb-10 text-center text-gray-800">Tu Carrito de Compras</h1>
 
-        @if ($cart->items->isEmpty())
+        @if (!$cart || $cart->items->isEmpty())
             <p class="text-center text-gray-600">Tu carrito está vacío.</p>
         @else
             <div class="bg-white rounded-lg shadow-lg p-6">

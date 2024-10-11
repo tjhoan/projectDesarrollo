@@ -6,11 +6,6 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 
-// Ruta para el dashboard (solo usuarios autenticados)
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
-
 // Ruta para la página de inicio
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -27,10 +22,21 @@ Route::prefix('admin')->middleware(['auth', 'is_admin'])->group(function () {
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
 });
 
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+Route::get('/cart', [CartController::class, 'index'])->name('cart');
+
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+
+// Ruta para eliminar un producto del carrito
 Route::delete('/cart/remove/{item}', [CartController::class, 'remove'])->name('cart.remove');
+
+// Ruta para vaciar el carrito
 Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+use App\Http\Controllers\Auth\RegisteredUserController;
+
+Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
+Route::post('register', [RegisteredUserController::class, 'store']);
+
 
 
 // Rutas para el carrito de compras (solo usuarios autenticados)

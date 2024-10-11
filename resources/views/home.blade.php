@@ -7,7 +7,7 @@
             <div class="overflow-x-auto whitespace-nowrap flex items-center gap-4">
                 @foreach ($categories as $category)
                     <button class="flex-shrink-0 border border-gray-300 text-gray-800 py-2 px-4 rounded-full shadow hover:bg-gray-200 transition duration-300 ease-in-out transform hover:scale-105">
-                      <h3 class="text-base font-medium">{{ $category->name }}</h3>
+                        <h3 class="text-base font-medium">{{ $category->name }}</h3>
                     </button>
                 @endforeach
             </div>
@@ -26,11 +26,15 @@
                         <p class="text-base text-gray-700 font-semibold mb-4">Precio: ${{ $product->price }}</p>
                         <div class="flex justify-between items-center">
                             <a href="{{ route('products.show', $product->id) }}" class="bg-blue-500 text-white py-2 px-3 rounded-lg shadow hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105">
-                              Ver Detalles
+                                Ver Detalles
                             </a>
-                            <button class="bg-white text-indigo-500 p-2 rounded-lg hover:bg-indigo-100 transition flex items-center">
-                                <img src="{{ asset('img/icons/cart.png') }}" alt="Carrito" class="w-6 h-6">
-                            </button>
+                            <form action="{{ route('cart.add') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <button type="submit" class="bg-white text-indigo-500 p-2 rounded-lg hover:bg-indigo-100 transition flex items-center">
+                                    <img src="{{ asset('img/icons/cart.png') }}" alt="Carrito" class="w-6 h-6">
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

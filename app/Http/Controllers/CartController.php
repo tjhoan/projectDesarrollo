@@ -13,14 +13,26 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cart = $this->getCart();
-        return view('cart.index', compact('cart'));
+        $cart = Cart::with('items.product.images')
+            ->where('token', request()->cookie('cart_token'))
+            ->orWhere('customer_id', Auth::id())
+            ->first();
+
+        return view('cart', compact('cart'));
     }
 
-    public function add(Request $request, $productId)
+    public function add(Request $request)
     {
+        // Validar el ID del producto
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+        ]);
+
+        // Obtener o crear el carrito del usuario (o visitante)
         $cart = $this->getCart();
-        $product = Product::findOrFail($productId);
+
+        // Obtener el producto a partir del ID
+        $product = Product::findOrFail($request->input('product_id'));
 
         // Buscar si el producto ya está en el carrito
         $cartItem = CartItem::where('cart_id', $cart->id)
@@ -41,21 +53,29 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Producto añadido al carrito');
     }
 
+
     public function remove($itemId)
     {
-        $cartItem = CartItem::findOrFail($itemId);
-        $cartItem->delete();
+        $cart = Cart::where('token', request()->cookie('cart_token'))->orWhere('customer_id', Auth::id())->first();
 
-        return redirect()->back()->with('success', 'Producto eliminado del carrito');
+        if ($cart) {
+            $cart->items()->where('id', $itemId)->delete();
+        }
+
+        return redirect()->route('cart')->with('success', 'Producto eliminado del carrito');
     }
 
     public function clear()
     {
-        $cart = $this->getCart();
-        $cart->items()->delete();
+        $cart = Cart::where('token', request()->cookie('cart_token'))->orWhere('customer_id', Auth::id())->first();
 
-        return redirect()->back()->with('success', 'Carrito vaciado');
+        if ($cart) {
+            $cart->items()->delete();
+        }
+
+        return redirect()->route('cart')->with('success', 'Carrito vaciado con éxito');
     }
+
 
     private function getCart()
     {
