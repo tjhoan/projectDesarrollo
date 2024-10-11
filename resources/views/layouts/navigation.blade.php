@@ -14,17 +14,18 @@
             <!-- Settings and Cart -->
             <div class="hidden sm:flex sm:items-center sm:ml-6 space-x-6">
                 <!-- Carrito de Compras -->
-                <a href="{{ route('cart') }}" class="relative flex items-center text-gray-500 hover:text-gray-700 transition">
+                @php
+                    $cart = \App\Models\Cart::where('token', request()->cookie('cart_token'))->orWhere('customer_id', Auth::id())->first();
+                    $cartItemCount = $cart ? $cart->items->sum('quantity') : 0;
+                @endphp
 
+                <a href="{{ route('cart') }}" class="relative flex items-center text-gray-500 hover:text-gray-700 transition">
                     <img src="{{ asset('img/icons/cartNav.png') }}" alt="Carrito" class="w-6 h-6">
-                    @php
-                        $cart = \App\Models\Cart::where('token', request()->cookie('cart_token'))->orWhere('customer_id', Auth::id())->first();
-                        $cartItemCount = $cart ? $cart->products->count() : 0;
-                    @endphp
                     @if ($cartItemCount > 0)
                         <span class="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">{{ $cartItemCount }}</span>
                     @endif
                 </a>
+
 
                 <!-- Authentication Links -->
                 @if (Auth::check())

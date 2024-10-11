@@ -28,9 +28,8 @@
                             <a href="{{ route('products.show', $product->id) }}" class="bg-blue-500 text-white py-2 px-3 rounded-lg shadow hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105">
                                 Ver Detalles
                             </a>
-                            <form action="{{ route('cart.add') }}" method="POST">
+                            <form action="{{ route('cart.add', ['productId' => $product->id]) }}" method="POST" class="inline">
                                 @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}">
                                 <button type="submit" class="bg-white text-indigo-500 p-2 rounded-lg hover:bg-indigo-100 transition flex items-center">
                                     <img src="{{ asset('img/icons/cart.png') }}" alt="Carrito" class="w-6 h-6">
                                 </button>

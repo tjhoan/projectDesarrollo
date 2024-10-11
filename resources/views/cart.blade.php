@@ -23,6 +23,7 @@
                                 @method('DELETE')
                                 <button type="submit" class="text-red-500 hover:text-red-700">Eliminar</button>
                             </form>
+
                         </div>
                     </div>
                 @endforeach

@@ -25,9 +25,12 @@ Route::prefix('admin')->middleware(['auth', 'is_admin'])->group(function () {
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/add/{productId}', [CartController::class, 'add'])->name('cart.add');
+
 
 // Ruta para eliminar un producto del carrito
-Route::delete('/cart/remove/{item}', [CartController::class, 'remove'])->name('cart.remove');
+Route::delete('/cart/remove/{itemId}', [CartController::class, 'remove'])->name('cart.remove');
+
 
 // Ruta para vaciar el carrito
 Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
