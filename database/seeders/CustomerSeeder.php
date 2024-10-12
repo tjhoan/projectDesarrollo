@@ -10,6 +10,7 @@ class CustomerSeeder extends Seeder
 {
     public function run()
     {
+        // Creamos algunos clientes
         Customer::create([
             'first_name' => 'John',
             'last_name' => 'Doe',

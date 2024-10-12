@@ -9,6 +9,7 @@ class ProductSeeder extends Seeder
 {
     public function run()
     {
+        // Creamos algunos productos
         Product::create([
             'name' => 'Camiseta Básica',
             'price' => 20.00,

@@ -10,6 +10,7 @@ class AdminSeeder extends Seeder
 {
     public function run()
     {
+        // Creamos un usuario administrador
         Admin::create([
             'name' => 'Admin User',
             'email' => 'admin@example.com',
