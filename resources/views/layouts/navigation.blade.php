@@ -1,26 +1,19 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
-                <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('home') }}">
                         <x-application-logo class="block h-10 w-auto fill-current text-gray-600" />
                     </a>
                 </div>
             </div>
-
-            <!-- Settings and Cart -->
             <div class="hidden sm:flex sm:items-center sm:ml-6 space-x-6">
                 <!-- Botón del Carrito de Compras en navigation.blade.php -->
                 <a href="javascript:void(0)" onclick="openCartModal(); loadCartItems();" class="relative flex items-center text-gray-500 hover:text-gray-700 transition">
                     <img src="{{ asset('img/icons/cartNav.png') }}" alt="Carrito" class="w-6 h-6">
                     @php
-                        // Buscar el carrito usando el token o la ID del cliente
                         $cart = \App\Models\Cart::with('items')->where('token', request()->cookie('cart_token'))->orWhere('customer_id', Auth::id())->first();
-
-                        // Si el carrito existe, contar la cantidad total de productos
                         $cartItemCount = $cart ? $cart->items->sum('quantity') : 0;
                     @endphp
                     @if ($cartItemCount > 0)
@@ -29,8 +22,6 @@
                         </span>
                     @endif
                 </a>
-
-                <!-- Authentication Links -->
                 @if (Auth::check())
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
@@ -60,7 +51,6 @@
                     <a href="{{ route('register') }}" class="text-sm font-medium text-gray-500 hover:text-gray-700">Registrarse</a>
                 @endif
             </div>
-            <!-- Hamburger -->
             <div class="-mr-2 flex items-center sm:hidden">
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -74,7 +64,6 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
-        <!-- Authentication Links -->
         @if (Auth::check())
             <div class="pt-2 pb-3 space-y-1">
                 <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault();

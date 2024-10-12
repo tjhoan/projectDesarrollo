@@ -7,15 +7,12 @@ use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class CartController extends Controller
 {
     public function index()
     {
-        Log::info('Cargando carrito para el usuario o visitante...');
-
         // Primero buscamos por el token de la cookie si existe
         $token = request()->cookie('cart_token');
         $cart = null;
@@ -24,7 +21,6 @@ class CartController extends Controller
             $cart = Cart::with('items.product.images')
                 ->where('token', $token)
                 ->first();
-            Log::info('Buscando carrito con token de cookie', ['token' => $token, 'cartId' => $cart ? $cart->id : null, 'itemsCount' => $cart ? $cart->items->count() : 0]);
         }
 
         // Si el usuario está autenticado y no tenemos un carrito de token, buscamos el del usuario
@@ -32,24 +28,13 @@ class CartController extends Controller
             $cart = Cart::with('items.product.images')
                 ->where('customer_id', Auth::id())
                 ->first();
-            Log::info('Buscando carrito para usuario autenticado', ['userId' => Auth::id(), 'cartId' => $cart ? $cart->id : null, 'itemsCount' => $cart ? $cart->items->count() : 0]);
         }
-
-        // Si aún no tenemos un carrito, mostramos uno vacío
-        if (!$cart) {
-            Log::info('No se encontró ningún carrito para el usuario o visitante. Mostrando carrito vacío.');
-        }
-
         return view('cart_items', compact('cart'));
     }
 
     public function add(Request $request, $productId)
     {
-        Log::info('Añadiendo producto al carrito', ['productId' => $productId]);
-
         $cart = $this->getCart();
-        Log::info('Carrito obtenido', ['cartId' => $cart->id]);
-
         $product = Product::findOrFail($productId);
 
         // Buscar si el producto ya está en el carrito
@@ -67,10 +52,8 @@ class CartController extends Controller
         }
 
         $cartItem->save();
-
         // Devolvemos la respuesta con la cantidad de productos en el carrito
         $cartItemCount = $cart->items->sum('quantity');
-        Log::info('Cantidad total de productos en el carrito', ['cartItemCount' => $cartItemCount]);
 
         return response()->json(['cartItemCount' => $cartItemCount]);
     }
@@ -83,6 +66,7 @@ class CartController extends Controller
             $cart->items()->where('id', $itemId)->delete();
         }
 
+        // Devolvemos la respuesta con un mensaje de éxito y la cantidad de productos en el carrito
         if ($request->ajax()) {
             return response()->json(['success' => true, 'message' => 'Producto eliminado del carrito', 'cartItemCount' => $cart->items->sum('quantity')]);
         }
@@ -91,8 +75,9 @@ class CartController extends Controller
 
     public function clear()
     {
-        $cart = Cart::where('token', request()->cookie('cart_token'))->orWhere('customer_id', Auth::id())->first();
+        $cart = Cart::where('token', request()->cookie('cart_token'))->orWhere('customer_id', Auth::id())->first(); // Buscar el carrito por token o por usuario autenticado
 
+        // Eliminar todos los elementos del carrito
         if ($cart) {
             $cart->items()->delete();
         }
@@ -107,7 +92,6 @@ class CartController extends Controller
         if (Auth::check()) {
             // Si el usuario está autenticado, buscamos o creamos un carrito para él
             $cart = Cart::firstOrCreate(['customer_id' => Auth::id()]);
-
             // Verificar si existe un carrito temporal para el visitante
             $visitorCart = Cart::where('token', $token)->whereNull('customer_id')->first();
 
@@ -126,7 +110,6 @@ class CartController extends Controller
                         $cart->items()->save($cartItem);
                     }
                 }
-
                 // Eliminar el carrito temporal del visitante
                 $visitorCart->items()->delete();
                 $visitorCart->delete();
@@ -146,7 +129,6 @@ class CartController extends Controller
         if (!$cart->exists) {
             $cart->save();
         }
-
         return $cart;
     }
 }

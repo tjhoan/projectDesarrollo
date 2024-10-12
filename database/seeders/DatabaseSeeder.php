@@ -8,6 +8,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
+        // Llamamos a los seeders, no cambiar el orden
         $this->call([
             AdminSeeder::class,
             CustomerSeeder::class,

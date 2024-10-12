@@ -22,6 +22,7 @@ Route::prefix('admin')->middleware(['auth', 'is_admin'])->group(function () {
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
 });
 
+// Rutas para el carrito de compras
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::post('/cart/add/{productId}', [CartController::class, 'add'])->name('cart.add');
 Route::delete('/cart/remove/{itemId}', [CartController::class, 'remove'])->name('cart.remove');
@@ -29,18 +30,5 @@ Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear
 
 Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
 Route::post('register', [RegisteredUserController::class, 'store']);
-
-// Rutas para el carrito de compras (solo usuarios autenticados)
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-//     Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
-//     Route::post('/cart/remove/{product}', [CartController::class, 'remove'])->name('cart.remove');
-// });
-
-// Rutas para el pago (solo usuarios autenticados)
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('/checkout', [PaymentController::class, 'index'])->name('checkout.index');
-//     Route::post('/checkout/pay', [PaymentController::class, 'process'])->name('checkout.process');
-// });
 
 require __DIR__ . '/auth.php';

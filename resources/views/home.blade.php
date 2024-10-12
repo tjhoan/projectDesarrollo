@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('content')
     <div class="container mx-auto my-10 px-4">
         <!-- Carrusel de Categorías -->
@@ -12,7 +11,6 @@
                 @endforeach
             </div>
         </div>
-
         <!-- Productos -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 tartaaa">
             @foreach ($products as $product)
@@ -38,7 +36,6 @@
         </div>
     </div>
 @endsection
-
 @push('scripts')
     <script>
         function addToCart(productId) {
