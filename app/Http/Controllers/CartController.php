@@ -7,33 +7,56 @@ use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class CartController extends Controller
 {
     public function index()
     {
-        // Utilizamos el método getCart() para obtener el carrito correcto (visitante o usuario registrado)
-        $cart = $this->getCart();
+        Log::info('Cargando carrito para el usuario o visitante...');
 
-        // Cargar los productos y sus imágenes asociados a los ítems del carrito
-        $cart->load('items.product.images');
+        // Primero buscamos por el token de la cookie si existe
+        $token = request()->cookie('cart_token');
+        $cart = null;
 
-        // Retornamos la vista del carrito con los datos
-        return view('cart', compact('cart'));
+        if ($token) {
+            $cart = Cart::with('items.product.images')
+                ->where('token', $token)
+                ->first();
+            Log::info('Buscando carrito con token de cookie', ['token' => $token, 'cartId' => $cart ? $cart->id : null, 'itemsCount' => $cart ? $cart->items->count() : 0]);
+        }
+
+        // Si el usuario está autenticado y no tenemos un carrito de token, buscamos el del usuario
+        if (Auth::check() && !$cart) {
+            $cart = Cart::with('items.product.images')
+                ->where('customer_id', Auth::id())
+                ->first();
+            Log::info('Buscando carrito para usuario autenticado', ['userId' => Auth::id(), 'cartId' => $cart ? $cart->id : null, 'itemsCount' => $cart ? $cart->items->count() : 0]);
+        }
+
+        // Si aún no tenemos un carrito, mostramos uno vacío
+        if (!$cart) {
+            Log::info('No se encontró ningún carrito para el usuario o visitante. Mostrando carrito vacío.');
+        }
+
+        return view('cart_items', compact('cart'));
     }
-
 
     public function add(Request $request, $productId)
     {
-        $cart = $this->getCart(); // Asegúrate de que siempre tenemos un carrito válido
+        Log::info('Añadiendo producto al carrito', ['productId' => $productId]);
+
+        $cart = $this->getCart();
+        Log::info('Carrito obtenido', ['cartId' => $cart->id]);
+
         $product = Product::findOrFail($productId);
-    
+
         // Buscar si el producto ya está en el carrito
         $cartItem = CartItem::where('cart_id', $cart->id)
             ->where('product_id', $product->id)
             ->first();
-    
+
         if ($cartItem) {
             // Si ya está, aumentar la cantidad
             $cartItem->quantity += 1;
@@ -42,31 +65,29 @@ class CartController extends Controller
             $cartItem = new CartItem(['product_id' => $product->id, 'quantity' => 1]);
             $cart->items()->save($cartItem);
         }
-    
+
         $cartItem->save();
-    
-        return redirect()->back()->with('success', 'Producto añadido al carrito');
+
+        // Devolvemos la respuesta con la cantidad de productos en el carrito
+        $cartItemCount = $cart->items->sum('quantity');
+        Log::info('Cantidad total de productos en el carrito', ['cartItemCount' => $cartItemCount]);
+
+        return response()->json(['cartItemCount' => $cartItemCount]);
     }
-    
 
-
-    public function remove($itemId)
+    public function remove(Request $request, $itemId)
     {
-        // Obtener el carrito actual (ya sea de visitante o usuario registrado)
         $cart = $this->getCart();
 
         if ($cart) {
-            // Verificar si el ítem pertenece al carrito y eliminarlo
-            $cartItem = $cart->items()->where('id', $itemId)->first();
-
-            if ($cartItem) {
-                $cartItem->delete();
-            }
+            $cart->items()->where('id', $itemId)->delete();
         }
 
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Producto eliminado del carrito', 'cartItemCount' => $cart->items->sum('quantity')]);
+        }
         return redirect()->route('cart')->with('success', 'Producto eliminado del carrito');
     }
-
 
     public function clear()
     {
@@ -75,10 +96,8 @@ class CartController extends Controller
         if ($cart) {
             $cart->items()->delete();
         }
-
-        return redirect()->route('cart')->with('success', 'Carrito vaciado con éxito');
+        return redirect()->route('cart')->with('success', 'Carrito vaciado con éxitDo');
     }
-
 
     private function getCart()
     {
@@ -91,6 +110,7 @@ class CartController extends Controller
 
             // Verificar si existe un carrito temporal para el visitante
             $visitorCart = Cart::where('token', $token)->whereNull('customer_id')->first();
+
             if ($visitorCart) {
                 // Transferir los elementos del carrito temporal al carrito del usuario registrado
                 foreach ($visitorCart->items as $item) {
@@ -108,12 +128,13 @@ class CartController extends Controller
                 }
 
                 // Eliminar el carrito temporal del visitante
+                $visitorCart->items()->delete();
                 $visitorCart->delete();
             }
 
-            // Asegurarse de que el carrito esté asociado al usuario registrado
+            // Asegurarse de que el carrito ya no tenga un token de visitante
             $cart->customer_id = Auth::id();
-            $cart->token = null; // Ya no necesitamos el token porque está asociado al cliente
+            $cart->token = null;
             $cart->save();
         } else {
             // Si el usuario no está registrado, creamos o buscamos un carrito temporal por token

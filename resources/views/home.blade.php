@@ -28,12 +28,9 @@
                             <a href="{{ route('products.show', $product->id) }}" class="bg-blue-500 text-white py-2 px-3 rounded-lg shadow hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105">
                                 Ver Detalles
                             </a>
-                            <form action="{{ route('cart.add', ['productId' => $product->id]) }}" method="POST" class="inline">
-                                @csrf
-                                <button type="submit" class="bg-white text-indigo-500 p-2 rounded-lg hover:bg-indigo-100 transition flex items-center">
-                                    <img src="{{ asset('img/icons/cart.png') }}" alt="Carrito" class="w-6 h-6">
-                                </button>
-                            </form>
+                            <button onclick="addToCart({{ $product->id }})" class="bg-white text-indigo-500 p-2 rounded-lg hover:bg-indigo-100 transition flex items-center">
+                                <img src="{{ asset('img/icons/cart.png') }}" alt="Carrito" class="w-6 h-6">
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -41,3 +38,29 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        function addToCart(productId) {
+            $.ajax({
+                url: "{{ url('/cart/add') }}/" + productId,
+                method: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                },
+                success: function(response) {
+                    // Actualizamos el número de artículos en el carrito
+                    $('.cart-counter').text(response.cartItemCount);
+                    // Mostrar un mensaje de éxito si es necesario
+                    alert('Producto añadido al carrito exitosamente');
+                    // Actualizar el contenido del carrito en el modal si es necesario
+                    loadCartItems();
+                },
+                error: function(error) {
+                    console.error("Error al agregar al carrito:", error);
+                    alert('Hubo un problema al agregar el producto al carrito.');
+                }
+            });
+        }
+    </script>
+@endpush

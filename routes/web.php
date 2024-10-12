@@ -1,9 +1,9 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 // Ruta para la página de inicio
@@ -23,24 +23,12 @@ Route::prefix('admin')->middleware(['auth', 'is_admin'])->group(function () {
 });
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
-
-Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/add/{productId}', [CartController::class, 'add'])->name('cart.add');
-
-
-// Ruta para eliminar un producto del carrito
 Route::delete('/cart/remove/{itemId}', [CartController::class, 'remove'])->name('cart.remove');
-
-
-// Ruta para vaciar el carrito
 Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
-
-use App\Http\Controllers\Auth\RegisteredUserController;
 
 Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
 Route::post('register', [RegisteredUserController::class, 'store']);
-
-
 
 // Rutas para el carrito de compras (solo usuarios autenticados)
 // Route::middleware(['auth'])->group(function () {
