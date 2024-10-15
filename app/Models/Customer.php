@@ -28,8 +28,19 @@ class Customer extends Authenticatable
 
     public function cart()
     {
-        return $this->hasOne(Cart::class);
+        return $this->hasOne(Cart::class)->withDefault();
     }
+
+    // Eliminar carrito al eliminar cliente
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($customer) {
+            $customer->cart()->delete();
+        });
+    }
+
 
     public function payments()
     {

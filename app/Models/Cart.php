@@ -28,4 +28,15 @@ class Cart extends Model
     {
         return $this->hasMany(CartItem::class);
     }
+    
+    // Eliminar items al eliminar carrito
+    protected static function boot()
+    {
+        parent::boot();
+    
+        static::deleting(function ($cart) {
+            $cart->items()->delete();
+        });
+    }
+    
 }

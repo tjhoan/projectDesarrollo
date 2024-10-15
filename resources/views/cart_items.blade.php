@@ -1,6 +1,6 @@
 @if ($cart && $cart->items->count() > 0)
     @foreach ($cart->items as $item)
-        <div class="flex items-center justify-between mb-4">
+        <div id="cart-item-{{ $item->id }}" class="flex items-center justify-between mb-4">
             <div class="flex items-center">
                 <img src="{{ asset($item->product->images->first()->image_path) }}" alt="{{ $item->product->name }}" class="w-20 h-20 object-cover mr-4">
                 <div>
