@@ -9,9 +9,6 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    /**
-     * @return \Illuminate\View\View
-     */
     public function index()
     {
         // Obtener todas las categorías
