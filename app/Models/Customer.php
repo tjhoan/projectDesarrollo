@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class Customer extends Authenticatable
 {
@@ -18,7 +18,7 @@ class Customer extends Authenticatable
         'address',
         'phone',
         'id_number',
-        'gender'
+        'gender',
     ];
 
     protected $hidden = [
@@ -28,8 +28,19 @@ class Customer extends Authenticatable
 
     public function cart()
     {
-        return $this->hasOne(Cart::class);
+        return $this->hasOne(Cart::class)->withDefault();
     }
+
+    // Eliminar carrito al eliminar cliente
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($customer) {
+            $customer->cart()->delete();
+        });
+    }
+
 
     public function payments()
     {

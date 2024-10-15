@@ -10,7 +10,8 @@ class Cart extends Model
     use HasFactory;
 
     protected $fillable = [
-        'customer_id'
+        'customer_id',
+        'token',
     ];
 
     public function customer()
@@ -20,6 +21,22 @@ class Cart extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class)->withPivot('quantity');
+        return $this->belongsToMany(Product::class, 'cart_items')->withPivot('quantity');
     }
+
+    public function items()
+    {
+        return $this->hasMany(CartItem::class);
+    }
+    
+    // Eliminar items al eliminar carrito
+    protected static function boot()
+    {
+        parent::boot();
+    
+        static::deleting(function ($cart) {
+            $cart->items()->delete();
+        });
+    }
+    
 }

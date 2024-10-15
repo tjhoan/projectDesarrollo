@@ -9,11 +9,6 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    /**
-     * Muestra la página principal con productos y categorías.
-     *
-     * @return \Illuminate\View\View
-     */
     public function index()
     {
         // Obtener todas las categorías

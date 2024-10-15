@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('content')
     <div class="container mx-auto my-10 px-4">
         <!-- Carrusel de Categorías -->
@@ -7,12 +6,11 @@
             <div class="overflow-x-auto whitespace-nowrap flex items-center gap-4">
                 @foreach ($categories as $category)
                     <button class="flex-shrink-0 border border-gray-300 text-gray-800 py-2 px-4 rounded-full shadow hover:bg-gray-200 transition duration-300 ease-in-out transform hover:scale-105">
-                      <h3 class="text-base font-medium">{{ $category->name }}</h3>
+                        <h3 class="text-base font-medium">{{ $category->name }}</h3>
                     </button>
                 @endforeach
             </div>
         </div>
-
         <!-- Productos -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 tartaaa">
             @foreach ($products as $product)
@@ -26,9 +24,9 @@
                         <p class="text-base text-gray-700 font-semibold mb-4">Precio: ${{ $product->price }}</p>
                         <div class="flex justify-between items-center">
                             <a href="{{ route('products.show', $product->id) }}" class="bg-blue-500 text-white py-2 px-3 rounded-lg shadow hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105">
-                              Ver Detalles
+                                Ver Detalles
                             </a>
-                            <button class="bg-white text-indigo-500 p-2 rounded-lg hover:bg-indigo-100 transition flex items-center">
+                            <button onclick="addToCart({{ $product->id }})" class="bg-white text-indigo-500 p-2 rounded-lg hover:bg-indigo-100 transition flex items-center">
                                 <img src="{{ asset('img/icons/cart.png') }}" alt="Carrito" class="w-6 h-6">
                             </button>
                         </div>
@@ -38,3 +36,28 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script>
+        function addToCart(productId) {
+            $.ajax({
+                url: "{{ url('/cart/add') }}/" + productId,
+                method: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                },
+                success: function(response) {
+                    // Actualizamos el número de artículos en el carrito
+                    $('.cart-counter').text(response.cartItemCount);
+                    // Mostrar un mensaje de éxito si es necesario
+                    alert('Producto añadido al carrito exitosamente');
+                    // Actualizar el contenido del carrito en el modal si es necesario
+                    loadCartItems();
+                },
+                error: function(error) {
+                    console.error("Error al agregar al carrito:", error);
+                    alert('Hubo un problema al agregar el producto al carrito.');
+                }
+            });
+        }
+    </script>
+@endpush
