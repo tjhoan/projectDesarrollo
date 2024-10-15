@@ -10,10 +10,16 @@
             </div>
             <div class="hidden sm:flex sm:items-center sm:ml-6 space-x-6">
                 <!-- Botón del Carrito de Compras en navigation.blade.php -->
-                <a href="javascript:void(0)" onclick="openCartModal(); loadCartItems();" class="relative flex items-center text-gray-500 hover:text-gray-700 transition">
+                <a href="{{ route('cart') }}" class="relative flex items-center text-gray-500 hover:text-gray-700 transition">
                     <img src="{{ asset('img/icons/cartNav.png') }}" alt="Carrito" class="w-6 h-6">
                     @php
-                        $cart = \App\Models\Cart::with('items')->where('token', request()->cookie('cart_token'))->orWhere('customer_id', Auth::id())->first();
+                        if (Auth::check()) {
+                            // Si el usuario está autenticado, obtenemos su carrito por el ID del cliente
+                            $cart = \App\Models\Cart::with('items')->where('customer_id', Auth::id())->first();
+                        } else {
+                            // Si no está autenticado, obtenemos el carrito temporal a través del token de la cookie
+                            $cart = \App\Models\Cart::with('items')->where('token', request()->cookie('cart_token'))->first();
+                        }
                         $cartItemCount = $cart ? $cart->items->sum('quantity') : 0;
                     @endphp
                     @if ($cartItemCount > 0)
