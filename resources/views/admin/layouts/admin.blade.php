@@ -9,6 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css" />
     <script src="//cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         /* Transición para el sidebar */
         .sidebar-transition {
@@ -32,15 +33,7 @@
 
         /* Botón flotante para mostrar/ocultar sidebar */
         #toggleSidebar {
-            position: fixed;
             top: 1rem;
-            left: 13rem; /* Coloca el botón al lado del sidebar */
-            background-color: #1f2937; /* Fondo oscuro */
-            color: white;
-            padding: 0.5rem;
-            border-radius: 0.25rem;
-            z-index: 50;
-            transition: left 0.3s ease; /* Transición suave para mover el botón */
         }
 
         /* Alinear al centro el formulario */
@@ -52,13 +45,12 @@
 
         /* Añadir espacio superior */
         .main-content-wrapper {
-            margin-top: 50px;
+            margin-top: 25px;
         }
 
-        /* Estilos responsivos */
         @media (max-width: 768px) {
             #toggleSidebar {
-                left: 1rem; /* Cuando el tamaño de pantalla es pequeño */
+                left: 1rem;
             }
         }
     </style>
@@ -84,19 +76,19 @@
                     <li class="mb-6">
                         <a href="{{ route('products.index') }}" class="flex items-center px-4 py-2 text-gray-500 hover:text-gray-900 hover:bg-gray-300 rounded-md">
                             <span class="material-icons mr-2">category</span>
-                            <span>Products</span>
+                            <span>Productos</span>
                         </a>
                     </li>
                     <li class="mb-6">
                         <a href="{{ route('categories.index') }}" class="flex items-center px-4 py-2 text-gray-500 hover:text-gray-900 hover:bg-gray-300 rounded-md">
                             <span class="material-icons mr-2">view_list</span>
-                            <span>Categories</span>
+                            <span>Categorías</span>
                         </a>
                     </li>
                     <li class="mb-6">
                         <a href="{{ route('admins.index') }}" class="flex items-center px-4 py-2 text-gray-500 hover:text-gray-900 hover:bg-gray-300 rounded-md">
                             <span class="material-icons mr-2">admin_panel_settings</span>
-                            <span>Administrators</span>
+                            <span>Administradores</span>
                         </a>
                     </li>
                 </ul>

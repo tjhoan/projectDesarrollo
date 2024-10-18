@@ -26,13 +26,13 @@
                     <tr class="hover:bg-gray-100 transition duration-300 ease-in-out" id="product-{{ $product->id }}">
                         <!-- Mostrar imagen -->
                         <td class="py-4 px-6 border-b">
-                            @if ($product->images->isNotEmpty())
-                                <img src="{{ Storage::url($product->images->first()->image_path) }}" class="w-16 h-16 object-cover rounded-lg hover:scale-105 transition-transform">
-                            @else
-                                <img src="/path-to-default-image.jpg" class="w-16 h-16 object-cover rounded-lg">
-                            @endif
+                            @foreach ($product->images as $image)
+                                @php
+                                    $imageUrl = Str::startsWith($image->image_path, 'http') ? $image->image_path : Storage::url($image->image_path);
+                                @endphp
+                                <img src="{{ $imageUrl }}" class="w-16 h-16 object-cover rounded-lg hover:scale-105 transition-transform" alt="Imagen del producto">
+                            @endforeach
                         </td>
-
                         <td class="py-4 px-6 border-b">{{ $product->name }}</td>
                         <td class="py-4 px-6 border-b">{{ $product->price }}</td>
                         <td class="py-4 px-6 border-b">{{ $product->quantity }}</td>
