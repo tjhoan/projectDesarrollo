@@ -14,7 +14,7 @@ class Product extends Model
         'price',
         'quantity',
         'brand',
-        'category',
+        'category_id',
         'description'
     ];
 
@@ -24,9 +24,15 @@ class Product extends Model
         return $this->hasMany(ProductImage::class);
     }
 
-    // Relación para el carrito
-    public function carts()
+    // Relación con la categoría
+    public function category()
     {
-        return $this->belongsToMany(Cart::class)->withPivot('quantity');
+        return $this->belongsTo(Category::class);
+    }
+
+    // Relación con subcategorías
+    public function subcategory()
+    {
+        return $this->belongsTo(Subcategory::class);
     }
 }

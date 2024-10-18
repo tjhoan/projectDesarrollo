@@ -12,19 +12,11 @@ use Illuminate\Validation\Rules;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * @return \Illuminate\View\View
-     */
     public function create()
     {
         return view('auth.register');
     }
 
-    /**
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(Request $request)
     {
         $request->validate([
