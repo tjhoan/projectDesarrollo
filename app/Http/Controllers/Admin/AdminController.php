@@ -40,13 +40,6 @@ class AdminController extends Controller
         return redirect()->route('admins.index')->with('success', 'Administrador creado con éxito');
     }
 
-    // Mostrar el formulario para editar un administrador
-    public function edit($id)
-    {
-        $admin = Admin::findOrFail($id);
-        return view('admin.admins.edit', compact('admin'));
-    }
-
     // Actualizar la información del administrador
     public function update(Request $request, $id)
     {
