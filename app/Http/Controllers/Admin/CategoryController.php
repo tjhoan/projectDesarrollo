@@ -25,13 +25,15 @@ class CategoryController extends Controller
         // Validación
         $request->validate([
             'name' => 'required|string|min:3|max:255',
+            'description' => 'nullable|string|max:1000',  // Validación de la descripción
             'subcategories' => 'array',
             'subcategories.*' => 'string|min:3|max:255',
         ]);
 
-        // Crear la categoría
+        // Crear la categoría con la descripción
         $category = Category::create([
             'name' => $request->name,
+            'description' => $request->description,  // Guardar la descripción
         ]);
 
         // Crear las subcategorías si existen
@@ -45,11 +47,6 @@ class CategoryController extends Controller
         }
 
         return redirect()->route('categories.index')->with('success', 'Categoría creada con éxito');
-    }
-
-    public function edit(Category $category)
-    {
-        return view('admin.categories.edit', compact('category'));
     }
 
     public function update(Request $request, Category $category)
@@ -69,7 +66,7 @@ class CategoryController extends Controller
         foreach ($request->subcategories as $subcategoryName) {
             Subcategory::create([
                 'name' => $subcategoryName,
-                'category_id' => $category->id,
+                'category_id' => $category->id, 
             ]);
         }
 
@@ -80,6 +77,8 @@ class CategoryController extends Controller
     {
         // Eliminar la categoría y sus subcategorías relacionadas
         $category->delete();
-        return redirect()->route('categories.index')->with('success', 'Categoría eliminada con éxito');
+
+        // Retornar una respuesta exitosa en formato JSON
+        return response()->json(['success' => true]);
     }
 }

@@ -40,11 +40,6 @@ class SubCategoryController extends Controller
         return response()->json(['message' => 'Categoría creada con éxito'], 201);
     }
 
-    public function edit(Category $category)
-    {
-        return view('admin.categories.edit', compact('category'));
-    }
-
     public function update(Request $request, Category $category)
     {
         $request->validate([
