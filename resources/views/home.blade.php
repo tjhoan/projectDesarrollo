@@ -17,7 +17,15 @@
                 <div class="bg-white rounded-xl shadow-md overflow-hidden transition-transform transform hover:scale-105 duration-500 ease-in-out">
                     <!-- Contenedor de Imagen Ajustado -->
                     <div class="w-full h-64 overflow-hidden flex items-center justify-center bg-gray-100">
-                        <img src="{{ asset($product->images->first()->image_path) }}" alt="{{ $product->name }}" class="object-cover w-full h-full">
+                        @if ($product->images->isNotEmpty())
+                            @php
+                                $image = $product->images->first();
+                                $imageUrl = Str::startsWith($image->image_path, 'http') ? $image->image_path : Storage::url($image->image_path);
+                            @endphp
+                            <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="object-cover w-full h-full">
+                        @else
+                            <img src="{{ asset('img/default.png') }}" alt="Imagen no disponible" class="object-cover w-full h-full">
+                        @endif
                     </div>
                     <div class="p-6">
                         <h5 class="text-lg font-bold text-gray-900 mb-2">{{ $product->name }}</h5>
