@@ -1,7 +1,7 @@
 @extends('admin.layouts.admin')
 
 @section('content')
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-20">
         <!-- Product Management -->
         <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition duration-300">
             <h2 class="text-xl font-semibold mb-4">Gestión de Productos</h2>
