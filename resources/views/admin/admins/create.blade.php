@@ -4,7 +4,7 @@
     <div class="max-w-lg mx-auto bg-white p-6 shadow-md rounded">
         <h2 class="text-2xl font-bold mb-4">Crear Administrador</h2>
 
-        <form action="{{ route('admins.store') }}" method="POST">
+        <form id="admin-form" action="{{ route('admins.store') }}" method="POST">
             @csrf
 
             <div class="mb-4">
@@ -30,4 +30,23 @@
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Guardar</button>
         </form>
     </div>
+
+    <script>
+        // SweetAlert para errores de validación
+        @if ($errors->any())
+            document.addEventListener("DOMContentLoaded", function() {
+                let errorMessages = "";
+                @foreach ($errors->all() as $error)
+                    errorMessages += "{{ $error }}\n";
+                @endforeach
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: errorMessages,
+                    confirmButtonText: 'Aceptar'
+                });
+            });
+        @endif
+    </script>
 @endsection
