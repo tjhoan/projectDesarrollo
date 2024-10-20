@@ -95,7 +95,7 @@
                 <!-- Sección de subida de archivos -->
                 <div id="file-section" class="mb-6 hidden">
                     <label class="block text-gray-700 font-bold mb-2" for="images">Subir Imágenes (máximo 5)</label>
-                    <input type="file" name="images[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-gray-200" multiple>
+                    <input type="file" name="images[]" id="images" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-gray-200" multiple>
                 </div>
 
                 <!-- Sección de URLs de Imágenes -->
@@ -135,4 +135,22 @@
             this.submit(); // Permitir el envío después de verificar
         });
     </script>
+
+    @if ($errors->any())
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                let errorMessages = "";
+                @foreach ($errors->all() as $error)
+                    errorMessages += "{{ $error }}\n";
+                @endforeach
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: errorMessages,
+                    confirmButtonText: 'Aceptar'
+                });
+            });
+        </script>
+    @endif
 @endsection
