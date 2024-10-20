@@ -35,6 +35,7 @@ Route::prefix('admin')->middleware(['auth:admin'])->group(function () {
 
 Route::get('/admin/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
 Route::put('/admin/products/{product}', [ProductController::class, 'update'])->name('products.update');
+Route::delete('/admin/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 
 // Rutas para el carrito de compras
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
