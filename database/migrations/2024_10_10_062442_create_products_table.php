@@ -16,6 +16,7 @@ class CreateProductsTable extends Migration
             $table->integer('quantity');
             $table->string('brand');
             $table->text('description');
+            $table->string('target_audience')->default('general');
             $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');

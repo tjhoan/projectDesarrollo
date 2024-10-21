@@ -16,7 +16,8 @@ class ProductSeeder extends Seeder
             'quantity' => 50,
             'brand' => 'BasicBrand',
             'category_id' => 1,
-            'description' => 'Camiseta de algodón básica para el uso diario.'
+            'description' => 'Camiseta de algodón básica para el uso diario.',
+            'target_audience' => 'Hombre'
         ]);
 
         Product::create([
@@ -25,7 +26,8 @@ class ProductSeeder extends Seeder
             'quantity' => 30,
             'brand' => 'FashionLine',
             'category_id' => 2,
-            'description' => 'Blusa casual perfecta para cualquier ocasión.'
+            'description' => 'Blusa casual perfecta para cualquier ocasión.',
+            'target_audience' => 'Mujer'
         ]);
 
         Product::create([
@@ -34,7 +36,8 @@ class ProductSeeder extends Seeder
             'quantity' => 20,
             'brand' => 'SportX',
             'category_id' => 3,
-            'description' => 'Gorra ideal para deportes al aire libre.'
+            'description' => 'Gorra ideal para deportes al aire libre.',
+            'target_audience' => 'Niño'
         ]);
     }
 }

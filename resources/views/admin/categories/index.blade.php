@@ -12,8 +12,6 @@
             <thead>
                 <tr class="bg-gray-200">
                     <th class="py-4 px-6 text-left text-gray-600 font-semibold">Nombre</th>
-                    <th class="py-4 px-6 text-left text-gray-600 font-semibold">Descripción</th>
-                    <th class="py-4 px-6 text-left text-gray-600 font-semibold">Subcategorías</th>
                     <th class="py-4 px-6 text-left text-gray-600 font-semibold">Acciones</th>
                 </tr>
             </thead>
@@ -21,16 +19,6 @@
                 @foreach ($categories as $category)
                     <tr id="category-{{ $category->id }}" class="hover:bg-gray-100 transition duration-300 ease-in-out">
                         <td class="py-4 px-6 border-b">{{ $category->name }}</td>
-                        <td class="py-4 px-6 border-b">{{ $category->description }}</td>
-                        <td class="py-4 px-6 border-b">
-                            @if ($category->subcategories->isNotEmpty())
-                                @foreach ($category->subcategories as $subcategory)
-                                    <span class="inline-block bg-gray-200 text-gray-800 text-xs px-2 py-1 rounded-full mr-2">{{ $subcategory->name }}</span>
-                                @endforeach
-                            @else
-                                <span class="text-gray-500">No tiene subcategorías</span>
-                            @endif
-                        </td>
                         <td class="py-4 px-6 border-b">
                             <button type="button" class="delete-category bg-red-500 text-white px-2 py-1 rounded shadow hover:bg-red-600" data-id="{{ $category->id }}">Eliminar</button>
                         </td>

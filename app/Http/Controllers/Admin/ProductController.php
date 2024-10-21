@@ -13,8 +13,8 @@ class ProductController extends Controller
 {
     public function index()
     {
-        // Cargar imágenes y subcategorías con eager loading
-        $products = Product::with(['images', 'category', 'subcategory'])->get();
+        // Cargar imágenes y categorías con eager loading
+        $products = Product::with(['images', 'category'])->get();
 
         return view('admin.products.index', compact('products'));
     }
@@ -22,12 +22,10 @@ class ProductController extends Controller
     // Mostrar el formulario de creación de un nuevo producto
     public function create()
     {
-        // Cargar las categorías con sus subcategorías
-        $categories = Category::with('subcategories')->get();
-
-        // Pasar las categorías a la vista
+        $categories = Category::all();
         return view('admin.products.create', compact('categories'));
     }
+
 
     // Mostrar el formulario de creación de productos
     public function store(Request $request)
@@ -45,7 +43,7 @@ class ProductController extends Controller
                 'quantity' => 'required|integer|min:0',
                 'brand' => 'required|string|max:255',
                 'category_id' => 'required|integer',
-                'subcategory_id' => 'required|integer',
+                'target_audience' => 'required|string',
                 'description' => 'required|string',
                 'images' => 'nullable|array|max:5',
                 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:8192',
@@ -59,9 +57,11 @@ class ProductController extends Controller
 
         // Verificar si la cantidad total de imágenes (subidas y URLs) no excede el límite
         $totalImages = 0;
+
         if ($request->hasFile('images')) {
             $totalImages += count($request->file('images'));
         }
+
         if ($request->has('image_urls')) {
             $totalImages += count(array_filter($request->input('image_urls')));
         }
@@ -78,7 +78,7 @@ class ProductController extends Controller
             'quantity' => $request->quantity,
             'brand' => $request->brand,
             'category_id' => $request->category_id,
-            'subcategory_id' => $request->subcategory_id,
+            'target_audience' => $request->target_audience,
             'description' => $request->description,
         ]);
 
