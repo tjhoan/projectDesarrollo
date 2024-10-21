@@ -8,50 +8,38 @@
                     </a>
                 </div>
             </div>
-            <div class="hidden sm:flex sm:items-center sm:ml-6 space-x-6">
+            <div class="hidden sm:flex sm:items-center sm:ml-6 space-x-4">
                 <!-- Botón del Carrito de Compras en navigation.blade.php -->
-                <a href="{{ route('cart') }}" class="relative flex items-center text-gray-500 hover:text-gray-700 transition">
-                    <img src="{{ asset('img/icons/cartNav.png') }}" alt="Carrito" class="w-6 h-6">
-                    @php
-                        if (Auth::check()) {
-                            // Si el usuario está autenticado, obtenemos su carrito por el ID del cliente
-                            $cart = \App\Models\Cart::with('items')->where('customer_id', Auth::id())->first();
-                        } else {
-                            // Si no está autenticado, obtenemos el carrito temporal a través del token de la cookie
-                            $cart = \App\Models\Cart::with('items')->where('token', request()->cookie('cart_token'))->first();
-                        }
-                        $cartItemCount = $cart ? $cart->items->sum('quantity') : 0;
-                    @endphp
-                    @if ($cartItemCount > 0)
-                        <span class="cart-counter absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                            {{ $cartItemCount }}
-                        </span>
-                    @endif
-                </a>
+                @if (request()->routeIs('home'))
+                    <a href="{{ route('cart') }}" class="relative flex items-center text-gray-500 hover:text-gray-700 transition">
+                        <img src="{{ asset('img/icons/cartNav.png') }}" alt="Carrito" class="w-6 h-6">
+                        @php
+                            if (Auth::check()) {
+                                // Si el usuario está autenticado, obtenemos su carrito por el ID del cliente
+                                $cart = \App\Models\Cart::with('items')->where('customer_id', Auth::id())->first();
+                            } else {
+                                // Si no está autenticado, obtenemos el carrito temporal a través del token de la cookie
+                                $cart = \App\Models\Cart::with('items')->where('token', request()->cookie('cart_token'))->first();
+                            }
+                            $cartItemCount = $cart ? $cart->items->sum('quantity') : 0;
+                        @endphp
+                        @if ($cartItemCount > 0)
+                            <span class="cart-counter absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                {{ $cartItemCount }}
+                            </span>
+                        @endif
+                    </a>
+                @endif
                 @if (Auth::check())
-                    <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
-                                <div>{{ Auth::user()->name }}</div>
-                                <div class="ml-1">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a 1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- Enlace directo para cerrar sesión con ícono -->
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700 transition duration-150 ease-in-out">
+                                <span class="material-icons">logout</span>
                             </button>
-                        </x-slot>
-
-                        <x-slot name="content">
-                            <!-- Authentication -->
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
-                                                    this.closest('form').submit();">
-                                    {{ __('Cerrar sesión') }}
-                                </x-dropdown-link>
-                            </form>
-                        </x-slot>
-                    </x-dropdown>
+                        </form>
+                    </div>
                 @else
                     <a href="{{ route('login') }}" class="text-sm font-medium text-gray-500 hover:text-gray-700">Iniciar Sesión</a>
                     <a href="{{ route('register') }}" class="text-sm font-medium text-gray-500 hover:text-gray-700">Registrarse</a>
