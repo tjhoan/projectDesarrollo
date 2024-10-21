@@ -43,8 +43,8 @@
                     <th class="py-3 px-5 text-left text-gray-600 font-semibold">Precio</th>
                     <th class="py-3 px-5 text-left text-gray-600 font-semibold">Stock</th>
                     <th class="py-3 px-5 text-left text-gray-600 font-semibold">Categoría</th>
-                    <th class="py-3 px-5 text-left text-gray-600 font-semibold">Subcategoría</th>
                     <th class="py-3 px-5 text-left text-gray-600 font-semibold">Marca</th>
+                    <th class="py-3 px-5 text-left text-gray-600 font-semibold">Público Objetivo</th>
                     <th class="py-3 px-5 text-left text-gray-600 font-semibold">Acciones</th>
                 </tr>
             </thead>
@@ -65,13 +65,8 @@
                         <td class="py-3 px-5 border-b">{{ $product->price }}</td>
                         <td class="py-3 px-5 border-b">{{ $product->quantity }}</td>
                         <td class="py-3 px-5 border-b">{{ $product->category->name }}</td>
-                        <td class="py-3 px-5 border-b">
-                            {{ $product->category->name }}
-                            @if ($product->subcategory)
-                                / {{ $product->subcategory->name }}
-                            @endif
-                        </td>
                         <td class="py-3 px-5 border-b">{{ $product->brand }}</td>
+                        <td class="py-3 px-5 border-b">{{ ucfirst($product->target_audience) }}</td>
                         <td class="py-3 px-5 border-b">
                             <button type="button" class="bg-red-500 text-white px-3 py-2 rounded shadow hover:bg-red-600 delete-btn" data-id="{{ $product->id }}">Eliminar</button>
                         </td>
