@@ -1,8 +1,8 @@
 @extends('layouts.app')
 @section('content')
-    <div class="container mx-auto my-10 px-4">
+    <div class="container mx-auto my-6 px-4">
         <!-- Carrusel de Categorías -->
-        <div class="mb-16">
+        <div class="mb-6">
             <div class="overflow-x-auto whitespace-nowrap flex items-center gap-4">
                 @foreach ($categories as $category)
                     <button class="flex-shrink-0 border border-gray-300 text-gray-800 py-2 px-4 rounded-full shadow hover:bg-gray-200 transition duration-300 ease-in-out transform hover:scale-105">

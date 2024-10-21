@@ -8,11 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminLoginController extends Controller
 {
-    public function showLoginForm()
-    {
-        return view('auth.admin-login');  // Crea una vista específica para el login de admin
-    }
-
     public function login(Request $request)
     {
         // Validar los datos del formulario
@@ -33,6 +28,6 @@ class AdminLoginController extends Controller
     public function logout()
     {
         Auth::guard('admin')->logout();
-        return redirect()->route('admin.login');
+        return redirect()->route('home');
     }
 }
