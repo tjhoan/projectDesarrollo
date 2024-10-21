@@ -36,4 +36,14 @@ class HomeController extends Controller
             'products' => $products,
         ]);
     }
+
+    // Método para mostrar los detalles de un producto específico
+    public function details($id)
+    {
+        // Buscar el producto por su ID, incluyendo las imágenes y la categoría
+        $product = Product::with('images', 'category')->findOrFail($id);
+
+        // Retornar la vista de detalles del producto
+        return view('product-details', compact('product'));
+    }
 }
