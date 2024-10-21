@@ -4,17 +4,20 @@
         <!-- Carrusel de Categorías -->
         <div class="mb-6">
             <div class="overflow-x-auto whitespace-nowrap flex items-center gap-4">
+                <button class="flex-shrink-0 border border-gray-300 text-gray-800 py-2 px-4 rounded-full shadow hover:bg-gray-200 transition duration-300 ease-in-out transform hover:scale-105" onclick="loadProducts(null)">
+                    <h3 class="text-base font-medium">Todas las categorías</h3>
+                </button>
                 @foreach ($categories as $category)
-                    <button class="flex-shrink-0 border border-gray-300 text-gray-800 py-2 px-4 rounded-full shadow hover:bg-gray-200 transition duration-300 ease-in-out transform hover:scale-105">
+                    <button class="flex-shrink-0 border border-gray-300 text-gray-800 py-2 px-4 rounded-full shadow hover:bg-gray-200 transition duration-300 ease-in-out transform hover:scale-105" onclick="loadProducts({{ $category->id }})">
                         <h3 class="text-base font-medium">{{ $category->name }}</h3>
                     </button>
                 @endforeach
             </div>
         </div>
         <!-- Productos -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 tartaaa">
+        <div id="products-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             @foreach ($products as $product)
-                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-transform transform hover:scale-105 duration-500 ease-in-out">
+                <div class="product-item bg-white rounded-xl shadow-md overflow-hidden transition-transform transform hover:scale-105 duration-500 ease-in-out">
                     <!-- Contenedor de Imagen Ajustado -->
                     <div class="w-full h-64 overflow-hidden flex items-center justify-center bg-gray-100">
                         @if ($product->images->isNotEmpty())
@@ -44,28 +47,42 @@
         </div>
     </div>
 @endsection
+
 @push('scripts')
     <script>
-        function addToCart(productId) {
+        let currentPage = 1;
+
+        // Cargar productos de acuerdo a la categoría seleccionada
+        function loadProducts(categoryId) {
+            currentPage = 1; // Resetear el contador de página
             $.ajax({
-                url: "{{ url('/cart/add') }}/" + productId,
-                method: "POST",
+                url: "{{ route('home') }}",
+                type: "GET",
                 data: {
-                    _token: "{{ csrf_token() }}",
+                    category_id: categoryId,
+                    page: currentPage
                 },
                 success: function(response) {
-                    // Actualizamos el número de artículos en el carrito
-                    $('.cart-counter').text(response.cartItemCount);
-                    // Mostrar un mensaje de éxito si es necesario
-                    alert('Producto añadido al carrito exitosamente');
-                    // Actualizar el contenido del carrito en el modal si es necesario
-                    loadCartItems();
-                },
-                error: function(error) {
-                    console.error("Error al agregar al carrito:", error);
-                    alert('Hubo un problema al agregar el producto al carrito.');
+                    $('#products-container').html(response.html); // Actualiza la lista de productos
                 }
             });
         }
+
+        // Función para cargar más productos al hacer scroll
+        $(window).scroll(function() {
+            if ($(window).scrollTop() + $(window).height() >= $(document).height() - 200) {
+                currentPage++; // Incrementar la página
+                $.ajax({
+                    url: "{{ route('home') }}",
+                    type: "GET",
+                    data: {
+                        page: currentPage
+                    },
+                    success: function(response) {
+                        $('#products-container').append(response.html); // Añadir productos
+                    }
+                });
+            }
+        });
     </script>
 @endpush
