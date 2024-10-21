@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Route;
 // Ruta para la página de inicio
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Rutas públicas para productos
-Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+// Ruta para mostrar los detalles del producto desde el HomeController
+Route::get('/products/{product}', [HomeController::class, 'details'])->name('products.details');
 
 // Rutas para el carrito de compras
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
