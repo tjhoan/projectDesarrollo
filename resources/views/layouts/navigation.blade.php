@@ -10,7 +10,7 @@
             </div>
             <div class="hidden sm:flex sm:items-center sm:ml-6 space-x-4">
                 <!-- Botón del Carrito de Compras en navigation.blade.php -->
-                @if (request()->routeIs('home'))
+                @if (request()->routeIs('home') || request()->routeIs('products.details'))
                     <a href="{{ route('cart') }}" class="relative flex items-center text-gray-500 hover:text-gray-700 transition">
                         <img src="{{ asset('img/icons/cartNav.png') }}" alt="Carrito" class="w-6 h-6">
                         @php

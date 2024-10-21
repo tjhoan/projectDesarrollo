@@ -34,7 +34,7 @@
                         <h5 class="text-lg font-bold text-gray-900 mb-2">{{ $product->name }}</h5>
                         <p class="text-base text-gray-700 font-semibold mb-4">Precio: ${{ $product->price }}</p>
                         <div class="flex justify-between items-center">
-                            <a href="{{ route('products.show', $product->id) }}" class="bg-blue-500 text-white py-2 px-3 rounded-lg shadow hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105">
+                            <a href="{{ route('products.details', $product->id) }}" class="bg-blue-500 text-white py-2 px-3 rounded-lg shadow hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105">
                                 Ver Detalles
                             </a>
                             <button onclick="addToCart({{ $product->id }})" class="bg-white text-indigo-500 p-2 rounded-lg hover:bg-indigo-100 transition flex items-center">
