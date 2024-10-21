@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -32,10 +31,9 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
 
-    // Rutas de administración para la gestión de productos, categorías, subcategorías y administradores
+    // Rutas de administración para la gestión de productos, categorías y administradores
     Route::resource('products', ProductController::class);
     Route::resource('categories', CategoryController::class);
-    Route::resource('subcategories', SubcategoryController::class);
     Route::resource('admins', AdminController::class);
 });
 

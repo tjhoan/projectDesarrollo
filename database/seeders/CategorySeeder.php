@@ -11,16 +11,13 @@ class CategorySeeder extends Seeder
     {
         // Creamos algunas categorías
         Category::create([
-            'name' => 'Camisas',
-            'description' => 'Categoría de Camisas.'
+            'name' => 'Camisas'
         ]);
         Category::create([
-            'name' => 'Pantalones',
-            'description' => 'Categoría de pantalones.'
+            'name' => 'Pantalones'
         ]);
         Category::create([
-            'name' => 'Vestidos',
-            'description' => 'Categoría de vestidos.'
+            'name' => 'Vestidos'
         ]);
     }
 }
