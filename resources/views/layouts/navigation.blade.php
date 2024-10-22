@@ -30,7 +30,7 @@
                         @endif
                     </a>
                 @endif
-                @if (Auth::check())
+                @if (Auth::check()) 
                     <div class="flex items-center space-x-4">
                         <!-- Enlace directo para cerrar sesión con ícono -->
                         <form method="POST" action="{{ route('logout') }}">

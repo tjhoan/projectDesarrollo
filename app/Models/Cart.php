@@ -28,15 +28,24 @@ class Cart extends Model
     {
         return $this->hasMany(CartItem::class);
     }
-    
+
+    // Método para calcular el total del carrito
+    public function calculateTotal()
+    {
+        $total = 0;
+        foreach ($this->items as $item) {
+            $total += $item->product->price * $item->quantity;
+        }
+        return $total;
+    }
+
     // Eliminar items al eliminar carrito
     protected static function boot()
     {
         parent::boot();
-    
+
         static::deleting(function ($cart) {
             $cart->items()->delete();
         });
     }
-    
 }

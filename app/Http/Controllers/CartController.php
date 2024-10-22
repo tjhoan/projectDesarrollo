@@ -7,6 +7,7 @@ use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class CartController extends Controller
@@ -29,18 +30,19 @@ class CartController extends Controller
             if ($cartItem) {
                 // Si ya está, aumentar la cantidad
                 $cartItem->quantity += 1;
+                $cartItem->save();
             } else {
                 // Si no está, agregarlo al carrito
                 $cartItem = new CartItem(['product_id' => $product->id, 'quantity' => 1]);
                 $cart->items()->save($cartItem);
+                Log::info('Productos en el carrito', ['items' => $cart->items]);
             }
-
-            $cartItem->save();
 
             // Devolver la respuesta con la cantidad de productos en el carrito
             $cartItemCount = $cart->items->sum('quantity');
             return response()->json(['cartItemCount' => $cartItemCount]);
         } catch (\Exception $e) {
+            Log::error('Error al agregar el producto al carrito', ['error' => $e->getMessage()]);
             return response()->json(['message' => 'Error al agregar el producto: ' . $e->getMessage()], 500);
         }
     }
@@ -74,18 +76,21 @@ class CartController extends Controller
             // Usuario autenticado: buscar o crear un carrito para él
             $cart = Cart::firstOrCreate(['customer_id' => Auth::id()]);
 
-            // Verificar si existe un carrito temporal para el visitante
+            // Verificar si existe un carrito temporal para el visitante (usuario no autenticado)
             $token = request()->cookie('cart_token');
+
             if ($token) {
                 $visitorCart = Cart::where('token', $token)->first();
                 if ($visitorCart) {
+                    // Cargar todos los productos del carrito del usuario autenticado para evitar múltiples consultas
+                    $existingItems = $cart->items->keyBy('product_id');
+
                     // Transferir los elementos del carrito temporal al carrito del usuario registrado
                     foreach ($visitorCart->items as $item) {
-                        $existingItem = $cart->items()->where('product_id', $item->product_id)->first();
-                        if ($existingItem) {
+                        if (isset($existingItems[$item->product_id])) {
                             // Incrementar la cantidad si el producto ya está en el carrito del usuario
-                            $existingItem->quantity += $item->quantity;
-                            $existingItem->save();
+                            $existingItems[$item->product_id]->quantity += $item->quantity;
+                            $existingItems[$item->product_id]->save();
                         } else {
                             // Agregar el producto al carrito del usuario
                             $cartItem = new CartItem(['product_id' => $item->product_id, 'quantity' => $item->quantity]);
@@ -96,6 +101,9 @@ class CartController extends Controller
                     // Eliminar el carrito temporal del visitante
                     $visitorCart->items()->delete();
                     $visitorCart->delete();
+
+                    // Limpiar la cookie del carrito temporal
+                    cookie()->queue(cookie()->forget('cart_token'));
                 }
             }
 
@@ -105,8 +113,9 @@ class CartController extends Controller
             $token = request()->cookie('cart_token') ?: Str::uuid();
             $cart = Cart::firstOrCreate(['token' => $token]);
 
-            // Guardar el token del carrito en una cookie
+            // Guardar el token del carrito en una cookie si no existe
             cookie()->queue(cookie('cart_token', $token, 60 * 24 * 30)); // 30 días
+
             return $cart;
         }
     }

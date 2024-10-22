@@ -11,12 +11,25 @@ class Payment extends Model
 
     protected $fillable = [
         'customer_id',
-        'amount',
-        'status'
+        'full_name',
+        'address',
+        'city',
+        'state',
+        'phone',
+        'additional_info',
+        'payment_method',
+        'pdf_invoice',
+        'email_invoice',
+        'confirmation_code',
     ];
 
     public function customer()
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
     }
 }
