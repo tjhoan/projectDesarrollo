@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 // Ruta para la página de inicio
@@ -41,5 +42,18 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
 Route::get('/admin/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
 Route::put('/admin/products/{product}', [ProductController::class, 'update'])->name('products.update');
 Route::delete('/admin/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+Route::get('/checkout', function () {
+    return view('checkout');
+})->name('checkout');
+
+Route::middleware('auth')->group(function () {
+    Route::post('/payment', [PaymentController::class, 'processPayment'])->name('payment.process');
+    Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
+});
+
+Route::get('/payment/complete', function () {
+    return view('payment_complete');
+})->name('payment.complete');
 
 require __DIR__ . '/auth.php';
