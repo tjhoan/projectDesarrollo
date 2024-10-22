@@ -6,7 +6,6 @@ use App\Models\Payment;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use TCPDF;
 use App\Mail\InvoiceMail;
@@ -103,6 +102,14 @@ class PaymentController extends Controller
             return redirect()->back()->with('error', 'Hubo un problema al crear la factura.');
         }
 
+        Log::info('Datos del cliente', [
+            'full_name' => $payment->full_name,
+            'address' => $payment->address,
+            'city' => $payment->city,
+            'state' => $payment->state,
+            'phone' => $payment->phone
+        ]);
+
 
         // Generar PDF usando TCPDF si es necesario
         if ($payment->pdf_invoice) {
@@ -110,7 +117,7 @@ class PaymentController extends Controller
                 $pdf = new TCPDF();
                 $pdf->SetTitle('Factura');
                 $pdf->AddPage();
-                $html = view('invoices.pdf', ['invoice' => $invoice])->render();
+                $html = view('invoices.pdf', ['invoice' => $invoice, 'payment' => $payment])->render();
                 $pdf->writeHTML($html, true, false, true, false, '');
 
                 $pdfPath = 'invoices/' . $invoice->invoice_number . '.pdf';
@@ -119,17 +126,6 @@ class PaymentController extends Controller
             } catch (\Exception $e) {
                 Log::error('Error al generar PDF', ['error' => $e->getMessage()]);
                 return redirect()->back()->with('error', 'Hubo un problema al generar el PDF.');
-            }
-        }
-
-        // Enviar la factura por correo si es necesario
-        if ($payment->email_invoice) {
-            try {
-                Mail::to(Auth::user()->email)->send(new InvoiceMail($invoice));
-                Log::info('Correo enviado correctamente');
-            } catch (\Exception $e) {
-                Log::error('Error al enviar el correo', ['error' => $e->getMessage()]);
-                return redirect()->back()->with('error', 'Hubo un problema al enviar el correo.');
             }
         }
 
@@ -142,6 +138,7 @@ class PaymentController extends Controller
             return redirect()->back()->with('error', 'Hubo un problema al vaciar el carrito.');
         }
 
+        // Enviar respuesta JSON para manejar la descarga del PDF y mostrar el modal
         return response()->json([
             'success' => true,
             'message' => 'Pago procesado con éxito.',

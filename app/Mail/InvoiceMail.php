@@ -22,7 +22,6 @@ class InvoiceMail extends Mailable
     {
         return $this->view('emails.invoice')
             ->subject('Tu Factura de Compra')
-            ->withoutSendingToQueue() // Desactivar colas si no las usas
             ->attach(storage_path('app/public/invoices/' . $this->invoice->invoice_number . '.pdf'));
     }
 }

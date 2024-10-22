@@ -17,7 +17,11 @@
 
                     <!-- Imagen principal del producto -->
                     @if ($product->images->isNotEmpty())
-                        <img id="mainImage" src="{{ Storage::url($product->images->first()->image_path) }}" alt="{{ $product->name }}" class="object-cover h-full w-auto">
+                        @php
+                            $firstImagePath = $product->images->first()->image_path;
+                            $firstImageUrl = Str::startsWith($firstImagePath, ['http', 'https']) ? $firstImagePath : Storage::url($firstImagePath);
+                        @endphp
+                        <img id="mainImage" src="{{ $firstImageUrl }}" alt="{{ $product->name }}" class="object-cover h-full w-auto">
                     @else
                         <img id="mainImage" src="{{ asset('img/default.png') }}" alt="Imagen no disponible" class="object-cover h-full w-auto">
                     @endif
@@ -35,8 +39,11 @@
                 <!-- Carrusel de imágenes pequeñas debajo de la imagen principal -->
                 <div class="flex space-x-2 mt-4 justify-center">
                     @foreach ($product->images as $index => $image)
-                        <div class="w-20 h-20 border border-gray-300 cursor-pointer hover:border-indigo-500 transition" onclick="changeImage('{{ Storage::url($image->image_path) }}', {{ $index }})">
-                            <img src="{{ Storage::url($image->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+                        @php
+                            $imageUrl = Str::startsWith($image->image_path, ['http', 'https']) ? $image->image_path : Storage::url($image->image_path);
+                        @endphp
+                        <div class="w-20 h-20 border border-gray-300 cursor-pointer hover:border-indigo-500 transition" onclick="changeImage('{{ $imageUrl }}', {{ $index }})">
+                            <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
                         </div>
                     @endforeach
                 </div>
@@ -90,12 +97,12 @@
 
         document.getElementById('prevImage').addEventListener('click', function() {
             currentIndex = (currentIndex - 1 + images.length) % images.length;
-            document.getElementById('mainImage').src = '{{ Storage::url('') }}' + images[currentIndex];
+            document.getElementById('mainImage').src = images[currentIndex];
         });
 
         document.getElementById('nextImage').addEventListener('click', function() {
             currentIndex = (currentIndex + 1) % images.length;
-            document.getElementById('mainImage').src = '{{ Storage::url('') }}' + images[currentIndex];
+            document.getElementById('mainImage').src = images[currentIndex];
         });
     </script>
 @endpush
