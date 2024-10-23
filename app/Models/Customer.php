@@ -14,15 +14,10 @@ class Customer extends Authenticatable
         'last_name',
         'email',
         'password',
-        'address',
-        'phone',
-        'id_number',
-        'gender',
     ];
 
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
     public function cart()

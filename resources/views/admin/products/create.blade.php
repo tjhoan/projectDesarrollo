@@ -62,13 +62,21 @@
                 <!-- Campo Público Objetivo -->
                 <div class="mb-3">
                     <label class="block text-gray-700 font-bold mb-2" for="target_audience">Público Objetivo</label>
-                    <select name="target_audience" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-gray-200">
+                    <select id="target_audience" name="target_audience" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-gray-200" onchange="handleTargetAudienceChange(this)">
                         <option value="general">General</option>
                         <option value="mujer">Mujer</option>
                         <option value="hombre">Hombre</option>
                         <option value="niño">Niño</option>
                         <option value="niña">Niña</option>
+                        <option value="unisex">Unisex</option>
+                        <option value="otro">Otro</option>
                     </select>
+                </div>
+
+                <!-- Campo de entrada personalizado para 'Otro' -->
+                <div id="custom_target_audience_wrapper" class="mb-3 hidden">
+                    <label class="block text-gray-700 font-bold mb-2" for="custom_target_audience">Especificar Público Objetivo</label>
+                    <input type="text" id="custom_target_audience" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-gray-200" placeholder="Especificar público objetivo">
                 </div>
 
                 <!-- Campo de marca -->
@@ -126,10 +134,30 @@
             document.getElementById('file-section').classList.remove('hidden');
         });
 
+        function handleTargetAudienceChange(select) {
+            const customAudienceWrapper = document.getElementById('custom_target_audience_wrapper');
+            const customAudienceInput = document.getElementById('custom_target_audience');
+
+            if (select.value === 'otro') {
+                // Mostrar campo de entrada si selecciona "Otro"
+                customAudienceWrapper.classList.remove('hidden');
+                customAudienceInput.setAttribute('required', 'required');
+            } else {
+                // Ocultar campo de entrada y eliminar el valor de "Otro"
+                customAudienceWrapper.classList.add('hidden');
+                customAudienceInput.removeAttribute('required');
+                customAudienceInput.value = '';
+            }
+        }
+
         document.getElementById('product-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevenir el envío para verificar los datos
-            const formData = new FormData(this);
-            this.submit(); // Permitir el envío después de verificar
+            const targetAudienceSelect = document.getElementById('target_audience');
+            const customAudienceInput = document.getElementById('custom_target_audience');
+
+            if (targetAudienceSelect.value === 'otro' && customAudienceInput.value.trim()) {
+                // Si se seleccionó 'Otro' y se ha llenado el campo personalizado, enviar el valor personalizado
+                targetAudienceSelect.value = customAudienceInput.value;
+            }
         });
     </script>
 

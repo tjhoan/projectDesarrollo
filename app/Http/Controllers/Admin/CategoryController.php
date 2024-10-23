@@ -23,12 +23,10 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|min:3|max:255',
-            'description' => 'nullable|string|max:1000',  // Solo la descripción
         ]);
 
         $category = Category::create([
             'name' => $request->name,
-            'description' => $request->description,
         ]);
 
         return redirect()->route('categories.index')->with('success', 'Categoría creada con éxito');

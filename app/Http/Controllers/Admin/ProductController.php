@@ -125,23 +125,6 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Producto creado exitosamente');
     }
 
-    // Actualizar el producto
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'quantity' => 'required|integer|min:0',
-            'category' => 'required|string',
-            'description' => 'required|string',
-        ]);
-
-        $product = Product::findOrFail($id);
-        $product->update($request->only(['name', 'price', 'quantity', 'category', 'description']));
-
-        return redirect()->route('products.index')->with('success', 'Producto actualizado correctamente.');
-    }
-
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
