@@ -7,7 +7,6 @@ use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class CartController extends Controller
@@ -35,14 +34,12 @@ class CartController extends Controller
                 // Si no está, agregarlo al carrito
                 $cartItem = new CartItem(['product_id' => $product->id, 'quantity' => 1]);
                 $cart->items()->save($cartItem);
-                Log::info('Productos en el carrito', ['items' => $cart->items]);
             }
 
             // Devolver la respuesta con la cantidad de productos en el carrito
             $cartItemCount = $cart->items->sum('quantity');
             return response()->json(['cartItemCount' => $cartItemCount]);
         } catch (\Exception $e) {
-            Log::error('Error al agregar el producto al carrito', ['error' => $e->getMessage()]);
             return response()->json(['message' => 'Error al agregar el producto: ' . $e->getMessage()], 500);
         }
     }

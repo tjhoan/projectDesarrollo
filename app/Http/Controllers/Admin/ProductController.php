@@ -7,7 +7,6 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -30,11 +29,6 @@ class ProductController extends Controller
     // Mostrar el formulario de creación de productos
     public function store(Request $request)
     {
-        // dd($request->all());
-
-        // Log para verificar los datos que llegan desde el formulario
-        Log::info('Datos recibidos para crear el producto:', $request->all());
-
         // Validación de los datos
         try {
             $request->validate([
@@ -51,7 +45,6 @@ class ProductController extends Controller
                 'image_urls.*' => 'nullable|url',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            Log::error('Error de validación:', $e->errors());
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
 
@@ -67,7 +60,6 @@ class ProductController extends Controller
         }
 
         if ($totalImages > 6) {
-            Log::error('Se excedió el número de imágenes permitidas.');
             return redirect()->back()->withErrors(['message' => 'Solo puedes subir un máximo de 5 imágenes.'])->withInput();
         }
 
@@ -84,18 +76,13 @@ class ProductController extends Controller
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                Log::info('Imagen subida:', ['nombre_original' => $image->getClientOriginalName()]);
             }
         }
-
-        // Log para verificar si el producto se creó correctamente
-        Log::info('Producto creado:', ['product_id' => $product->id ?? 'Producto no creado']);
 
         // Guardado de imágenes subidas
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $mimeType = $image->getClientMimeType();
-                Log::info('Tipo MIME del archivo subido:', ['mime_type' => $mimeType]);
 
                 // Almacenar la imagen en el directorio 'public/images' y obtener la ruta pública
                 $path = $image->store('images', 'public');
@@ -104,8 +91,6 @@ class ProductController extends Controller
                     'image_path' => $path
                 ]);
             }
-            // Log para indicar que las imágenes fueron guardadas
-            Log::info('Imágenes subidas correctamente para el producto', ['product_id' => $product->id]);
         }
 
         // Guardado de URLs de imágenes
@@ -118,8 +103,6 @@ class ProductController extends Controller
                     ]);
                 }
             }
-            // Log para indicar que las URLs fueron guardadas
-            Log::info('URLs de imágenes guardadas correctamente para el producto', ['product_id' => $product->id]);
         }
 
         return redirect()->route('products.index')->with('success', 'Producto creado exitosamente');

@@ -22,10 +22,10 @@ class AuthenticatedSessionController extends Controller
 
         // Redirigir según el guard que se haya autenticado
         if (Auth::guard('admin')->check()) {
-            return redirect()->intended('/admin/dashboard');  // Si es admin, ir al dashboard
+            return redirect()->intended('/admin/dashboard');
         }
 
-        return redirect()->intended(RouteServiceProvider::HOME);  // Si es cliente, ir a la página principal
+        return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     public function destroy(Request $request)
