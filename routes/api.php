@@ -13,5 +13,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('register', [MobileAuthRegisterController::class, 'apiStore']);
 
 // Rutas de autenticación del login y logout de usuarios en la app móvil
-Route::post('/mobile/login', [MobileAuthLoginController::class, 'apiLogin']);
-Route::post('/mobile/logout', [MobileAuthLoginController::class, 'apiLogout'])->middleware('auth:sanctum');
+Route::post('/login', [MobileAuthLoginController::class, 'apiLogin']);
+Route::post('/logout', [MobileAuthLoginController::class, 'apiLogout'])->middleware('auth:sanctum');

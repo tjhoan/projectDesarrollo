@@ -28,25 +28,18 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        // Intentamos primero autenticar como admin
-        if (Auth::guard('admin')->attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::clear($this->throttleKey());
-            return;
-        }
-
-        // Si no es admin, intentamos como customer
-        if (!Auth::guard('web')->attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (!Auth::guard('web')->attempt($this->only('email', 'password'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => __('auth.failed'),
             ]);
         }
 
         RateLimiter::clear($this->throttleKey());
     }
 
-    public function ensureIsNotRateLimited()
+    protected function ensureIsNotRateLimited()
     {
         if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
