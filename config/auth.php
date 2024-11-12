@@ -21,8 +21,12 @@ return [
     'providers' => [
         'customers' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Customer::class,
+            'model' => App\Models\Customer::class
         ],
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\User::class
+        ]
     ],
     'passwords' => [
         'users' => [
