@@ -11,6 +11,7 @@ services:
     volumes:
       - .:/var/www/html:cached
       - npm_cache:/var/www/.npm
+      - /var/www/html/node_modules
     networks:
       - laravel_network
     depends_on:
