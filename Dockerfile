@@ -18,6 +18,10 @@ RUN a2enmod rewrite
 # Instalar Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
+# Instalar Node.js y npm
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
+    && apt-get install -y nodejs
+
 # Establecer el directorio de trabajo
 WORKDIR /var/www/html
 
