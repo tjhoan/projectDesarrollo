@@ -28,19 +28,8 @@ WORKDIR /var/www/html
 # Copiar archivos del proyecto
 COPY . .
 
-# Establecer permisos
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Instalar dependencias de PHP
-RUN composer install --no-dev --optimize-autoloader
-
 # Exponer el puerto 80 para Apache
 EXPOSE 80
 
 # Comando por defecto
 CMD ["apache2-foreground"]
-
-# Cambiar el usuario por defecto de Apache
-RUN chown -R www-data:www-data /var/www/html
-USER www-data
