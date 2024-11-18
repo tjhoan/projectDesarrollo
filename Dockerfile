@@ -40,3 +40,7 @@ EXPOSE 80
 
 # Comando por defecto
 CMD ["apache2-foreground"]
+
+# Cambiar el usuario por defecto de Apache
+RUN chown -R www-data:www-data /var/www/html
+USER www-data
