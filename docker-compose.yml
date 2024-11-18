@@ -9,12 +9,14 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - .:/var/www/html
+      - .:/var/www/html:cached
       - npm_cache:/var/www/.npm
     networks:
       - laravel_network
     depends_on:
       - db
+    command: >
+      sh -c "chown -R www-data:www-data /var/www/html /var/www/.npm && chmod -R 755 /var/www/html /var/www/.npm && apache2-foreground"
 
   db:
     image: mysql:8.0
