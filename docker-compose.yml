@@ -10,6 +10,7 @@ services:
       - "8080:80"
     volumes:
       - .:/var/www/html
+      - npm_cache:/var/www/.npm
     networks:
       - laravel_network
     depends_on:
@@ -34,3 +35,4 @@ networks:
 
 volumes:
   mysql_data:
+  npm_cache:
