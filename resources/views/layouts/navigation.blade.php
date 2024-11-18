@@ -8,10 +8,10 @@
                     </a>
                 </div>
             </div>
-            <div class="hidden sm:flex sm:items-center sm:ml-6 space-x-4">
+            <div class="hidden sm:flex sm:items-center sm:ml-6 space-x-4 mt-2">
                 <!-- Botón del Carrito de Compras en navigation.blade.php -->
                 @if (request()->routeIs('home') || request()->routeIs('products.details'))
-                    <a href="{{ route('cart') }}" class="relative flex items-center text-gray-500 hover:text-gray-700 transition">
+                    <a href="{{ route('cart') }}" class="relative flex items-center text-gray-500 hover:text-gray-700 transition mb-3">
                         <img src="{{ asset('img/icons/cartNav.png') }}" alt="Carrito" class="w-6 h-6">
                         @php
                             if (Auth::check()) {

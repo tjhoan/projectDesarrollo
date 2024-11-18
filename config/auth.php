@@ -16,6 +16,11 @@ return [
             'driver' => 'sanctum',
             'provider' => 'customers',
         ],
+
+        'admin' => [
+        'driver' => 'session',
+        'provider' => 'admins',
+    ],
     ],
 
     'providers' => [
@@ -23,10 +28,10 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Customer::class
         ],
-        'users' => [
+        'admins' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class
-        ]
+            'model' => App\Models\Admin::class,
+        ],
     ],
     'passwords' => [
         'users' => [
