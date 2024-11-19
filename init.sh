@@ -14,8 +14,8 @@ if [ ! -f "/var/www/.gitconfig" ]; then
     git config --global --add safe.directory /var/www/html
 fi
 
-# Clonar el repositorio si no está presente (solo si no se montó un volumen)
-if [ ! -f "./composer.json" ]; then
+# Clonar el repositorio si no está presente
+if [ ! -d ".git" ]; then
     echo "Clonando el repositorio..."
     git clone https://github.com/tjhoan/projectDesarrollo.git .
 fi
@@ -38,9 +38,13 @@ fi
 echo "Instalando dependencias de Node.js..."
 npm install --legacy-peer-deps
 
+# Instalar dependencias adicionales para Laravel Mix
+echo "Instalando dependencias adicionales de Laravel Mix..."
+npm install browser-sync browser-sync-webpack-plugin@^2.3.0 --save-dev --legacy-peer-deps
+
 # Compilar recursos frontend
 echo "Compilando recursos frontend..."
-npm run dev
+npm run dev || npm run production
 
 # Ejecutar migraciones y seeders
 echo "Ejecutando migraciones y seeders..."
