@@ -18,8 +18,7 @@ services:
       - APP_ENV=local
       - APP_DEBUG=true
     user: "root"
-    command: >
-      sh -c "apache2-foreground"
+    command: []
 
   db:
     image: mysql:8.0

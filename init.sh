@@ -14,8 +14,8 @@ if [ ! -f "/var/www/.gitconfig" ]; then
     git config --global --add safe.directory /var/www/html
 fi
 
-# Clonar el repositorio si no está presente
-if [ ! -d ".git" ]; then
+# Clonar el repositorio si no está presente (solo si no se montó un volumen)
+if [ ! -f "./composer.json" ]; then
     echo "Clonando el repositorio..."
     git clone https://github.com/tjhoan/projectDesarrollo.git .
 fi

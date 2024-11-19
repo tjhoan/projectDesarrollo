@@ -34,4 +34,4 @@ RUN chmod +x /usr/local/bin/init.sh
 EXPOSE 80
 
 # Comando por defecto
-CMD ["init.sh"]
+CMD ["/usr/local/bin/init.sh"]
