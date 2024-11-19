@@ -10,8 +10,8 @@ services:
       - "8080:80"
     volumes:
       - ./src:/var/www/html:delegated
-      - ./src/vendor:/var/www/html/vendor
-      - ./src/node_modules:/var/www/html/node_modules
+      # - ./src/vendor:/var/www/html/vendor
+      # - ./src/node_modules:/var/www/html/node_modules
     networks:
       - laravel_network
     depends_on:
