@@ -5,23 +5,21 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AdminLoginController extends Controller
 {
     public function login(Request $request)
     {
-        // Validar los datos del formulario
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:8',
-        ]);
+        Log::info('Intento de inicio de sesión', ['email' => $request->email]);
 
         // Intentar iniciar sesión como admin
         if (Auth::guard('admin')->attempt($request->only('email', 'password'), $request->remember)) {
-            return redirect()->intended('/admin/dashboard');  // Redirigir a la ruta de administración
+            Log::info('Inicio de sesión exitoso', ['email' => $request->email]);
+            return redirect()->intended('/admin/dashboard');
         }
 
-        // Si la autenticación falla, redirigir de vuelta con un mensaje de error
+        Log::error('Fallo el inicio de sesión', ['email' => $request->email]);
         return back()->withErrors(['email' => 'Estas credenciales no coinciden con nuestros registros.']);
     }
 

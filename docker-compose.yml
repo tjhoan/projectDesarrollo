@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel_app
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html:cached
+      - npm_cache:/var/www/.npm
+    networks:
+      - laravel_network
+    depends_on:
+      - db
+    command: >
+      sh -c "chown -R www-data:www-data /var/www/html /var/www/.npm && chmod -R 755 /var/www/html /var/www/.npm && apache2-foreground"
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - laravel_network
+
+networks:
+  laravel_network:
+
+volumes:
+  mysql_data:
+  npm_cache:

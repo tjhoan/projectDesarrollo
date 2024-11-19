@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -20,13 +21,19 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
-        // Redirigir según el guard que se haya autenticado
         if (Auth::guard('admin')->check()) {
+            Log::info('Admin autenticado', ['user' => Auth::guard('admin')->user()]);
             return redirect()->intended('/admin/dashboard');
         }
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        if (Auth::guard('web')->check()) {
+            Log::info('Cliente autenticado', ['user' => Auth::guard('web')->user()]);
+            return redirect()->intended(RouteServiceProvider::HOME);
+        }
+
+        Log::error('Fallo en la autenticación');
     }
+
 
     public function destroy(Request $request)
     {

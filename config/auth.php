@@ -5,20 +5,28 @@ return [
         'guard' => 'web',
         'passwords' => 'users',
     ],
+
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'customers',
         ],
+
+        'api' => [
+            'driver' => 'sanctum',
+            'provider' => 'customers',
+        ],
+
         'admin' => [
-            'driver' => 'session',
-            'provider' => 'admins',
-        ],
+        'driver' => 'session',
+        'provider' => 'admins',
     ],
+    ],
+
     'providers' => [
-        'users' => [
+        'customers' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Customer::class,
+            'model' => App\Models\Customer::class
         ],
         'admins' => [
             'driver' => 'eloquent',

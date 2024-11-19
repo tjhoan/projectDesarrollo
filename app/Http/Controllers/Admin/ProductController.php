@@ -7,6 +7,9 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -14,6 +17,23 @@ class ProductController extends Controller
     {
         // Cargar imágenes y categorías con eager loading
         $products = Product::with(['images', 'category'])->get();
+
+        // Registrar detalles de cada producto
+        foreach ($products as $product) {
+            Log::info('Detalles del producto:', [
+                'ID' => $product->id,
+                'Nombre' => $product->name,
+                'Precio' => $product->price,
+                'Cantidad' => $product->quantity,
+                'Marca' => $product->brand,
+                'Categoría' => $product->category ? $product->category->name : 'Sin categoría',
+                'Público Objetivo' => $product->target_audience,
+                'Descripción' => $product->description,
+                'Imágenes' => $product->images->map(function ($image) {
+                    return Str::startsWith($image->image_path, 'http') ? $image->image_path : Storage::url($image->image_path);
+                })->toArray()
+            ]);
+        }
 
         return view('admin.products.index', compact('products'));
     }

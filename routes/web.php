@@ -40,9 +40,9 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
 });
 
 // Rutas adicionales de productos (CRUD)
-Route::get('/admin/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
-Route::put('/admin/products/{product}', [ProductController::class, 'update'])->name('products.update');
-Route::delete('/admin/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+Route::get('/admin/products/{product}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
+Route::put('/admin/products/{product}', [ProductController::class, 'update'])->name('admin.products.update');
+Route::delete('/admin/products/{id}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
 
 // Descargar PDF de la factura
 Route::get('/invoice/download/{invoiceNumber}', function ($invoiceNumber) {
