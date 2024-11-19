@@ -10,21 +10,14 @@ services:
       - "8080:80"
     volumes:
       - ./src:/var/www/html:delegated
-      # - ./src/vendor:/var/www/html/vendor
-      # - ./src/node_modules:/var/www/html/node_modules
     networks:
       - laravel_network
-    depends_on:
-      - db
     environment:
       - APP_ENV=local
       - APP_DEBUG=true
-      - APP_KEY
-      - USER_ID=1000
-      - GROUP_ID=1000
-    user: "${USER_ID}:${GROUP_ID}"
-    command: >
-      sh -c "apache2-foreground"
+    user: "www-data"
+    depends_on:
+      - db
 
   db:
     image: mysql:8.0

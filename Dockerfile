@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     git \
     unzip \
     curl \
+    nano \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -25,11 +26,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
 # Establecer el directorio de trabajo
 WORKDIR /var/www/html
 
-# Copiar archivos del proyecto
-COPY . .
-
 # Exponer el puerto 80 para Apache
 EXPOSE 80
 
+# Copiar el script de inicialización
+COPY init.sh /usr/local/bin/init.sh
+RUN chmod +x /usr/local/bin/init.sh
+
 # Comando por defecto
-CMD ["apache2-foreground"]
+CMD ["init.sh"]
