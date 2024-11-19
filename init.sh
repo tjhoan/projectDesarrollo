@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Clonar el repositorio si no está presente
 if [ ! -d ".git" ]; then
     echo "Clonando el repositorio..."
@@ -11,12 +13,15 @@ git config --global --add safe.directory /var/www/html
 
 # Instalar dependencias de Composer
 echo "Instalando dependencias de Composer..."
-composer install
+composer install --no-dev --optimize-autoloader
 
 # Configurar archivo .env si no existe
 if [ ! -f ".env" ]; then
     echo "Configurando archivo .env..."
     cp .env.example .env
+    sed -i "s/DB_DATABASE=.*/DB_DATABASE=laravel/" .env
+    sed -i "s/DB_USERNAME=.*/DB_USERNAME=laravel/" .env
+    sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=password/" .env
     php artisan key:generate
 fi
 

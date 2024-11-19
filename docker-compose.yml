@@ -12,12 +12,12 @@ services:
       - ./src:/var/www/html:delegated
     networks:
       - laravel_network
+    depends_on:
+      - db
     environment:
       - APP_ENV=local
       - APP_DEBUG=true
     user: "www-data"
-    depends_on:
-      - db
 
   db:
     image: mysql:8.0

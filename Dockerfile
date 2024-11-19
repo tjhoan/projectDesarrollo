@@ -26,12 +26,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
 # Establecer el directorio de trabajo
 WORKDIR /var/www/html
 
-# Exponer el puerto 80 para Apache
-EXPOSE 80
-
 # Copiar el script de inicialización
 COPY init.sh /usr/local/bin/init.sh
 RUN chmod +x /usr/local/bin/init.sh
+
+# Exponer el puerto 80 para Apache
+EXPOSE 80
 
 # Comando por defecto
 CMD ["init.sh"]
