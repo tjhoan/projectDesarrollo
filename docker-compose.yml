@@ -9,12 +9,19 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - .:/var/www/html:cached
-      - npm_cache:/var/www/.npm
+      - ./src:/var/www/html:delegated
+      - ./src/vendor:/var/www/html/vendor
+      - ./src/node_modules:/var/www/html/node_modules
     networks:
       - laravel_network
     depends_on:
       - db
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_KEY
+      - USER_ID=1000
+      - GROUP_ID=1000
     user: "${USER_ID}:${GROUP_ID}"
     command: >
       sh -c "apache2-foreground"
@@ -27,7 +34,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: laravel
       MYSQL_USER: laravel
-      MYSQL_PASSWORD: password
+      MYSQL_PASSWORD: password 
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -38,4 +45,3 @@ networks:
 
 volumes:
   mysql_data:
-  npm_cache:
