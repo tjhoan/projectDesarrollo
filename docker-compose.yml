@@ -16,8 +16,7 @@ services:
     depends_on:
       - db
     user: root
-    command: >
-      sh -c "chown -R www-data:www-data /var/www/html /var/www/.npm && chmod -R 755 /var/www/html /var/www/.npm && apache2-foreground"
+    command: apache2-foreground
 
   db:
     image: mysql:8.0
