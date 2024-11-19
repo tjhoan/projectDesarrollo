@@ -6,12 +6,14 @@ RUN apt-get update && apt-get install -y \
     git \
     unzip \
     curl \
-    nano \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
+    libonig-dev \
+    libzip-dev \
+    zip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql gd
+    && docker-php-ext-install pdo pdo_mysql gd zip mbstring
 
 # Habilitar el módulo de Apache Rewrite
 RUN a2enmod rewrite
@@ -26,12 +28,15 @@ RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
 # Establecer el directorio de trabajo
 WORKDIR /var/www/html
 
-# Copiar el script de inicialización
-COPY init.sh /usr/local/bin/init.sh
-RUN chmod +x /usr/local/bin/init.sh
+# Copiar solo los archivos necesarios inicialmente
+COPY . .
+
+# Establecer permisos para el usuario actual (ajustado a problemas de permisos entre sistemas operativos)
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Exponer el puerto 80 para Apache
 EXPOSE 80
 
-# Comando por defecto
-CMD ["/usr/local/bin/init.sh"]
+# Configurar el contenedor para iniciar Apache
+CMD ["apache2-foreground"]
