@@ -20,8 +20,7 @@ RUN apt-get update && apt-get install -y \
 RUN a2enmod rewrite
 
 # Configura permisos iniciales y agrega ServerName a Apache
-RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf \
-    && service apache2 reload
+RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 
 # Copia la configuración personalizada de Apache
 COPY ./apache/000-default.conf /etc/apache2/sites-available/000-default.conf
