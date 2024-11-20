@@ -22,7 +22,8 @@ services:
       - GROUP_ID=1000
     working_dir: /var/www/html
     command: >
-      sh -c "composer install &&
+      sh -c "sleep 10 &&
+            composer install &&
             npm install --legacy-peer-deps &&
             npm run dev &&
             php artisan migrate &&
