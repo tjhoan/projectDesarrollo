@@ -23,10 +23,10 @@ services:
     working_dir: /var/www/html
     command: >
       sh -c "composer install &&
-             npm install &&
-             npm run dev &&
-             php artisan migrate &&
-             php artisan serve --host=0.0.0.0 --port=80"
+            npm install --legacy-peer-deps &&
+            npm run dev &&
+            php artisan migrate &&
+            php artisan serve --host=0.0.0.0 --port=80"
 
   db:
     image: mysql:8.0
