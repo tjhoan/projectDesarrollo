@@ -1,42 +1,39 @@
-# Imagen base de PHP con Apache
-FROM php:7.4-apache
+# Usa una imagen base con PHP y Apache
+FROM php:8.1-apache
 
-# Instalar dependencias del sistema
+# Instala dependencias necesarias
 RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    curl \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
-    libonig-dev \
-    libzip-dev \
+    locales \
     zip \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql gd zip mbstring
+    libzip-dev \
+    unzip \
+    git \
+    curl \
+    npm \
+    && docker-php-ext-install pdo_mysql zip
 
-# Habilitar el módulo de Apache Rewrite
+# Habilita mod_rewrite para Apache
 RUN a2enmod rewrite
 
-# Instalar Composer
-COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
+# Configura permisos y copias iniciales
+COPY . /var/www/html
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
 
-# Instalar Node.js y npm
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
-    && apt-get install -y nodejs
-
-# Establecer el directorio de trabajo
 WORKDIR /var/www/html
 
-# Copiar solo los archivos necesarios inicialmente
-COPY . .
+# Instala Composer
+COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 
-# Establecer permisos para el usuario actual (ajustado a problemas de permisos entre sistemas operativos)
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Instala Node.js y npm (esencial para npm run dev)
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - \
+    && apt-get install -y nodejs
 
-# Exponer el puerto 80 para Apache
-EXPOSE 80
+# Ejecuta npm con la bandera --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 
-# Configurar el contenedor para iniciar Apache
 CMD ["apache2-foreground"]

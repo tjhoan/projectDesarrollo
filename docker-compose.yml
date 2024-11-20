@@ -5,46 +5,41 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: laravel_app
+    image: laravel-app
+    container_name: laravel-app
     ports:
-      - "8080:80"
+      - "8000:80"
     volumes:
-      - ./src:/var/www/html
-    networks:
-      - laravel_network
+      - .:/var/www/html
+      - ./storage:/var/www/html/storage
+    working_dir: /var/www/html
     depends_on:
       - db
     environment:
       - APP_ENV=local
       - APP_DEBUG=true
-      - APP_KEY
-      - USER_ID=1000
-      - GROUP_ID=1000
-    working_dir: /var/www/html
-    command: >
-      sh -c "sleep 10 &&
-            composer install &&
-            npm install --legacy-peer-deps &&
-            npm run dev &&
-            php artisan migrate &&
-            php artisan serve --host=0.0.0.0 --port=80"
+      - APP_KEY=
+    networks:
+      - laravel-network
 
   db:
     image: mysql:8.0
-    container_name: mysql_db
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: password 
+    container_name: laravel-db
+    ports:
+      - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - db_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=laravel
+      - MYSQL_USER=laravel_user
+      - MYSQL_PASSWORD=laravel_pass
     networks:
-      - laravel_network
+      - laravel-network
 
 networks:
-  laravel_network:
+  laravel-network:
+    driver: bridge
 
 volumes:
-  mysql_data:
+  db_data:
