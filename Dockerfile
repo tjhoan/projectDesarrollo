@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     npm \
     nano \
+    make \
     && docker-php-ext-install pdo_mysql zip
 
 # Habilita mod_rewrite para Apache
@@ -26,8 +27,7 @@ RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 COPY ./apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 # Habilita el sitio y reinicia Apache
-RUN a2ensite 000-default.conf \
-    && service apache2 reload
+RUN a2ensite 000-default.conf
 
 # Copia el código de Laravel al contenedor
 COPY . /var/www/html

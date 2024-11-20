@@ -1,11 +1,17 @@
 up:
-	docker-compose up -d
+	docker-compose up --build -d
 
 down:
 	docker-compose down -v
 
 build:
 	docker-compose up --build
+
+volumes:
+	docker system prune -a --volumes -f
+
+restart:
+	docker-compose down -v && docker-compose up --build
 
 init:
 	docker-compose down -v && docker system prune -a --volumes -f && docker-compose up --build

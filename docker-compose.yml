@@ -26,6 +26,7 @@ services:
       composer install &&
       npm install --legacy-peer-deps &&
       php artisan key:generate &&
+      service apache2 reload &&
       apache2-foreground
       "
 
