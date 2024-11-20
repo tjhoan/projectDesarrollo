@@ -7,8 +7,6 @@ services:
       dockerfile: Dockerfile
     image: laravel-app
     container_name: laravel-app
-    ports:
-      - "8000:80"
     volumes:
       - .:/var/www/html
       - ./storage:/var/www/html/storage
@@ -16,19 +14,21 @@ services:
     working_dir: /var/www/html
     depends_on:
       - db
-    environment:
-      - APP_ENV=local
-      - APP_DEBUG=true
     networks:
       - laravel-network
-    command: >
-      bash -c "
-      composer install &&
-      npm install --legacy-peer-deps &&
-      php artisan key:generate &&
-      service apache2 reload &&
-      apache2-foreground
-      "
+
+  web:
+    image: nginx:latest
+    container_name: laravel-web
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - laravel-network
 
   db:
     image: mysql:8.0

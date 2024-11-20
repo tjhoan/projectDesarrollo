@@ -5,16 +5,16 @@ down:
 	docker-compose down -v
 
 build:
-	docker-compose up --build
+	docker-compose up --build -d
 
 volumes:
 	docker system prune -a --volumes -f
 
 restart:
-	docker-compose down -v && docker-compose up --build
+	docker-compose down -v && docker-compose up --build -d
 
 init:
-	docker-compose down -v && docker system prune -a --volumes -f && docker-compose up --build
+	docker-compose down -v && docker system prune -a --volumes -f && docker-compose up --build -d
 
 install:
 	docker exec -it laravel-app composer install

@@ -1,5 +1,5 @@
-# Usa una imagen base con PHP y Apache
-FROM php:8.1-apache
+# Usa una imagen base con PHP-FPM
+FROM php:8.1-fpm
 
 # Instala dependencias necesarias
 RUN apt-get update && apt-get install -y \
@@ -17,18 +17,6 @@ RUN apt-get update && apt-get install -y \
     make \
     && docker-php-ext-install pdo_mysql zip
 
-# Habilita mod_rewrite para Apache
-RUN a2enmod rewrite
-
-# Configura permisos iniciales y agrega ServerName a Apache
-RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
-
-# Copia la configuración personalizada de Apache
-COPY ./apache/000-default.conf /etc/apache2/sites-available/000-default.conf
-
-# Habilita el sitio y reinicia Apache
-RUN a2ensite 000-default.conf
-
 # Copia el código de Laravel al contenedor
 COPY . /var/www/html
 
@@ -43,12 +31,15 @@ WORKDIR /var/www/html
 # Instala Composer
 COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 
-# Instala Node.js y npm (esencial para npm run dev)
+# Instala Node.js y npm
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - \
     && apt-get install -y nodejs
 
 # Ejecuta npm con la bandera --legacy-peer-deps
 RUN npm install --legacy-peer-deps
 
-# Comando de inicio para Apache
-CMD ["apache2-foreground"]
+# Puerto de PHP-FPM
+EXPOSE 9000
+
+# Comando de inicio
+CMD ["php-fpm"]
