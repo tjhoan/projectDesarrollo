@@ -12,15 +12,22 @@ services:
     volumes:
       - .:/var/www/html
       - ./storage:/var/www/html/storage
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
     working_dir: /var/www/html
     depends_on:
       - db
     environment:
       - APP_ENV=local
       - APP_DEBUG=true
-      - APP_KEY=
     networks:
       - laravel-network
+    command: >
+      bash -c "
+      composer install &&
+      npm install --legacy-peer-deps &&
+      php artisan key:generate &&
+      apache2-foreground
+      "
 
   db:
     image: mysql:8.0

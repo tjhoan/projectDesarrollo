@@ -13,17 +13,32 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     npm \
+    nano \
     && docker-php-ext-install pdo_mysql zip
 
 # Habilita mod_rewrite para Apache
 RUN a2enmod rewrite
 
-# Configura permisos y copias iniciales
+# Configura permisos iniciales y agrega ServerName a Apache
+RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf \
+    && service apache2 reload
+
+# Copia la configuración personalizada de Apache
+COPY ./apache/000-default.conf /etc/apache2/sites-available/000-default.conf
+
+# Habilita el sitio y reinicia Apache
+RUN a2ensite 000-default.conf \
+    && service apache2 reload
+
+# Copia el código de Laravel al contenedor
 COPY . /var/www/html
+
+# Configura permisos para los directorios storage y bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
+# Define el directorio de trabajo
 WORKDIR /var/www/html
 
 # Instala Composer
@@ -36,4 +51,5 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - \
 # Ejecuta npm con la bandera --legacy-peer-deps
 RUN npm install --legacy-peer-deps
 
+# Comando de inicio para Apache
 CMD ["apache2-foreground"]
