@@ -15,6 +15,10 @@ docker system prune -a --volumes -f || error_exit "No se pudieron eliminar imág
 echo "Construyendo contenedores..."
 docker-compose up --build -d || error_exit "No se pudieron construir los contenedores."
 
+echo "Verificando que los contenedores se estén ejecutando..."
+docker ps | grep "laravel-app" > /dev/null || error_exit "El contenedor laravel-app no está en ejecución."
+docker ps | grep "laravel-db" > /dev/null || error_exit "El contenedor laravel-db no está en ejecución."
+
 echo "Esperando a que el contenedor de la base de datos esté listo..."
 until docker exec laravel-db mysqladmin ping -h "db" --silent; do
   echo "Esperando la base de datos..."
@@ -36,7 +40,7 @@ echo "Configurando permisos..."
 docker exec -it laravel-app chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache || error_exit "No se pudieron configurar los permisos."
 docker exec -it laravel-app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache || error_exit "No se pudo cambiar la propiedad de los permisos."
 
-echo "Opcional: Configurando caché de configuración, rutas y vistas..."
+echo "Configurando caché de configuración, rutas y vistas..."
 docker exec -it laravel-app php artisan config:cache || echo "Advertencia: No se pudo configurar el caché de configuración."
 docker exec -it laravel-app php artisan route:cache || echo "Advertencia: No se pudo configurar el caché de rutas."
 docker exec -it laravel-app php artisan view:cache || echo "Advertencia: No se pudo configurar el caché de vistas."

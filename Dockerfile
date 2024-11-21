@@ -12,13 +12,12 @@ RUN apt-get update && apt-get install -y \
     zip \
     libzip-dev \
     unzip \
-    pcntl \
     git \
     curl \
     npm \
     nano \
     make \
-    && docker-php-ext-install pdo_mysql zip
+    && docker-php-ext-install pdo_mysql zip pcntl
 
 # Habilita mod_rewrite para Apache
 RUN a2enmod rewrite
@@ -53,5 +52,5 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - \
 # Ejecuta npm con la bandera --legacy-peer-deps
 RUN npm install --legacy-peer-deps
 
-# Comando de inicio 
+# Comando de inicio
 CMD ["apache2-foreground"]
