@@ -11,7 +11,7 @@ volumes:
 	docker system prune -a --volumes -f
 
 restart:
-	docker-compose down -v && docker-compose up --build -d
+	docker-compose down -v && docker-compose up --build  -d
 
 init:
 	docker-compose down -v && docker system prune -a --volumes -f && docker-compose up --build -d

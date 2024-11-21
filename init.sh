@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ 
 echo "Deteniendo y eliminando contenedores existentes..."
 docker-compose down -v
 

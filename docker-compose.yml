@@ -16,19 +16,14 @@ services:
       - db
     networks:
       - laravel-network
-
-  web:
-    image: nginx:latest
-    container_name: laravel-web
-    ports:
-      - "8000:80"
-    volumes:
-      - .:/var/www/html
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - app
-    networks:
-      - laravel-network
+    command: >
+      bash -c "
+      composer install &&
+      npm install --legacy-peer-deps &&
+      php artisan key:generate &&
+      service apache2 reload &&
+      apache2-foreground
+      "
 
   db:
     image: mysql:8.0
