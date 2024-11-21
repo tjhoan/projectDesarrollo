@@ -25,16 +25,10 @@ RUN a2enmod rewrite
 # Configura permisos iniciales y agrega ServerName a Apache
 RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 
-# Copia el archivo .env al contenedor
-COPY .env /var/www/html/.env
-
-# Clona el repositorio de Laravel dentro del contenedor
-RUN git clone https://github.com/tjhoan/projectDesarrollo.git /var/www/html
-
-# Configura permisos para los directorios storage y bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache
+# Configura permisos iniciales
+RUN mkdir -p /var/www/html \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html
 
 # Define el directorio de trabajo
 WORKDIR /var/www/html

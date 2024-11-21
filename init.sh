@@ -12,6 +12,10 @@ docker-compose down -v || error_exit "No se pudieron detener los contenedores."
 echo "=== Eliminando imágenes y volúmenes antiguos ==="
 docker system prune -a --volumes -f || error_exit "No se pudieron eliminar imágenes y volúmenes."
 
+echo "=== Limpiando directorios previos en el sistema local ==="
+rm -rf ./storage/logs/*
+rm -rf ./bootstrap/cache/*
+
 echo "=== Construyendo y levantando contenedores ==="
 docker-compose up --build -d || error_exit "No se pudieron construir los contenedores."
 
