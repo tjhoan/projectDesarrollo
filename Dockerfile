@@ -1,5 +1,5 @@
-# Usa una imagen base con PHP-FPM
-FROM php:8.1-fpm
+# Usa una imagen base con PHP y Apache
+FROM php:7.4-apache
 
 # Instala dependencias necesarias
 RUN apt-get update && apt-get install -y \
@@ -19,6 +19,18 @@ RUN apt-get update && apt-get install -y \
     nano \
     make \
     && docker-php-ext-install pdo_mysql zip
+
+# Habilita mod_rewrite para Apache
+RUN a2enmod rewrite
+
+# Configura permisos iniciales y agrega ServerName a Apache
+RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
+
+# Copia la configuración personalizada de Apache
+COPY ./apache/000-default.conf /etc/apache2/sites-available/000-default.conf
+
+# Habilita el sitio y reinicia Apache
+RUN a2ensite 000-default.conf
 
 # Copia el código de Laravel al contenedor
 COPY . /var/www/html
@@ -41,8 +53,5 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - \
 # Ejecuta npm con la bandera --legacy-peer-deps
 RUN npm install --legacy-peer-deps
 
-# Puerto de PHP-FPM
-EXPOSE 9000
-
-# Comando de inicio
-CMD ["php-fpm"]
+# Comando de inicio 
+CMD ["apache2-foreground"]
