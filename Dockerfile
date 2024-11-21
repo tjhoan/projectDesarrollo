@@ -16,6 +16,8 @@ RUN apt-get update && apt-get install -y \
     curl \
     nano \
     iputils-ping \
+    net-tools \
+    iproute2 \
     && docker-php-ext-install pdo_mysql zip pcntl
 
 # Habilita mod_rewrite para Apache
@@ -23,6 +25,10 @@ RUN a2enmod rewrite
 
 # Configura permisos iniciales y agrega ServerName a Apache
 RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
+
+# Agrega el VirtualHost predeterminado
+COPY ./apache/000-default.conf /etc/apache2/sites-available/000-default.conf
+RUN a2ensite 000-default.conf
 
 # Configura permisos iniciales
 RUN mkdir -p /var/www/html \
@@ -40,5 +46,5 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     && npm install -g npm@latest
 
-# Comando de inicio
-CMD ["apache2-foreground"]
+# Comando de inicio que asegura la ejecución de servicios requeridos
+CMD service apache2 start && apache2-foreground

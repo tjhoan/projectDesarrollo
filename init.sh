@@ -44,4 +44,7 @@ docker exec laravel-app php artisan key:generate || error_exit "No se pudo gener
 echo "========== Ejecutando migraciones y seeders =========="
 docker exec laravel-app php artisan migrate:fresh --seed || error_exit "No se pudieron ejecutar las migraciones."
 
+echo "========== Verificando estado de Apache =========="
+docker exec laravel-app service apache2 restart || error_exit "No se pudo reiniciar Apache en el contenedor laravel-app."
+
 echo "========== Proceso completado con éxito =========="
