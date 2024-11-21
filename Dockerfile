@@ -1,35 +1,50 @@
-# Imagen base de PHP con Apache
+# Usa una imagen base con PHP y Apache
 FROM php:7.4-apache
 
-# Instalar dependencias del sistema
+# Instala dependencias necesarias
 RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    curl \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql gd
+    libonig-dev \
+    libxslt-dev \
+    locales \
+    zip \
+    libzip-dev \
+    unzip \
+    git \
+    curl \
+    nano \
+    iputils-ping \
+    net-tools \
+    iproute2 \
+    && docker-php-ext-install pdo_mysql zip pcntl
 
-# Habilitar el módulo de Apache Rewrite
+# Habilita mod_rewrite para Apache
 RUN a2enmod rewrite
 
-# Instalar Composer
-COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
+# Configura permisos iniciales y agrega ServerName a Apache
+RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 
-# Instalar Node.js y npm
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
-    && apt-get install -y nodejs
+# Agrega el VirtualHost predeterminado
+COPY ./apache/000-default.conf /etc/apache2/sites-available/000-default.conf
+RUN a2ensite 000-default.conf
 
-# Establecer el directorio de trabajo
+# Configura permisos iniciales
+RUN mkdir -p /var/www/html \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html
+
+# Define el directorio de trabajo
 WORKDIR /var/www/html
 
-# Copiar archivos del proyecto
-COPY . .
+# Instala Composer
+COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 
-# Exponer el puerto 80 para Apache
-EXPOSE 80
+# Instala Node.js (versión 20.x) y npm
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm@latest
 
-# Comando por defecto
-CMD ["apache2-foreground"]
+# Comando de inicio que asegura la ejecución de servicios requeridos
+CMD service apache2 start && apache2-foreground
