@@ -14,7 +14,6 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
-    npm \
     nano \
     iputils-ping \
     && docker-php-ext-install pdo_mysql zip pcntl
@@ -36,8 +35,8 @@ WORKDIR /var/www/html
 # Instala Composer
 COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 
-# Instala Node.js y npm
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - \
+# Instala Node.js (versión 20.x) y npm
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     && npm install -g npm@latest
 
