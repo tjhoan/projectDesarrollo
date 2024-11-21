@@ -9,23 +9,19 @@ error_exit() {
 echo "Deteniendo y eliminando contenedores existentes..."
 docker-compose down -v || error_exit "No se pudieron detener los contenedores."
 
-echo "Eliminando imágenes y volúmenes..."
-docker system prune -a --volumes -f || error_exit "No se pudieron eliminar imágenes y volúmenes."
+echo "Eliminando imágenes y volúmenes antiguos..."
+docker system prune -a --volumes -f || error_exit "No se pudieron eliminar imágenes y volúmenes antiguos."
 
 echo "Construyendo contenedores..."
 docker-compose up --build -d || error_exit "No se pudieron construir los contenedores."
 
-echo "Verificando que los contenedores se estén ejecutando..."
-docker ps | grep "laravel-app" > /dev/null || error_exit "El contenedor laravel-app no está en ejecución."
-docker ps | grep "laravel-db" > /dev/null || error_exit "El contenedor laravel-db no está en ejecución."
-
-echo "Esperando a que el contenedor de la base de datos esté listo..."
-until docker exec laravel-db mysqladmin ping -h "db" --silent; do
-  echo "Esperando la base de datos..."
-  sleep 2
+echo "Esperando a que la base de datos esté lista..."
+until docker exec laravel-db mysql -u laravel_user -plaravel_pass -e "SHOW DATABASES;" > /dev/null 2>&1; do
+  echo "Esperando a que MySQL esté disponible..."
+  sleep 5
 done
 
-echo "Instalando dependencias de Laravel..."
+echo "Base de datos lista. Instalando dependencias de Laravel..."
 docker exec -it laravel-app composer install || error_exit "No se pudieron instalar las dependencias de Composer."
 docker exec -it laravel-app npm install --legacy-peer-deps || error_exit "No se pudieron instalar las dependencias de npm."
 docker exec -it laravel-app npm run dev || error_exit "No se pudo ejecutar npm run dev."

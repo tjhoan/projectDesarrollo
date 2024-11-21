@@ -25,14 +25,11 @@ RUN a2enmod rewrite
 # Configura permisos iniciales y agrega ServerName a Apache
 RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 
-# Copia la configuración personalizada de Apache
-COPY ./apache/000-default.conf /etc/apache2/sites-available/000-default.conf
+# Clona el proyecto de GitHub al contenedor
+RUN git clone https://github.com/tjhoan/projectDesarrollo.git /var/www/html
 
-# Habilita el sitio y reinicia Apache
-RUN a2ensite 000-default.conf
-
-# Copia el código de Laravel al contenedor
-COPY . /var/www/html
+# Copia el archivo .env del repositorio local al contenedor
+COPY .env /var/www/html/.env
 
 # Configura permisos para los directorios storage y bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html \
