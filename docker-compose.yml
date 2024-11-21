@@ -28,7 +28,6 @@ services:
       npm install --legacy-peer-deps &&
       php artisan key:generate &&
       php artisan migrate:fresh --seed &&
-      service apache2 reload &&
       apache2-foreground
       "
 
