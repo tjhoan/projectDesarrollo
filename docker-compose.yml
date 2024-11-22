@@ -21,6 +21,10 @@ services:
       - laravel-network
     command: >
       bash -c "
+      until mysql -h db -u laravel_user -plaravel_pass -e 'SELECT 1;' > /dev/null 2>&1; do
+        echo 'Esperando a que MySQL esté disponible...'
+        sleep 5
+      done &&
       composer install &&
       npm install --legacy-peer-deps &&
       php artisan key:generate &&
