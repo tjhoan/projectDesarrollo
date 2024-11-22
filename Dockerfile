@@ -48,3 +48,6 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 
 # Comando de inicio que asegura la ejecución de servicios requeridos
 CMD service apache2 start && apache2-foreground
+
+# Hacer que Apache escuche en el puerto 8080
+RUN sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf

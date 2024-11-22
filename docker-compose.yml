@@ -5,8 +5,7 @@ services:
       dockerfile: Dockerfile
     image: laravel-app
     container_name: laravel-app
-    ports:
-      - "8000:80"
+
     volumes:
       - .:/var/www/html
       - ./storage:/var/www/html/storage
