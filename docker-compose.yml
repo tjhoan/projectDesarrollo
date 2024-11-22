@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   app:
     build:
@@ -5,7 +7,8 @@ services:
       dockerfile: Dockerfile
     image: laravel-app
     container_name: laravel-app
-
+    ports:
+      - "8000:8000" # Se expone el puerto 8000
     volumes:
       - .:/var/www/html
       - ./storage:/var/www/html/storage
@@ -21,15 +24,10 @@ services:
       - laravel-network
     command: >
       bash -c "
-      until mysql -h db -u laravel_user -plaravel_pass -e 'SELECT 1;' > /dev/null 2>&1; do
-        echo 'Esperando a que MySQL esté disponible...'
-        sleep 5
-      done &&
       composer install &&
       npm install --legacy-peer-deps &&
       php artisan key:generate &&
       php artisan migrate:fresh --seed &&
-      service apache2 start &&
       apache2-foreground
       "
 
@@ -41,7 +39,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_ROOT_PASSWORD=laravel_pass
       - MYSQL_DATABASE=laravel
       - MYSQL_USER=laravel_user
       - MYSQL_PASSWORD=laravel_pass
