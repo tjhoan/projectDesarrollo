@@ -1,50 +1,58 @@
-# Usa una imagen base con PHP y Apache
-FROM php:7.4-apache
+# Dockerfile
 
-# Instala dependencias necesarias
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libonig-dev \
-    libxslt-dev \
-    locales \
-    zip \
-    libzip-dev \
-    unzip \
+FROM php:7.4-fpm-alpine
+
+# Instalar dependencias necesarias
+RUN apk add --no-cache \
+    bash \
     git \
     curl \
-    nano \
-    iputils-ping \
-    net-tools \
-    iproute2 \
-    && docker-php-ext-install pdo_mysql zip pcntl
+    zip \
+    unzip \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
+    libxml2-dev \
+    oniguruma-dev \
+    autoconf \
+    gcc \
+    g++ \
+    make \
+    icu-dev \
+    libzip-dev \
+    linux-headers
 
-# Habilita mod_rewrite para Apache
-RUN a2enmod rewrite
+# Configurar extensiones de PHP
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+RUN docker-php-ext-install \
+    pdo_mysql \
+    mbstring \
+    gd \
+    intl \
+    zip \
+    bcmath \
+    pcntl \
+    soap \
+    sockets
 
-# Configura permisos iniciales y agrega ServerName a Apache
-RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
+# Instalar Composer
+RUN curl -sS https://getcomposer.org/installer | php -- \
+    --install-dir=/usr/local/bin --filename=composer
 
-# Agrega el VirtualHost predeterminado
-COPY ./apache/000-default.conf /etc/apache2/sites-available/000-default.conf
-RUN a2ensite 000-default.conf
+# Crear directorio de trabajo
+WORKDIR /app
 
-# Configura permisos iniciales
-RUN mkdir -p /var/www/html \
-    && chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html
+# Copiar archivos del proyecto al contenedor
+COPY . .
 
-# Define el directorio de trabajo
-WORKDIR /var/www/html
+# Instalar dependencias de Laravel
+RUN composer install && \
+    mkdir -p /app/storage/logs && \
+    chmod -R 775 /app/storage && \
+    chmod -R 775 /app/bootstrap/cache
 
-# Instala Composer
-COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
+# Exponer puerto para el servidor
+EXPOSE 8000
 
-# Instala Node.js (versión 20.x) y npm
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    && npm install -g npm@latest
-
-# Comando de inicio que asegura la ejecución de servicios requeridos
-CMD service apache2 start && apache2-foreground
+# Comando predeterminado para iniciar Laravel
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
