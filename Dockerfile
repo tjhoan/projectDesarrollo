@@ -46,8 +46,5 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     && npm install -g npm@latest
 
-# Exponer el puerto 8000 en lugar del 80
-EXPOSE 8000
-
 # Comando de inicio que asegura la ejecución de servicios requeridos
-CMD ["apache2-foreground"]
+CMD service apache2 start && apache2-foreground
