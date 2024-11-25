@@ -1,52 +1,53 @@
-version: '3.8'
-
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: laravel_app
-    restart: unless-stopped
+    image: laravel-app
+    container_name: laravel-app
     ports:
-      - "8000:8000"
-    environment:
-      - USER_ID=${USER_ID}
-      - GROUP_ID=${GROUP_ID}
+      - "8000:80"
     volumes:
       - .:/var/www/html
+      - ./storage:/var/www/html/storage
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+      - ./apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
+    working_dir: /var/www/html
     depends_on:
       - db
-    entrypoint: /var/www/html/init.sh
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
     networks:
-      - app_network
+      - laravel-network
+    command: >
+      bash -c "
+      composer install &&
+      npm install --legacy-peer-deps &&
+      php artisan key:generate &&
+      php artisan migrate:fresh --seed &&
+      service apache2 start &&
+      apache2-foreground
+      "
 
   db:
     image: mysql:8.0
-    container_name: laravel_db
-    restart: unless-stopped
+    container_name: laravel-db
     ports:
       - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: laravel_user
-      MYSQL_PASSWORD: laravel_pass
     volumes:
       - db_data:/var/lib/mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=laravel
+      - MYSQL_USER=laravel_user
+      - MYSQL_PASSWORD=laravel_pass
     networks:
-      - app_network
-
-  mailhog:
-    image: mailhog/mailhog
-    container_name: laravel_mailhog
-    restart: unless-stopped
-    ports:
-      - "8025:8025"
-    networks:
-      - app_network
+      - laravel-network
 
 networks:
-  app_network:
+  laravel-network:
+    driver: bridge
 
 volumes:
   db_data:

@@ -24,11 +24,10 @@ docker ps | grep "laravel-app" > /dev/null || error_exit "El contenedor laravel-
 docker ps | grep "laravel-db" > /dev/null || error_exit "El contenedor laravel-db no está corriendo."
 
 echo "========== Esperando a que la base de datos esté lista =========="
-
-./wait-for-db.sh localhost 3306 --timeout=30 || error_exit "La base de datos no está disponible después de esperar."
-
-echo "========== Verificando conexión a la base de datos =========="
-docker exec laravel-db mysql -u laravel_user -plaravel_pass -e "SHOW DATABASES;" || error_exit "No se pudo conectar a la base de datos."
+until docker exec laravel-db mysql -u laravel_user -plaravel_pass -e "SELECT 1;" > /dev/null 2>&1; do
+  echo "Esperando a que MySQL esté disponible..."
+  sleep 5
+done
 echo "Base de datos lista."
 
 echo "========== Instalando dependencias de Laravel =========="
