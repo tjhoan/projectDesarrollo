@@ -19,6 +19,8 @@ services:
     container_name: laravel-dev
     depends_on:
       - db
+    networks:
+      - dev-network
 
   db:
     image: mysql:8.0
@@ -32,6 +34,12 @@ services:
       MYSQL_USER: laravel_user
       MYSQL_PASSWORD: laravel_pass
     container_name: mysql-dev
+    networks:
+      - dev-network
 
 volumes:
   db_data_dev:
+
+networks:
+  dev-network:
+    driver: bridge

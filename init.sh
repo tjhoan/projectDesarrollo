@@ -13,7 +13,7 @@ if [ -z "$1" ]; then
 fi
 
 ENV=$1
-ACTION=${2:-""} # Por defecto elimina volúmenes
+ACTION=${2:-""}
 
 # Validar el segundo argumento si existe
 if [[ "$ACTION" != "" && "$ACTION" != "-b" ]]; then
@@ -27,16 +27,19 @@ case $ENV in
     COMPOSE_FILES="-f docker-compose.yml"
     APP_CONTAINER="laravel-dev"
     DB_CONTAINER="mysql-dev"
+    NETWORK="dev-network"
     ;;
   prod)
     COMPOSE_FILES="-f docker-compose.yml -f docker-compose.prod.yml"
     APP_CONTAINER="laravel-prod"
     DB_CONTAINER="mysql-prod"
+    NETWORK="prod-network"
     ;;
   test)
     COMPOSE_FILES="-f docker-compose.yml -f docker-compose.test.yml"
     APP_CONTAINER="laravel-test"
     DB_CONTAINER="mysql-test"
+    NETWORK="test-network"
     ;;
   *)
     echo "Entorno no válido. Usa: dev, prod o test"
@@ -47,7 +50,8 @@ esac
 # Manejar la acción según el segundo argumento
 echo "========== Eliminando contenedores y volúmenes =========="
 if [ "$ACTION" != "-b" ]; then
-  docker-compose $COMPOSE_FILES down -v; docker system prune -a --volumes -f || error_exit "No se pudieron detener y eliminar los contenedores."
+  docker-compose $COMPOSE_FILES down -v || error_exit "No se pudieron detener y eliminar los contenedores."
+  docker network rm $NETWORK > /dev/null 2>&1 || echo "La red $NETWORK no existe o ya fue eliminada."
 else
   echo "Omitiendo eliminación de volúmenes por -b."
   docker-compose $COMPOSE_FILES down || error_exit "No se pudieron detener los contenedores."
