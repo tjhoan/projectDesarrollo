@@ -7,23 +7,34 @@ services:
     environment:
       APP_ENV: testing
       APP_DEBUG: true
-      DB_DATABASE: laravel
-      DB_USERNAME: laravel_user
-      DB_PASSWORD: laravel_pass
+      DB_DATABASE: test_db
+      DB_USERNAME: test_user
+      DB_PASSWORD: test_pass
     container_name: laravel-test
     depends_on:
       - db
-
+    command: >
+      sh -c "
+      echo 'APP_ENV=testing' > /app/.env &&
+      echo 'APP_DEBUG=true' >> /app/.env &&
+      echo 'DB_CONNECTION=mysql' >> /app/.env &&
+      echo 'DB_HOST=db' >> /app/.env &&
+      echo 'DB_PORT=3306' >> /app/.env &&
+      echo 'DB_DATABASE=test_db' >> /app/.env &&
+      echo 'DB_USERNAME=test_user' >> /app/.env &&
+      echo 'DB_PASSWORD=test_pass' >> /app/.env"
+      
   db:
+    image: mysql:8.0
     ports:
       - "3307:3306"
     volumes:
       - db_data_test:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: laravel_user
-      MYSQL_PASSWORD: laravel_pass
+      MYSQL_ROOT_PASSWORD: test_root
+      MYSQL_DATABASE: test_db
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: test_pass
     container_name: mysql-test
 
 volumes:
