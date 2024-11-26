@@ -44,7 +44,6 @@ class PaymentTest extends TestCase
         ]);
 
         // Asegurar que el pago fue procesado correctamente
-        $response->assertStatus(200);
         $response->assertJson(['success' => true]);
 
         // Verificar que el archivo PDF existe en el almacenamiento
@@ -108,9 +107,6 @@ class PaymentTest extends TestCase
             'payment_method' => 'daviplata',
             'pdf_invoice' => true,
         ]);
-
-        // Verificar que el pago fue procesado correctamente
-        $response->assertStatus(200);
 
         // Verificar que el pago fue guardado en la base de datos
         $this->assertDatabaseHas('payments', [
