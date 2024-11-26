@@ -43,6 +43,19 @@ case $ENV in
     ;;
 esac
 
+echo "========== Configurando variables de entorno para el entorno $ENV =========="
+if [ "$ENV" == "test" ]; then
+  echo "APP_ENV=testing" > .env
+  echo "APP_DEBUG=true" >> .env
+  echo "DB_CONNECTION=mysql" >> .env
+  echo "DB_HOST=db" >> .env
+  echo "DB_PORT=3306" >> .env
+  echo "DB_DATABASE=test_db" >> .env
+  echo "DB_USERNAME=test_user" >> .env
+  echo "DB_PASSWORD=test_pass" >> .env
+  echo "Archivo .env configurado para el entorno de pruebas."
+fi
+
 echo "========== Deteniendo y eliminando contenedores existentes =========="
 docker-compose $COMPOSE_FILES down -v || error_exit "No se pudieron detener los contenedores."
 
