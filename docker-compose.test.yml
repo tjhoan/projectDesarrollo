@@ -13,8 +13,6 @@ services:
     container_name: laravel-test
     depends_on:
       - db
-    networks:
-      - test-network
 
   db:
     ports:
@@ -27,12 +25,6 @@ services:
       MYSQL_USER: test_user
       MYSQL_PASSWORD: test_pass
     container_name: mysql-test
-    networks:
-      - test-network
 
 volumes:
   db_data_test:
-
-networks:
-  test-network:
-    driver: bridge

@@ -13,8 +13,6 @@ services:
     container_name: laravel-prod
     depends_on:
       - db
-    networks:
-      - prod-network
 
   db:
     ports:
@@ -27,12 +25,6 @@ services:
       MYSQL_USER: laravel_user
       MYSQL_PASSWORD: laravel_pass
     container_name: mysql-prod
-    networks:
-      - prod-network
 
 volumes:
   db_data_prod:
-
-networks:
-  prod-network:
-    driver: bridge
