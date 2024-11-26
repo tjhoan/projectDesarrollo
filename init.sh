@@ -20,16 +20,22 @@ case $ENV in
     COMPOSE_FILES="-f docker-compose.yml"
     APP_CONTAINER="laravel-dev"
     DB_CONTAINER="mysql-dev"
+    DB_USER="laravel_user"
+    DB_PASS="laravel_pass"
     ;;
   prod)
     COMPOSE_FILES="-f docker-compose.yml -f docker-compose.prod.yml"
     APP_CONTAINER="laravel-prod"
     DB_CONTAINER="mysql-prod"
+    DB_USER="laravel_user"
+    DB_PASS="laravel_pass"
     ;;
   test)
     COMPOSE_FILES="-f docker-compose.yml -f docker-compose.test.yml"
     APP_CONTAINER="laravel-test"
     DB_CONTAINER="mysql-test"
+    DB_USER="test_user"
+    DB_PASS="test_pass"
     ;;
   *)
     echo "Entorno no válido. Usa: dev, prod o test"
@@ -48,7 +54,7 @@ docker ps | grep "$APP_CONTAINER" > /dev/null || error_exit "El contenedor $APP_
 docker ps | grep "$DB_CONTAINER" > /dev/null || error_exit "El contenedor $DB_CONTAINER no está corriendo."
 
 echo "========== Esperando a que la base de datos esté lista =========="
-until docker exec $DB_CONTAINER mysql -u laravel_user -plaravel_pass -e "SELECT 1;" > /dev/null 2>&1; do
+until docker exec $DB_CONTAINER mysql -u $DB_USER -p$DB_PASS -e "SELECT 1;" > /dev/null 2>&1; do
   echo "Esperando a que MySQL esté disponible..."
   sleep 5
 done
