@@ -7,10 +7,13 @@ services:
     environment:
       APP_ENV: testing
       APP_DEBUG: true
+      DB_DATABASE: test_db
+      DB_USERNAME: test_user
+      DB_PASSWORD: test_pass
     container_name: laravel-test
     depends_on:
       - db
-
+      
   db:
     image: mysql:8.0
     ports:
