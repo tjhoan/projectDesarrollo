@@ -34,8 +34,8 @@ case $ENV in
     COMPOSE_FILES="-f docker-compose.yml -f docker-compose.test.yml"
     APP_CONTAINER="laravel-test"
     DB_CONTAINER="mysql-test"
-    DB_USER="test_user"
-    DB_PASS="test_pass"
+    DB_USER="laravel_user"
+    DB_PASS="laravel_pass"
     ;;
   *)
     echo "Entorno no válido. Usa: dev, prod o test"
