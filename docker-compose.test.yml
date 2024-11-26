@@ -7,9 +7,9 @@ services:
     environment:
       APP_ENV: testing
       APP_DEBUG: true
-      DB_DATABASE: test_db
-      DB_USERNAME: test_user
-      DB_PASSWORD: test_pass
+      DB_DATABASE: laravel
+      DB_USERNAME: laravel_user
+      DB_PASSWORD: laravel_pass
     container_name: laravel-test
     depends_on:
       - db
@@ -21,9 +21,9 @@ services:
       - db_data_test:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: test_root
-      MYSQL_DATABASE: test_db
-      MYSQL_USER: test_user
-      MYSQL_PASSWORD: test_pass
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel_user
+      MYSQL_PASSWORD: laravel_pass
     container_name: mysql-test
 
 volumes:
