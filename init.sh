@@ -13,11 +13,11 @@ if [ -z "$1" ]; then
 fi
 
 ENV=$1
-ACTION=${2:-""} # Por defecto no elimina volúmenes
+ACTION=${2:-""} # Por defecto elimina volúmenes
 
 # Validar el segundo argumento si existe
 if [[ "$ACTION" != "" && "$ACTION" != "-b" ]]; then
-  echo "Acción no válida. Usa -b para borrar contenedores y volúmenes, o no uses ningún argumento para solo detener los contenedores."
+  echo "Acción no válida. Usa -b para evitar borrar contenedores y volúmenes."
   exit 1
 fi
 
@@ -27,19 +27,16 @@ case $ENV in
     COMPOSE_FILES="-f docker-compose.yml"
     APP_CONTAINER="laravel-dev"
     DB_CONTAINER="mysql-dev"
-    VOLUME="db_data_dev"
     ;;
   prod)
     COMPOSE_FILES="-f docker-compose.yml -f docker-compose.prod.yml"
     APP_CONTAINER="laravel-prod"
     DB_CONTAINER="mysql-prod"
-    VOLUME="db_data_prod"
     ;;
   test)
     COMPOSE_FILES="-f docker-compose.yml -f docker-compose.test.yml"
     APP_CONTAINER="laravel-test"
     DB_CONTAINER="mysql-test"
-    VOLUME="db_data_test"
     ;;
   *)
     echo "Entorno no válido. Usa: dev, prod o test"
@@ -48,15 +45,11 @@ case $ENV in
 esac
 
 # Manejar la acción según el segundo argumento
-echo "========== Deteniendo contenedores existentes =========="
-if [ "$ACTION" == "-b" ]; then
-  echo "Eliminando contenedores, volúmenes y datos persistentes..."
-  docker-compose $COMPOSE_FILES down -v || error_exit "No se pudieron detener y eliminar los contenedores."
-  
-  # Eliminar volúmenes no utilizados, en caso de que queden residuos
-  docker volume rm $VOLUME > /dev/null 2>&1 || echo "El volumen $VOLUME ya ha sido eliminado o no existe."
+echo "========== Eliminando contenedores y volúmenes =========="
+if [ "$ACTION" != "-b" ]; then
+  docker-compose $COMPOSE_FILES down -v; docker system prune -a --volumes -f || error_exit "No se pudieron detener y eliminar los contenedores."
 else
-  echo "Deteniendo contenedores sin eliminar volúmenes..."
+  echo "Omitiendo eliminación de volúmenes por -b."
   docker-compose $COMPOSE_FILES down || error_exit "No se pudieron detener los contenedores."
 fi
 
