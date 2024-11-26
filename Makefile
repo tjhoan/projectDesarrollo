@@ -10,6 +10,9 @@ build:
 volumes:
 	docker system prune -a --volumes -f
 
+down-volumes:
+	docker-compose down -v && docker system prune -a --volumes -f
+
 restart:
 	docker-compose down -v && docker-compose up --build  -d
 
