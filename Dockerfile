@@ -1,5 +1,4 @@
-# Dockerfile
-
+# Usar la imagen base de PHP con FPM
 FROM php:7.4-fpm-alpine
 
 # Instalar dependencias necesarias
@@ -22,7 +21,7 @@ RUN apk add --no-cache \
     libzip-dev \
     linux-headers
 
-# Configurar extensiones de PHP
+# Configurar las extensiones de PHP necesarias
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install \
     pdo_mysql \
@@ -45,14 +44,19 @@ WORKDIR /app
 # Copiar archivos del proyecto al contenedor
 COPY . .
 
-# Instalar dependencias de Laravel
-RUN composer install && \
-    mkdir -p /app/storage/logs && \
-    chmod -R 775 /app/storage && \
-    chmod -R 775 /app/bootstrap/cache
+# Instalar las dependencias de Laravel
+RUN composer install --no-dev --optimize-autoloader
 
-# Exponer puerto para el servidor
-EXPOSE 8000
+# Establecer permisos adecuados en las carpetas de Laravel
+RUN mkdir -p /app/storage/logs /app/storage/framework/sessions /app/storage/framework/views /app/storage/framework/cache && \
+    chmod -R 775 /app/storage /app/bootstrap/cache
 
-# Comando predeterminado para iniciar Laravel
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Configurar el entorno de producción (especificar APP_ENV)
+RUN cp .env.example .env && \
+    sed -i 's/APP_ENV=local/APP_ENV=production/' .env
+
+# Exponer el puerto 9000 para el contenedor PHP-FPM
+EXPOSE 9000
+
+# Iniciar PHP-FPM
+CMD ["php-fpm"]
