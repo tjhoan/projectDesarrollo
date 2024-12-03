@@ -24,18 +24,59 @@ jobs:
     - name: Set up SSH key
       run: |
         mkdir -p ~/.ssh
-        echo "$EC2_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
+        ssh-keyscan -H ${{ secrets.EC2_PUBLIC_IP }} >> ~/.ssh/known_hosts
 
-    - name: Deploy to EC2 instance
+    - name: Install Docker and Docker Compose on EC2
       run: |
-        ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
+        ssh -v -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+          # Instalar Docker
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl enable --now docker
+
+          # Instalar Docker Compose
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+
+          # Verificar instalación de Docker y Docker Compose
+          docker --version
+          docker-compose --version
+        EOF
+
+    - name: Deploy to EC2
+      run: |
+        ssh -v -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+          # Eliminar directorio para evitar conflictos
+          sudo rm -rf /var/www/html/projectdesarrollo
+
+          # Crear el directorio
+          sudo mkdir -p /var/www/html/projectdesarrollo
+
+          # Acceder al directorio
           cd /var/www/html/projectdesarrollo
-          sudo git pull origin docker
-          sudo docker-compose down -v
-          sudo docker system prune -a --volumes -f
-          sudo docker-compose up --build -d
+
+          # Si no existe el proyecto, clonarlo
+          if [ ! -d "/var/www/html/projectdesarrollo/.git" ]; then
+            sudo git clone https://github.com/tjhoan/projectDesarrollo.git /var/www/html/projectdesarrollo
+          fi
+
+          # Permisos de escritura
           sudo chown -R ubuntu:ubuntu /var/www/html/projectdesarrollo
           sudo chmod -R 755 /var/www/html/projectdesarrollo
+
+          # Cambiar el nombre del archivo .env.docker a .env
+          sudo mv /var/www/html/projectdesarrollo/.env.docker /var/www/html/projectdesarrollo/.env
+
+          # Ejecutar init.sh para preparar los contenedores
+          sudo chmod +x /var/www/html/projectdesarrollo/init.sh
+          sudo /var/www/html/projectdesarrollo/init.sh prod
         EOF
+      env:
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        COMPOSER_PROCESS_TIMEOUT: 0
+        COMPOSER_NO_INTERACTION: 1
+        COMPOSER_NO_AUDIT: 1
