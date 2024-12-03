@@ -48,7 +48,10 @@ jobs:
     - name: Deploy to EC2
       run: |
         ssh -v -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
-          # Crear el directorio si no existe
+          # Eliminar directorio para evitar conflictos
+          sudo rm -rf /var/www/html/projectdesarrollo
+
+          # Crear el directorio
           sudo mkdir -p /var/www/html/projectdesarrollo
 
           # Acceder al directorio
@@ -65,18 +68,6 @@ jobs:
           # Ejecutar init.sh para preparar los contenedores
           sudo chmod +x /var/www/html/projectdesarrollo/init.sh
           sudo /var/www/html/projectdesarrollo/init.sh prod
-
-          # Eliminar contenedores de Laravel pero no la base de datos
-          sudo docker-compose -f /var/www/html/projectdesarrollo/docker-compose.prod.yml down --volumes
-          
-          # Volver a levantar los contenedores (sin eliminar la base de datos)
-          sudo docker-compose -f /var/www/html/projectdesarrollo/docker-compose.prod.yml up -d --build
-
-          # Ejecutar las migraciones y otras tareas de Laravel
-          sudo docker exec laravel-prod php artisan migrate --force
-          sudo docker exec laravel-prod php artisan config:cache
-          sudo docker exec laravel-prod php artisan route:cache
-          sudo docker exec laravel-prod php artisan view:cache
         EOF
       env:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}

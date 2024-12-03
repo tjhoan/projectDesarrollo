@@ -107,4 +107,10 @@ docker exec $APP_CONTAINER php artisan key:generate || error_exit "No se pudo ge
 echo "========== Ejecutando migraciones y seeders =========="
 docker exec $APP_CONTAINER php artisan migrate:fresh --seed --force || error_exit "No se pudieron ejecutar las migraciones y seeders"
 
+echo "========== Ejecutar comandos para limpieza de cache =========="
+docker exec $APP_CONTAINER php artisan cache:clear || error_exit "No se pudo limpiar la caché"
+docker exec $APP_CONTAINER php artisan route:clear || error_exit "No se pudo limpiar la caché de rutas"
+docker exec $APP_CONTAINER php artisan view:clear || error_exit "No se pudo limpiar la caché de vistas"
+docker exec $APP_CONTAINER php artisan config:clear || error_exit "No se pudo limpiar la caché de configuración"
+
 echo "========== Proceso completado con éxito para el entorno $ENV - puerto $APP_URL =========="
