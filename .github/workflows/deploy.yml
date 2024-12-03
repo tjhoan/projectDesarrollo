@@ -11,7 +11,7 @@ on:
       - docker
 
 permissions:
-  contents: read  
+  contents: read
 
 jobs:
   deploy:
@@ -30,7 +30,7 @@ jobs:
 
     - name: Deploy to EC2
       run: |
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+        ssh -v -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
           cd /var/www/html/tu-proyecto
 
           # Eliminar contenedores de Laravel pero no la base de datos
