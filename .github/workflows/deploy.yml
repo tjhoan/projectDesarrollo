@@ -60,16 +60,16 @@ jobs:
           fi
 
           # Eliminar contenedores de Laravel pero no la base de datos
-          docker-compose -f docker-compose.prod.yml down --volumes
+          sudo docker-compose -f /var/www/html/projectdesarrollo/docker-compose.prod.yml down --volumes
           
           # Volver a levantar los contenedores (sin eliminar la base de datos)
-          docker-compose -f docker-compose.prod.yml up -d --build
+          sudo docker-compose -f /var/www/html/projectdesarrollo/docker-compose.prod.yml up -d --build
 
           # Ejecutar las migraciones y otras tareas de Laravel
-          docker exec laravel-prod php artisan migrate --force
-          docker exec laravel-prod php artisan config:cache
-          docker exec laravel-prod php artisan route:cache
-          docker exec laravel-prod php artisan view:cache
+          sudo docker exec laravel-prod php artisan migrate --force
+          sudo docker exec laravel-prod php artisan config:cache
+          sudo docker exec laravel-prod php artisan route:cache
+          sudo docker exec laravel-prod php artisan view:cache
         EOF
       env:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
