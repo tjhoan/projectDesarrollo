@@ -27,8 +27,9 @@ case $ENV in
     APP_DEBUG=true
     APP_URL="http://localhost:8000"
     ;;
+
   prod)
-    COMPOSE_FILES="-f docker-compose.yml -f docker-compose.prod.yml"
+    COMPOSE_FILES="-f docker-compose.prod.yml"
     APP_CONTAINER="laravel-prod"
     DB_CONTAINER="mysql-prod"
     DB_DATABASE=laravel
@@ -38,6 +39,7 @@ case $ENV in
     APP_DEBUG=false
     APP_URL="http://localhost"
     ;;
+
   test)
     COMPOSE_FILES="-f docker-compose.yml -f docker-compose.test.yml"
     APP_CONTAINER="laravel-test"
@@ -49,6 +51,7 @@ case $ENV in
     APP_DEBUG=true
     APP_URL="http://localhost:8001"
     ;;
+
   *)
     echo "Entorno no válido. Usa: dev, prod o test"
     exit 1
@@ -56,7 +59,9 @@ case $ENV in
 esac
 
 echo "========== Configurando variables de entorno para el entorno $ENV =========="
-cat > .env <<EOL
+
+# Crear o sobrescribir el archivo .env y ajustar permisos con sudo
+sudo bash -c "cat > .env <<EOL
 APP_ENV=$APP_ENV
 APP_KEY=
 APP_DEBUG=$APP_DEBUG
@@ -76,17 +81,21 @@ CACHE_DRIVER=file
 QUEUE_CONNECTION=sync
 SESSION_DRIVER=file
 SESSION_LIFETIME=120
-EOL
+EOL"
+
+# Cambiar la propiedad del archivo .env al usuario que ejecuta el script
+sudo chown ubuntu:ubuntu .env  # Cambia "ubuntu" por el nombre del usuario adecuado
+chmod 644 .env  # Asegura que el archivo sea legible para todos, pero solo escribible para el propietario
 
 echo "========== Eliminando contenedores y volúmenes específicos del proyecto =========="
-docker-compose $COMPOSE_FILES down -v
-docker system prune -a --volumes -f || error_exit "No se pudieron detener y eliminar los contenedores y volúmenes"
+sudo docker-compose $COMPOSE_FILES down -v
+sudo docker system prune -a --volumes -f || error_exit "No se pudieron detener y eliminar los contenedores y volúmenes"
 
 echo "========== Construyendo y levantando contenedores para el entorno $ENV =========="
-docker-compose $COMPOSE_FILES up --build -d || error_exit "No se pudieron construir los contenedores"
+sudo docker-compose $COMPOSE_FILES up --build -d || error_exit "No se pudieron construir los contenedores"
 
 echo "========== Esperando a que la base de datos esté lista =========="
-until docker exec $DB_CONTAINER mysql -u $DB_USERNAME -p$DB_PASSWORD -e "SELECT 1;" > /dev/null 2>&1; do
+until sudo docker exec $DB_CONTAINER mysql -u $DB_USERNAME -p$DB_PASSWORD -e "SELECT 1;" > /dev/null 2>&1; do
   echo "Esperando a que MySQL esté disponible..."
   sleep 3
 done
@@ -94,23 +103,23 @@ echo "Base de datos lista"
 
 if [ "$ENV" = "prod" ]; then
   echo "========== Instalando dependencias de Composer (producción) =========="
-  docker exec $APP_CONTAINER composer install --no-dev --optimize-autoloader || error_exit "No se pudieron instalar las dependencias de Composer en producción"
+  sudo docker exec $APP_CONTAINER composer install --no-dev --optimize-autoloader || error_exit "No se pudieron instalar las dependencias de Composer en producción"
 else
   echo "========== Instalando dependencias de Composer =========="
-  docker exec $APP_CONTAINER composer install || error_exit "No se pudieron instalar las dependencias de Composer"
+  sudo docker exec $APP_CONTAINER composer install || error_exit "No se pudieron instalar las dependencias de Composer"
 fi
 
 echo "========== Generando clave de cifrado para Laravel =========="
-docker exec $APP_CONTAINER php artisan config:clear || error_exit "No se pudo limpiar la caché de configuración"
-docker exec $APP_CONTAINER php artisan key:generate || error_exit "No se pudo generar la clave de cifrado"
+sudo docker exec $APP_CONTAINER php artisan config:clear || error_exit "No se pudo limpiar la caché de configuración"
+sudo docker exec $APP_CONTAINER php artisan key:generate || error_exit "No se pudo generar la clave de cifrado"
 
 echo "========== Ejecutando migraciones y seeders =========="
-docker exec $APP_CONTAINER php artisan migrate:fresh --seed --force || error_exit "No se pudieron ejecutar las migraciones y seeders"
+sudo docker exec $APP_CONTAINER php artisan migrate:fresh --seed --force || error_exit "No se pudieron ejecutar las migraciones y seeders"
 
 echo "========== Ejecutar comandos para limpieza de cache =========="
-docker exec $APP_CONTAINER php artisan cache:clear || error_exit "No se pudo limpiar la caché"
-docker exec $APP_CONTAINER php artisan route:clear || error_exit "No se pudo limpiar la caché de rutas"
-docker exec $APP_CONTAINER php artisan view:clear || error_exit "No se pudo limpiar la caché de vistas"
-docker exec $APP_CONTAINER php artisan config:clear || error_exit "No se pudo limpiar la caché de configuración"
+sudo docker exec $APP_CONTAINER php artisan cache:clear || error_exit "No se pudo limpiar la caché"
+sudo docker exec $APP_CONTAINER php artisan route:clear || error_exit "No se pudo limpiar la caché de rutas"
+sudo docker exec $APP_CONTAINER php artisan view:clear || error_exit "No se pudo limpiar la caché de vistas"
+sudo docker exec $APP_CONTAINER php artisan config:clear || error_exit "No se pudo limpiar la caché de configuración"
 
 echo "========== Proceso completado con éxito para el entorno $ENV - puerto $APP_URL =========="

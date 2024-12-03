@@ -42,13 +42,14 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
 WORKDIR /app
 
 # Copiar archivos del proyecto al contenedor
-COPY . .
+COPY . ./
 
 # Instalar las dependencias de Laravel
 RUN composer install --no-dev --optimize-autoloader
 
-# Establecer permisos adecuados en las carpetas de Laravel
+# Crear directorios y configurar permisos adecuados para Laravel
 RUN mkdir -p /app/storage/logs /app/storage/framework/sessions /app/storage/framework/views /app/storage/framework/cache && \
+    chown -R www-data:www-data /app/storage /app/bootstrap/cache && \
     chmod -R 775 /app/storage /app/bootstrap/cache
 
 # Configurar el entorno de producción (especificar APP_ENV)
