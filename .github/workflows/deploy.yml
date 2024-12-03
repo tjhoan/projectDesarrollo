@@ -4,11 +4,13 @@ on:
   push:
     branches:
       - master
-      - docker
   pull_request:
     branches:
       - master
-      - docker
+
+permissions:
+  id_token: write
+  contents: read  
 
 jobs:
   deploy:
@@ -20,24 +22,27 @@ jobs:
 
     - name: Set up SSH key
       run: |
-        # Crear el archivo de clave SSH y establecer los permisos
         mkdir -p ~/.ssh
         echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-
-        # Agregar la clave pública del host EC2 a known_hosts
         ssh-keyscan -H ${{ secrets.EC2_PUBLIC_IP }} >> ~/.ssh/known_hosts
 
     - name: Deploy to EC2
       run: |
         ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
           cd /var/www/html/tu-proyecto
-          git pull origin main
-          composer install --no-dev --optimize-autoloader
-          php artisan migrate --force
-          php artisan config:cache
-          php artisan route:cache
-          php artisan view:cache
+
+          # Eliminar contenedores de Laravel pero no la base de datos
+          docker-compose -f docker-compose.prod.yml down --volumes
+          
+          # Volver a levantar los contenedores (sin eliminar la base de datos)
+          docker-compose -f docker-compose.prod.yml up -d --build
+
+          # Ejecutar las migraciones y otras tareas de Laravel
+          docker exec laravel-prod php artisan migrate --force
+          docker exec laravel-prod php artisan config:cache
+          docker exec laravel-prod php artisan route:cache
+          docker exec laravel-prod php artisan view:cache
         EOF
       env:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
