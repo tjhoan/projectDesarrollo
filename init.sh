@@ -59,8 +59,6 @@ case $ENV in
 esac
 
 echo "========== Configurando variables de entorno para el entorno $ENV =========="
-
-# Crear o sobrescribir el archivo .env y ajustar permisos con sudo
 sudo bash -c "cat > .env <<EOL
 APP_ENV=$APP_ENV
 APP_KEY=
@@ -83,9 +81,9 @@ SESSION_DRIVER=file
 SESSION_LIFETIME=120
 EOL"
 
-# Cambiar la propiedad del archivo .env al usuario que ejecuta el script
-sudo chown ubuntu:ubuntu .env  # Cambia "ubuntu" por el nombre del usuario adecuado
-chmod 644 .env  # Asegura que el archivo sea legible para todos, pero solo escribible para el propietario
+echo "========== Cambiar la propiedad del archivo .env al usuario que ejecuta el script =========="
+sudo chown ubuntu:ubuntu .env
+chmod 644 .env
 
 echo "========== Eliminando contenedores y volúmenes específicos del proyecto =========="
 sudo docker-compose $COMPOSE_FILES down -v

@@ -39,10 +39,6 @@ jobs:
           # Instalar Docker Compose
           sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
-
-          # Verificar instalación de Docker y Docker Compose
-          docker --version
-          docker-compose --version
         EOF
 
     - name: Deploy to EC2
@@ -59,7 +55,7 @@ jobs:
 
           # Si no existe el proyecto, clonarlo
           if [ ! -d "/var/www/html/projectdesarrollo/.git" ]; then
-            sudo git clone https://github.com/tjhoan/projectDesarrollo.git /var/www/html/projectdesarrollo
+            sudo git clone -b docker https://github.com/tjhoan/projectDesarrollo.git /var/www/html/projectdesarrollo
           fi
 
           # Permisos de escritura
