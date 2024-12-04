@@ -85,6 +85,13 @@ echo "========== Cambiar la propiedad del archivo .env al usuario que ejecuta el
 sudo chown -R $(whoami):$(whoami) .
 chmod -R 755 .
 
+sudo chmod -R 777 /var/www/html/projectdesarrollo
+sudo chown -R ubuntu:ubuntu /var/www/html/projectdesarrollo
+
+echo "========== Asegurarse de que Docker esté corriendo =========="
+sudo systemctl start docker
+sudo systemctl enable docker
+
 echo "========== Eliminando contenedores y volúmenes específicos del proyecto =========="
 sudo docker-compose $COMPOSE_FILES down -v
 sudo docker system prune -a --volumes -f || error_exit "No se pudieron detener y eliminar los contenedores y volúmenes"
