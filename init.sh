@@ -82,8 +82,8 @@ SESSION_LIFETIME=120
 EOL"
 
 echo "========== Cambiar la propiedad del archivo .env al usuario que ejecuta el script =========="
-sudo chown ubuntu:ubuntu .env
-chmod 644 .env
+sudo chown -R $(whoami):$(whoami) .
+chmod -R 755 .
 
 echo "========== Eliminando contenedores y volúmenes específicos del proyecto =========="
 sudo docker-compose $COMPOSE_FILES down -v

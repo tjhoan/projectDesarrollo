@@ -10,7 +10,7 @@ services:
       - "80:8000"
     volumes:
       - .:/app
-      - /app/vendor
+      - ./app/vendor:/app/vendor
     environment:
       APP_ENV: "production"
       APP_DEBUG: "false"
