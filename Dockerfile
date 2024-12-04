@@ -52,12 +52,8 @@ RUN mkdir -p /app/storage/logs /app/storage/framework/sessions /app/storage/fram
     chown -R www-data:www-data /app/storage /app/bootstrap/cache && \
     chmod -R 775 /app/storage /app/bootstrap/cache
 
-# Configurar el entorno de producción (especificar APP_ENV)
-RUN cp .env.example .env && \
-    sed -i 's/APP_ENV=local/APP_ENV=production/' .env
-
 # Exponer el puerto 9000 para el contenedor PHP-FPM
-EXPOSE 9000
+EXPOSE 8000
 
-# Iniciar PHP-FPM
-CMD ["php-fpm"]
+# Comando predeterminado para iniciar Laravel
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
