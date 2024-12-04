@@ -31,36 +31,45 @@ jobs:
     - name: Install Docker and Docker Compose on EC2
       run: |
         ssh -v -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
-          # Instalar Docker y Docker Compose
-          sudo apt-get update
-          sudo apt-get install -y docker.io curl
+          # Instalar Docker y Docker Compose si no están instalados
+          if ! command -v docker &> /dev/null; then
+            echo "Instalando Docker..."
+            sudo apt-get update
+            sudo apt-get install -y docker.io curl
+            sudo systemctl enable --now docker
+          fi
 
-          # Instalar Docker Compose
-          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-
-          # Habilitar Docker
-          sudo systemctl enable --now docker
+          # Instalar Docker Compose si no está instalado
+          if ! command -v docker-compose &> /dev/null; then
+            echo "Instalando Docker Compose..."
+            sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+          fi
         EOF
 
     - name: Deploy to EC2
       run: |
         ssh -v -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
           # Asegurar que el directorio de destino tiene permisos de escritura
-          sudo mount -o remount,rw /var/www/html
+          sudo chmod -R 775 /var/www/html
 
-          # Eliminar el directorio antiguo y crear uno nuevo
-          sudo rm -rf /var/www/html/projectdesarrollo
+          # Eliminar el directorio antiguo y crear uno nuevo si no existe
+          if [ -d "/var/www/html/projectdesarrollo" ]; then
+            sudo rm -rf /var/www/html/projectdesarrollo
+          fi
           sudo mkdir -p /var/www/html/projectdesarrollo
 
           # Clonar el repositorio si no existe
           if [ ! -d "/var/www/html/projectdesarrollo/.git" ]; then
             sudo git clone -b docker https://github.com/tjhoan/projectDesarrollo.git /var/www/html/projectdesarrollo
+          else
+            cd /var/www/html/projectdesarrollo
+            sudo git pull origin docker
           fi
 
           # Establecer permisos adecuados
           sudo chown -R ubuntu:ubuntu /var/www/html/projectdesarrollo
-          sudo chmod -R 755 /var/www/html/projectdesarrollo
+          sudo chmod -R 775 /var/www/html/projectdesarrollo
 
           # Cambiar el nombre del archivo .env.docker a .env
           sudo mv /var/www/html/projectdesarrollo/.env.docker /var/www/html/projectdesarrollo/.env
