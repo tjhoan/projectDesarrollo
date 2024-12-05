@@ -76,7 +76,7 @@ jobs:
 
           # Ejecutar el script init.sh
           sudo chmod +x /var/www/html/projectdesarrollo/init.sh
-          sudo /var/www/html/projectdesarrollo/init.sh prod
+          sudo /var/www/html/projectdesarrollo/init.sh
         EOF
       env:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}

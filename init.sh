@@ -6,81 +6,6 @@ error_exit() {
   exit 1
 }
 
-# Verificar que se pase un entorno como argumento
-if [ -z "$1" ]; then
-  echo "Por favor, especifica el entorno: dev, prod o test"
-  exit 1
-fi
-
-ENV=$1
-
-# Configurar variables según el entorno
-case $ENV in
-  dev)
-    COMPOSE_FILES="-f docker-compose.yml"
-    APP_CONTAINER="laravel-dev"
-    DB_CONTAINER="mysql-dev"
-    DB_DATABASE=laravel
-    DB_USERNAME="laravel_user"
-    DB_PASSWORD="laravel_pass"
-    APP_ENV=dev
-    APP_DEBUG=true
-    APP_URL="http://localhost:8000"
-    ;;
-
-  prod)
-    COMPOSE_FILES="-f docker-compose.prod.yml"
-    APP_CONTAINER="laravel-prod"
-    DB_CONTAINER="mysql-prod"
-    DB_DATABASE=laravel
-    DB_USERNAME="laravel_user"
-    DB_PASSWORD="laravel_pass"
-    APP_ENV=production
-    APP_DEBUG=false
-    APP_URL="http://localhost"
-    ;;
-
-  test)
-    COMPOSE_FILES="-f docker-compose.yml -f docker-compose.test.yml"
-    APP_CONTAINER="laravel-test"
-    DB_CONTAINER="mysql-test"
-    DB_DATABASE=test_db
-    DB_USERNAME="test_user"
-    DB_PASSWORD="test_pass"
-    APP_ENV=test
-    APP_DEBUG=true
-    APP_URL="http://localhost:8001"
-    ;;
-
-  *)
-    echo "Entorno no válido. Usa: dev, prod o test"
-    exit 1
-    ;;
-esac
-
-echo "========== Configurando variables de entorno para el entorno $ENV =========="
-sudo bash -c "cat > .env <<EOL
-APP_ENV=$APP_ENV
-APP_KEY=
-APP_DEBUG=$APP_DEBUG
-APP_URL=$APP_URL
-
-LOG_CHANNEL=stack
-
-DB_CONNECTION=mysql
-DB_HOST=db
-DB_PORT=3306
-DB_DATABASE=$DB_DATABASE
-DB_USERNAME=$DB_USERNAME
-DB_PASSWORD=$DB_PASSWORD
-
-BROADCAST_DRIVER=log
-CACHE_DRIVER=file
-QUEUE_CONNECTION=sync
-SESSION_DRIVER=file
-SESSION_LIFETIME=120
-EOL"
-
 echo "========== Cambiar la propiedad del archivo .env al usuario que ejecuta el script =========="
 sudo chown -R $(whoami):$(whoami) .
 chmod -R 755 .
@@ -88,43 +13,33 @@ chmod -R 755 .
 sudo chmod -R 777 /var/www/html/projectdesarrollo
 sudo chown -R ubuntu:ubuntu /var/www/html/projectdesarrollo
 
-echo "========== Asegurarse de que Docker esté corriendo =========="
-sudo systemctl start docker
-sudo systemctl enable docker
-
 echo "========== Eliminando contenedores y volúmenes específicos del proyecto =========="
-sudo docker-compose $COMPOSE_FILES down -v
+sudo docker-compose docker-compose.yml down -v
 sudo docker system prune -a --volumes -f || error_exit "No se pudieron detener y eliminar los contenedores y volúmenes"
 
-echo "========== Construyendo y levantando contenedores para el entorno $ENV =========="
-sudo docker-compose $COMPOSE_FILES up --build -d || error_exit "No se pudieron construir los contenedores"
+echo "========== Construyendo y levantando contenedores =========="
+sudo docker-compose docker-compose.yml up --build -d || error_exit "No se pudieron construir los contenedores"
 
 echo "========== Esperando a que la base de datos esté lista =========="
-until sudo docker exec $DB_CONTAINER mysql -u $DB_USERNAME -p$DB_PASSWORD -e "SELECT 1;" > /dev/null 2>&1; do
+until sudo docker exec mysql-prod mysql -u laravel_user -plaravel_pass -e "SELECT 1;" > /dev/null 2>&1; do
   echo "Esperando a que MySQL esté disponible..."
   sleep 3
 done
 echo "Base de datos lista"
 
-if [ "$ENV" = "prod" ]; then
-  echo "========== Instalando dependencias de Composer (producción) =========="
-  sudo docker exec $APP_CONTAINER composer install --no-dev --optimize-autoloader || error_exit "No se pudieron instalar las dependencias de Composer en producción"
-else
-  echo "========== Instalando dependencias de Composer =========="
-  sudo docker exec $APP_CONTAINER composer install || error_exit "No se pudieron instalar las dependencias de Composer"
-fi
+echo "========== Instalando dependencias de Composer =========="
+sudo docker exec laravel-prod composer install --no-dev --optimize-autoloader || error_exit "No se pudieron instalar las dependencias de Composer"
 
 echo "========== Generando clave de cifrado para Laravel =========="
-sudo docker exec $APP_CONTAINER php artisan config:clear || error_exit "No se pudo limpiar la caché de configuración"
-sudo docker exec $APP_CONTAINER php artisan key:generate || error_exit "No se pudo generar la clave de cifrado"
+sudo docker exec laravel-prod php artisan key:generate || error_exit "No se pudo generar la clave de cifrado"
 
 echo "========== Ejecutando migraciones y seeders =========="
-sudo docker exec $APP_CONTAINER php artisan migrate:fresh --seed --force || error_exit "No se pudieron ejecutar las migraciones y seeders"
+sudo docker exec laravel-prod php artisan migrate:fresh --seed --force || error_exit "No se pudieron ejecutar las migraciones y seeders"
 
 echo "========== Ejecutar comandos para limpieza de cache =========="
-sudo docker exec $APP_CONTAINER php artisan cache:clear || error_exit "No se pudo limpiar la caché"
-sudo docker exec $APP_CONTAINER php artisan route:clear || error_exit "No se pudo limpiar la caché de rutas"
-sudo docker exec $APP_CONTAINER php artisan view:clear || error_exit "No se pudo limpiar la caché de vistas"
-sudo docker exec $APP_CONTAINER php artisan config:clear || error_exit "No se pudo limpiar la caché de configuración"
+sudo docker exec laravel-prod php artisan cache:clear || error_exit "No se pudo limpiar la caché"
+sudo docker exec laravel-prod php artisan route:clear || error_exit "No se pudo limpiar la caché de rutas"
+sudo docker exec laravel-prod php artisan view:clear || error_exit "No se pudo limpiar la caché de vistas"
+sudo docker exec laravel-prod php artisan config:clear || error_exit "No se pudo limpiar la caché de configuración"
 
-echo "========== Proceso completado con éxito para el entorno $ENV - puerto $APP_URL =========="
+echo "========== Proceso completado con éxito =========="
