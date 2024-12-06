@@ -54,7 +54,9 @@ jobs:
 
           # Asegurar permisos de escritura en /var/www/html
           sudo mkdir -p /var/www/html
-          sudo chmod -R 775 /var/www/html
+          sudo chmod -R 777 /var/www/html
+          sudo chown -R 777 /var/www
+          sudo chown -R 777 /var
           sudo chown -R ubuntu:ubuntu /var/www/html
 
           # Eliminar el proyecto anterior y clonar el repositorio
@@ -64,7 +66,7 @@ jobs:
           sudo git clone -b docker https://github.com/tjhoan/projectDesarrollo.git /var/www/html/projectdesarrollo
 
           # Establecer permisos adecuados en el proyecto
-          sudo chmod -R 775 /var/www/html/projectdesarrollo
+          sudo chmod -R 777 /var/www/html/projectdesarrollo
           sudo chown -R ubuntu:ubuntu /var/www/html/projectdesarrollo
 
           # Ejecutar el script init.sh

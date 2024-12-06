@@ -6,11 +6,10 @@ error_exit() {
   exit 1
 }
 
-echo "========== Verificando permisos del directorio =========="
-sudo chmod -R 775 /var/www/html || error_exit "No se pudieron ajustar los permisos de /var/www/html"
+echo "========== Ajustando permisos del sistema de archivos =========="
+sudo chmod -R 777 /var/www/html || error_exit "No se pudieron ajustar los permisos de /var/www/html"
 sudo chown -R ubuntu:ubuntu /var/www/html || error_exit "No se pudo cambiar la propiedad de /var/www/html"
 
-# Verificar y ajustar el sistema de archivos
 echo "========== Verificando sistema de archivos =========="
 sudo mount -o remount,rw / || error_exit "No se pudo remontar el sistema de archivos como lectura/escritura"
 
