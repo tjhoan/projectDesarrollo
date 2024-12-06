@@ -43,11 +43,11 @@ EOL
 echo "Archivo .env configurado correctamente."
 
 echo "========== Eliminando contenedores y volúmenes específicos del proyecto =========="
-sudo docker-compose -f docker-compose.yml down -v
+sudo docker-compose down -v
 sudo docker system prune -a --volumes -f || error_exit "No se pudieron detener y eliminar los contenedores y volúmenes"
 
 echo "========== Construyendo y levantando contenedores =========="
-sudo docker-compose -f docker-compose.yml up --build -d || error_exit "No se pudieron construir los contenedores"
+sudo docker-compose up --build -d || error_exit "No se pudieron construir los contenedores"
 
 echo "========== Esperando a que la base de datos esté lista =========="
 until sudo docker exec mysql mysql -u laravel_user -plaravel_pass -e "SELECT 1;" > /dev/null 2>&1; do
