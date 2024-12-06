@@ -10,6 +10,10 @@ echo "========== Verificando permisos del directorio =========="
 sudo chmod -R 775 /var/www/html || error_exit "No se pudieron ajustar los permisos de /var/www/html"
 sudo chown -R ubuntu:ubuntu /var/www/html || error_exit "No se pudo cambiar la propiedad de /var/www/html"
 
+# Verificar y ajustar el sistema de archivos
+echo "========== Verificando sistema de archivos =========="
+sudo mount -o remount,rw / || error_exit "No se pudo remontar el sistema de archivos como lectura/escritura"
+
 echo "========== Configurando archivo de entorno =========="
 if [ -f .env.docker ]; then
   mv .env.docker .env || error_exit "No se pudo renombrar .env.docker a .env"
