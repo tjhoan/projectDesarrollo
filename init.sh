@@ -7,8 +7,8 @@ error_exit() {
 }
 
 echo "========== Ajustando permisos del sistema de archivos =========="
-sudo chmod -R 777 /var/www/html || error_exit "No se pudieron ajustar los permisos de /var/www/html"
-sudo chown -R ubuntu:ubuntu /var/www/html || error_exit "No se pudo cambiar la propiedad de /var/www/html"
+sudo chmod -R 777 /home/ubuntu/projectdesarrollo || error_exit "No se pudieron ajustar los permisos de /home/ubuntu/projectdesarrollo"
+sudo chown -R ubuntu:ubuntu /home/ubuntu/projectdesarrollo || error_exit "No se pudo cambiar la propiedad de /home/ubuntu/projectdesarrollo"
 
 echo "========== Verificando sistema de archivos =========="
 sudo mount -o remount,rw / || error_exit "No se pudo remontar el sistema de archivos como lectura/escritura"
