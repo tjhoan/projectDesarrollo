@@ -8,10 +8,9 @@ services:
       - "80:8000"
     volumes:
       - .:/app
-      - /app/vendor
     environment:
       APP_ENV: production
-      APP_DEBUG: false
+      APP_DEBUG: "false"
       APP_URL: "http://localhost"
       DB_DATABASE: laravel
       DB_USERNAME: laravel_user
