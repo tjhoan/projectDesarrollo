@@ -1,4 +1,5 @@
-# Usar la imagen base de PHP con FPM
+# Dockerfile
+
 FROM php:7.4-fpm-alpine
 
 # Instalar dependencias necesarias
@@ -21,7 +22,7 @@ RUN apk add --no-cache \
     libzip-dev \
     linux-headers
 
-# Configurar las extensiones de PHP necesarias
+# Configurar extensiones de PHP
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install \
     pdo_mysql \
@@ -42,17 +43,15 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
 WORKDIR /app
 
 # Copiar archivos del proyecto al contenedor
-COPY . ./
+COPY . .
 
-# Instalar las dependencias de Laravel
-RUN composer install --no-dev --optimize-autoloader
+# Instalar dependencias de Laravel
+RUN composer install && \
+    mkdir -p /app/storage/logs && \
+    chmod -R 775 /app/storage && \
+    chmod -R 775 /app/bootstrap/cache
 
-# Crear directorios y configurar permisos adecuados para Laravel
-RUN mkdir -p /app/storage/logs /app/storage/framework/sessions /app/storage/framework/views /app/storage/framework/cache && \
-    chown -R www-data:www-data /app/storage /app/bootstrap/cache && \
-    chmod -R 775 /app/storage /app/bootstrap/cache
-
-# Exponer el puerto 9000 para el contenedor PHP-FPM
+# Exponer puerto para el servidor
 EXPOSE 8000
 
 # Comando predeterminado para iniciar Laravel
