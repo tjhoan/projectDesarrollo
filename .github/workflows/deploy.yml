@@ -34,9 +34,15 @@ jobs:
           # Instalar Docker y Docker Compose si no están instalados
           if ! command -v docker &> /dev/null; then
             echo "Instalando Docker..."
-            sudo apt-get update
-            sudo apt-get install -y docker.io curl
-            sudo systemctl enable --now docker
+            sudo apt update && sudo apt upgrade -y
+            sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+            sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+            sudo apt update
+            sudo apt install -y docker-ce
+            sudo systemctl start docker
+            sudo systemctl enable docker
+            sudo docker --version
           fi
 
           if ! command -v docker-compose &> /dev/null; then
@@ -44,6 +50,10 @@ jobs:
             sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
             sudo chmod +x /usr/local/bin/docker-compose
           fi
+
+          # Asegurarse de que Docker pueda ser usado por el usuario
+          sudo usermod -aG docker ubuntu
+          newgrp docker
         EOF
 
     - name: Deploy to EC2
