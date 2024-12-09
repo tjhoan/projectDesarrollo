@@ -1,0 +1,31 @@
+services:
+  app:
+    ports:
+      - "8001:8001"
+    volumes:
+      - .:/app
+    environment:
+      APP_ENV: testing
+      APP_DEBUG: true
+      DB_DATABASE: test_db
+      DB_USERNAME: test_user
+      DB_PASSWORD: test_pass
+    container_name: laravel-test
+    depends_on:
+      - db
+      
+  db:
+    image: mysql:8.0
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data_test:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: test_root
+      MYSQL_DATABASE: test_db
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: test_pass
+    container_name: mysql-test
+
+volumes:
+  db_data_test:
