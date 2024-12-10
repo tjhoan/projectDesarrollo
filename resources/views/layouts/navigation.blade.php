@@ -4,7 +4,7 @@
             <div class="flex">
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('home') }}">
-                        <x-application-logo class="block h-10 w-auto fill-current text-gray-600" />
+                        <img src="{{ asset('img/brand/fondourban.png') }}" alt="Logo" class="block h-10 w-auto">
                     </a>
                 </div>
             </div>
@@ -30,7 +30,7 @@
                         @endif
                     </a>
                 @endif
-                @if (Auth::check()) 
+                @if (Auth::check())
                     <div class="flex items-center space-x-4">
                         <!-- Enlace directo para cerrar sesión con ícono -->
                         <form method="POST" action="{{ route('logout') }}">

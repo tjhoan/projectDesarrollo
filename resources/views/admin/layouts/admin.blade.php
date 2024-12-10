@@ -68,9 +68,6 @@
     <div id="mainContainer" class="flex">
         <!-- Sidebar -->
         <div id="sidebar" class="w-48 bg-gray-200 sidebar-transition h-screen relative">
-            <div class="p-6">
-                <h1 id="sidebarTitle" class="text-3xl font-bold text-gray-900 transition-all duration-300">ACME<span id="sidebarText" class="inline"> Inc.</span></h1>
-            </div>
             <nav class="mt-10">
                 <ul id="sidebarItems">
                     <li class="mb-6">

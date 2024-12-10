@@ -4,11 +4,9 @@ on:
   push:
     branches:
       - master
-      - docker
   pull_request:
     branches:
       - master
-      - docker
 
 permissions:
   contents: read
@@ -72,7 +70,7 @@ jobs:
             cd /home/ubuntu/projectdesarrollo
             sudo git pull origin docker
           else
-            sudo git clone -b docker https://github.com/tjhoan/projectDesarrollo.git /home/ubuntu/projectdesarrollo
+            sudo git clone https://github.com/tjhoan/projectDesarrollo.git /home/ubuntu/projectdesarrollo
           fi
 
           # Ejecutar el script init.sh
