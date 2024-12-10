@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
-class HomeControllerTest extends TestCase
+class HomeControllerUnitTest extends TestCase
 {
     use RefreshDatabase;
 

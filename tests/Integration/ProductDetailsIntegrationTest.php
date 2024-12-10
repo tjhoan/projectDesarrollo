@@ -7,7 +7,7 @@ use Tests\TestCase;
 use App\Models\Product;
 use App\Models\Category;
 
-class ProductDetailsTest extends TestCase
+class ProductDetailsIntegrationTest extends TestCase
 {
     use RefreshDatabase;
 

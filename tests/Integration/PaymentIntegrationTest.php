@@ -11,7 +11,7 @@ use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class PaymentTest extends TestCase
+class PaymentIntegrationTest extends TestCase
 {
     use RefreshDatabase;
 

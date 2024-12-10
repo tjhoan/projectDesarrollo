@@ -7,7 +7,7 @@ use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class AdminCategoryTest extends TestCase
+class AdminCategoryIntegrationTest extends TestCase
 {
     use RefreshDatabase;
 

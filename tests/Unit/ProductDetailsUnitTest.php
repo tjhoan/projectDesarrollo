@@ -6,7 +6,7 @@ use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ProductDetailsTest extends TestCase
+class ProductDetailsUnitTest extends TestCase
 {
   use RefreshDatabase; // Esto asegura que la base de datos se reinicie después de cada prueba
 

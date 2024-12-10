@@ -6,7 +6,7 @@ use App\Models\Admin;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class AdminAdminTest extends TestCase
+class AdminAdminIntegrationTest extends TestCase
 {
     use RefreshDatabase;
 

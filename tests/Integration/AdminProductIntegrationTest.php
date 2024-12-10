@@ -8,7 +8,7 @@ use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class AdminProductTest extends TestCase
+class AdminProductIntegrationTest extends TestCase
 {
     use RefreshDatabase;
 

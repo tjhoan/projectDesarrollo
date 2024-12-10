@@ -10,7 +10,7 @@ use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Cart;
 
-class HomeControllerTest extends TestCase
+class HomeControllerIntegrationTest extends TestCase
 {
     use RefreshDatabase;
 
