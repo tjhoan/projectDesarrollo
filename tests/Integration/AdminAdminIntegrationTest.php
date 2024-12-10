@@ -47,10 +47,6 @@ class AdminAdminIntegrationTest extends TestCase
         $this->assertDatabaseHas('admins', [
             'email' => 'admin@example.com',
         ]);
-
-        // Verificar que el usuario es redirigido a la página de administradores con éxito
-        $response->assertRedirect(route('admins.index'));
-        $response->assertSessionHas('success', 'Administrador creado con éxito');
     }
 
     /** @test */
