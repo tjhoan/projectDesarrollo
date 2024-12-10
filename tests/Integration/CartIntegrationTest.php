@@ -85,4 +85,21 @@ class CartIntegrationTest extends TestCase
             'cart_id' => $cart->id
         ]);
     }
+
+    /** @test */
+    public function usuario_ve_boton_de_finalizar_compra_cuando_autenticado()
+    {
+        $customer = Customer::factory()->create()->first();
+        $this->actingAs($customer);
+        $response = $this->get(route('cart'));
+        $response->assertSee('Finalizar Compra');
+    }
+
+    /** @test */
+    public function prueba_barra_de_navegacion_para_usuario_no_autenticado()
+    {
+        $response = $this->get('/');
+        $response->assertSee('Iniciar Sesión');
+        $response->assertSee('Registrarse');
+    }
 }

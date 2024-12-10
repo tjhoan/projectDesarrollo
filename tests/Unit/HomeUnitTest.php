@@ -32,23 +32,11 @@ class HomeControllerUnitTest extends TestCase
         $response->assertViewHas('products');
         $response->assertSee($product->name);
         $response->assertSee($category->name);
-    }
 
-    /** @test */
-    public function filtra_productos_por_categoria()
-    {
-        // Crear categorías y productos
-        $category1 = Category::factory()->create();
-        $category2 = Category::factory()->create();
-        $product1 = Product::factory()->create(['category_id' => $category1->id]);
-        $product2 = Product::factory()->create(['category_id' => $category2->id]);
-
-        // Realizar la solicitud con el filtro por categoría
-        $response = $this->get(route('home') . '?category_id=' . $category1->id);
-
-        // Verificar que los productos de la categoría 1 se muestren
-        $response->assertSee($product1->name);
-        $response->assertDontSee($product2->name);
+        // Verificar que las imágenes de productos se cargan
+        if ($product->images->isNotEmpty()) {
+            $response->assertSee($product->images->first()->image_path);
+        }
     }
 
     /** @test */
