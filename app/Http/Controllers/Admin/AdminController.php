@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Admin; // Asegúrate de tener el modelo Admin
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -28,7 +28,7 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:admins,email',
-            'password' => 'required|string|min:8|confirmed', // Verificar la confirmación de la contraseña
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         Admin::create([
