@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Cart;
+use App\Models\ProductImage;
 
 class HomeControllerIntegrationTest extends TestCase
 {
@@ -76,6 +77,25 @@ class HomeControllerIntegrationTest extends TestCase
     }
 
     /** @test */
+    public function carga_pagina_de_detalles_del_producto()
+    {
+        // Crear producto
+        $product = Product::factory()->create();
+        ProductImage::factory()->create(['product_id' => $product->id, 'image_path' => 'path/to/image.jpg']);
+
+        // Realizar la solicitud a la página de detalles del producto
+        $response = $this->get(route('products.details', $product->id));
+
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(200);
+
+        // Verificar que los detalles del producto se están pasando a la vista
+        $response->assertViewHas('product');
+        $response->assertSee($product->name);
+        $response->assertSee($product->description);
+    }
+
+    /** @test */
     public function asocia_carrito_de_invitado_con_cliente_autenticado()
     {
         // Crear un producto de prueba
@@ -103,5 +123,18 @@ class HomeControllerIntegrationTest extends TestCase
             'product_id' => $product->id,
             'quantity' => 1,
         ]);
+    }
+
+    /** @test */
+    public function muestra_imagen_por_defecto_cuando_el_producto_no_tiene_imagenes()
+    {
+        // Crear producto sin imágenes
+        $product = Product::factory()->create();
+
+        // Realizar la solicitud a la página de detalles del producto
+        $response = $this->get(route('products.details', $product->id));
+
+        // Verificar que se muestre la imagen por defecto
+        $response->assertSee('default.png');
     }
 }

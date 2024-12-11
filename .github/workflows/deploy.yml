@@ -68,7 +68,7 @@ jobs:
           # Eliminar el proyecto anterior y clonar el repositorio
           if [ -d "/home/ubuntu/projectdesarrollo/.git" ]; then
             cd /home/ubuntu/projectdesarrollo
-            sudo git pull origin docker
+            sudo git pull origin master
           else
             sudo git clone https://github.com/tjhoan/projectDesarrollo.git /home/ubuntu/projectdesarrollo
           fi

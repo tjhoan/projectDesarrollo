@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mx-auto my-12 px-4 flex justify-center">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full max-w-5xl">
+    <div class="container mx-auto my-12 px-4 flex justify-center items-center min-h-screen relative -top-8 md:-top-32">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center w-full max-w-5xl">
             <!-- Imagen Principal con Carrusel -->
             <div class="relative">
                 <div class="w-full h-96 flex justify-center bg-gray-100 p-4 relative">
@@ -52,7 +52,7 @@
             <!-- Detalles del Producto -->
             <div class="p-6 space-y-6 flex flex-col justify-center items-start">
                 <!-- Nombre del producto con mejor tipografía -->
-                <h1 class="text-4xl font-bold text-gray-900">{{ $product->name }}</h1>
+                <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">{{ $product->name }}</h1>
 
                 <!-- Precio destacado -->
                 <div class="text-2xl text-indigo-600 font-semibold">
@@ -63,6 +63,7 @@
                 <div class="space-y-1">
                     <p class="text-gray-700 text-lg"><strong>Categoría:</strong> {{ $product->category->name }}</p>
                     <p class="text-gray-700 text-lg"><strong>Público Objetivo:</strong> {{ $product->target_audience }}</p>
+                    <p class="text-gray-700 text-lg"><strong>Disponibles:</strong> {{ $product->quantity }}</p>
                 </div>
 
                 <!-- Descripción del producto con estilo mejorado -->

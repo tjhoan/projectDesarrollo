@@ -16,7 +16,7 @@ class AdminLoginController extends Controller
         // Intentar iniciar sesión como admin
         if (Auth::guard('admin')->attempt($request->only('email', 'password'), $request->remember)) {
             Log::info('Inicio de sesión exitoso', ['email' => $request->email]);
-            return redirect()->intended('/admin/dashboard');
+            return redirect()->intended('products.index');
         }
 
         Log::error('Fallo el inicio de sesión', ['email' => $request->email]);

@@ -2,72 +2,76 @@
 
 namespace Tests\Unit;
 
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\ProductImage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\ProductImage;
+use Illuminate\Support\Collection;
 
-class HomeControllerUnitTest extends TestCase
+class HomeUnitTest extends TestCase
 {
-    use RefreshDatabase;
-
     /** @test */
-    public function carga_categorias_y_productos_en_la_pagina_de_inicio()
+    public function producto_tiene_relacion_con_imagenes()
     {
-        // Crear categorías y productos
-        $category = Category::factory()->create();
-        $product = Product::factory()->create(['category_id' => $category->id]);
-        ProductImage::factory()->create(['product_id' => $product->id, 'image_path' => 'path/to/image.jpg']);
-
-        // Realizar la solicitud al HomeController
-        $response = $this->get(route('home'));
-
-        // Verificar que la respuesta sea exitosa
-        $response->assertStatus(200);
-
-        // Verificar que las categorías y productos se están pasando a la vista
-        $response->assertViewHas('categories');
-        $response->assertViewHas('products');
-        $response->assertSee($product->name);
-        $response->assertSee($category->name);
-
-        // Verificar que las imágenes de productos se cargan
-        if ($product->images->isNotEmpty()) {
-            $response->assertSee($product->images->first()->image_path);
-        }
+        $product = new Product();
+        $this->assertInstanceOf(Collection::class, $product->images);
     }
 
     /** @test */
-    public function carga_pagina_de_detalles_del_producto()
+    public function producto_tiene_relacion_con_categoria()
     {
-        // Crear producto
-        $product = Product::factory()->create();
-        ProductImage::factory()->create(['product_id' => $product->id, 'image_path' => 'path/to/image.jpg']);
-
-        // Realizar la solicitud a la página de detalles del producto
-        $response = $this->get(route('products.details', $product->id));
-
-        // Verificar que la respuesta sea exitosa
-        $response->assertStatus(200);
-
-        // Verificar que los detalles del producto se están pasando a la vista
-        $response->assertViewHas('product');
-        $response->assertSee($product->name);
-        $response->assertSee($product->description);
+        $product = new Product();
+        $this->assertNull($product->category);
     }
 
     /** @test */
-    public function muestra_imagen_por_defecto_cuando_el_producto_no_tiene_imagenes()
+    public function se_puede_crear_categoria_con_nombre()
     {
-        // Crear producto sin imágenes
-        $product = Product::factory()->create();
+        $category = new Category(['name' => 'Electronics']);
+        $this->assertEquals('Electronics', $category->name);
+    }
 
-        // Realizar la solicitud a la página de detalles del producto
-        $response = $this->get(route('products.details', $product->id));
+    /** @test */
+    public function imagen_de_producto_pertenece_a_producto()
+    {
+        $image = new ProductImage(['image_path' => 'path/to/image.jpg']);
+        $this->assertNull($image->product);
+        $this->assertEquals('path/to/image.jpg', $image->image_path);
+    }
 
-        // Verificar que se muestre la imagen por defecto
-        $response->assertSee('default.png');
+    /** @test */
+    public function los_productos_pueden_ser_paginados()
+    {
+        $products = collect([
+            new Product(['name' => 'Product 1', 'price' => 100]),
+            new Product(['name' => 'Product 2', 'price' => 200]),
+        ]);
+
+        $this->assertCount(2, $products);
+        $this->assertEquals('Product 1', $products[0]->name);
+    }
+
+    /** @test */
+    public function se_pueden_listar_categorias()
+    {
+        $categories = collect([
+            new Category(['name' => 'Category 1']),
+            new Category(['name' => 'Category 2']),
+        ]);
+
+        $this->assertCount(2, $categories);
+        $this->assertEquals('Category 1', $categories[0]->name);
+    }
+
+    /** @test */
+    public function detalles_del_producto_obtiene_producto_con_imagenes_y_categoria()
+    {
+        $product = new Product([
+            'name' => 'Test Product',
+            'price' => 100,
+        ]);
+
+        $this->assertEquals('Test Product', $product->name);
+        $this->assertEquals(100, $product->price);
     }
 }

@@ -23,7 +23,7 @@ class AuthenticatedSessionController extends Controller
 
         if (Auth::guard('admin')->check()) {
             Log::info('Admin autenticado', ['user' => Auth::guard('admin')->user()]);
-            return redirect()->intended('/admin/dashboard');
+            return redirect()->intended('/admin/products');
         }
 
         if (Auth::guard('web')->check()) {

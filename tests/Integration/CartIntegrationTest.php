@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\Customer;
+use App\Models\ProductImage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -23,6 +24,41 @@ class CartIntegrationTest extends TestCase
             ->assertStatus(200)
             ->assertViewIs('cart')
             ->assertViewHas('cart');
+    }
+
+
+    /** @test */
+    public function productos_del_carrito_se_muestran_correctamente()
+    {
+        // Crear un cliente (usuario)
+        $customer = Customer::factory()->create()->first();
+        $this->assertNotNull($customer);
+        $this->actingAs($customer);
+
+        // Crear un producto
+        $product = Product::factory()->create();
+        $this->assertNotNull($product);
+
+        // Crear una imagen asociada al producto
+        $image = ProductImage::create([
+            'product_id' => $product->id,
+            'image_path' => 'path/to/image.jpg'
+        ]);
+
+        // Agregar el producto al carrito
+        $response = $this->post(route('cart.add', $product->id));
+
+        // Verificar que el producto se ha agregado al carrito
+        $response->assertStatus(200);
+        $response->assertJson(['cartItemCount' => 1]);
+
+        $response = $this->get(route('cart')); // Asegúrate de que la ruta 'cart' cargue el carrito
+
+        // Verificar que el nombre del producto esté presente en la vista
+        $response->assertSee($product->name);
+
+        // Verificar que la imagen del producto esté en la vista
+        $response->assertSee('path/to/image.jpg');
     }
 
     /** @test */
@@ -101,5 +137,15 @@ class CartIntegrationTest extends TestCase
         $response = $this->get('/');
         $response->assertSee('Iniciar Sesión');
         $response->assertSee('Registrarse');
+    }
+
+    /** @test */
+    public function carrito_esta_vacio_si_no_hay_productos()
+    {
+        $customer = Customer::factory()->create()->first();
+        $this->actingAs($customer);
+
+        $response = $this->get(route('cart'));
+        $response->assertSee('Tu carrito está vacío');
     }
 }

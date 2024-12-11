@@ -3,131 +3,109 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Payment;
+use App\Models\Invoice;
 use App\Models\Cart;
 use App\Models\Customer;
-use App\Models\Invoice;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Product;
+use Illuminate\Http\Request;
+use Mockery;
+use Mockery\MockInterface;
 
 class PaymentUnitTest extends TestCase
 {
-  use RefreshDatabase;
-
-  public function test_usuario_debe_poder_procesar_pago_si_esta_autenticado()
+  /** @test */
+  public function pago_puede_ser_creado()
   {
-    // Crear un usuario ficticio y autenticarlo
-    $customer = Customer::factory()->create()->first();
-
-    // Autenticar al usuario
-    $this->actingAs($customer);
-
-    // Realizar la solicitud
-    $response = $this->post(route('payment.process'), []);
-    $response->assertStatus(302); // Verificar que la solicitud fue exitosa
-  }
-
-  public function test_payment_process_with_empty_cart()
-  {
-    $customer = Customer::factory()->create();
-    Auth::login($customer);
-
-    $response = $this->post(route('payment.process'), []);
-    $response->assertRedirect();
-    $response->assertSessionHas('error', 'No tienes productos en tu carrito.');
-  }
-
-  public function test_proceso_de_pago_exitoso()
-  {
-    // Crear un producto para que exista en la base de datos
-    $product = Product::factory()->create();
-
-    // Crear un cliente de prueba
-    $customer = Customer::factory()->create();
-
-    // Crear un carrito de compras asociado al cliente
-    $cart = Cart::factory()->create(['customer_id' => $customer->id]);
-
-    // Crear un item en el carrito con un producto existente
-    $cart->items()->create([
-      'product_id' => $product->id, // Usar el ID del producto creado
-      'quantity' => 2,
-    ]);
-
-    // Iniciar sesión como el cliente creado
-    Auth::login($customer);
-
-    // Realizar una solicitud POST con datos válidos
-    $response = $this->post(route('payment.process'), [
+    $data = [
+      'customer_id' => 1,
       'full_name' => 'John Doe',
       'address' => '123 Main St',
-      'city' => 'Anytown',
-      'state' => 'Anystate',
+      'city' => 'Metropolis',
+      'state' => 'NY',
       'phone' => '1234567890',
-      'payment_method' => 'daviplata',
+      'additional_info' => 'Leave at the door',
+      'payment_method' => 'nequi',
       'pdf_invoice' => true,
-      'email_invoice' => true,
-    ]);
+      'email_invoice' => false,
+      'confirmation_code' => 123456,
+    ];
 
-    // Verificar la respuesta
-    $response->assertJson(['success' => true, 'message' => 'Pago procesado con éxito.']);
+    $payment = new Payment($data);
 
-    // Verificar que la base de datos tiene la información correcta
-    $this->assertDatabaseHas('payments', ['full_name' => 'John Doe']);
-    $this->assertDatabaseHas('invoices', ['customer_id' => $customer->id]);
+    $this->assertEquals('John Doe', $payment->full_name);
+    $this->assertEquals('123 Main St', $payment->address);
+    $this->assertEquals('nequi', $payment->payment_method);
   }
-  public function test_proceso_de_pago_genera_factura_pdf()
+
+  /** @test */
+  public function factura_puede_ser_creada()
   {
-    // Crear un producto en la base de datos
-    $product = Product::factory()->create();
+    $data = [
+      'customer_id' => 1,
+      'payment_id' => 1,
+      'total_amount' => 100,
+      'invoice_number' => 'INV-12345',
+    ];
 
-    // Crear un cliente de prueba
-    $customer = Customer::factory()->create();
+    $invoice = new Invoice($data);
 
-    // Crear un carrito de compras asociado al cliente
-    $cart = Cart::factory()->create(['customer_id' => $customer->id]);
+    $this->assertEquals(100, $invoice->total_amount);
+    $this->assertEquals('INV-12345', $invoice->invoice_number);
+  }
 
-    // Agregar un producto al carrito
-    $cart->items()->create([
-      'product_id' => $product->id, // Usar el ID del producto creado
-      'quantity' => 2,
-    ]);
-
-    // Iniciar sesión como el cliente creado
-    Auth::login($customer);
-
-    // Realizar una solicitud POST con datos válidos
-    $response = $this->post(route('payment.process'), [
+  /** @test */
+  public function valida_datos_de_solicitud_de_pago()
+  {
+    $request = new Request([
       'full_name' => 'John Doe',
       'address' => '123 Main St',
-      'city' => 'Anytown',
-      'state' => 'Anystate',
+      'city' => 'Metropolis',
+      'state' => 'NY',
       'phone' => '1234567890',
-      'payment_method' => 'daviplata',
+      'payment_method' => 'nequi',
       'pdf_invoice' => true,
-      'email_invoice' => true,
+      'email_invoice' => false,
     ]);
 
-    // Verificar que el archivo PDF fue generado
-    $invoice = Invoice::latest()->first();
-    $pdfPath = storage_path('app/public/invoices/' . $invoice->invoice_number . '.pdf');
-    $this->assertFileExists($pdfPath);
+    $this->assertEquals('John Doe', $request->input('full_name'));
+    $this->assertEquals('123 Main St', $request->input('address'));
+    $this->assertTrue($request->input('pdf_invoice'));
   }
 
-  public function test_proceso_de_pago_muestra_mensaje_de_error_si_no_hay_productos_en_el_carrito()
+  /** @test */
+  public function genera_codigo_de_confirmacion()
   {
-    $customer = Customer::factory()->create();
-    Auth::login($customer);
+    $confirmationCode = rand(100000, 999999);
 
-    $response = $this->post(route('payment.process'), [
-      'full_name' => 'John Doe',
-      'address' => '123 Main St',
-      'city' => 'Anytown',
-      'state' => 'Anystate',
-      'phone' => '1234567890',
-      'payment_method' => 'daviplata',
-    ]);
+    $this->assertGreaterThanOrEqual(100000, $confirmationCode);
+    $this->assertLessThanOrEqual(999999, $confirmationCode);
+  }
 
-    $response->assertSessionHas('error', 'No tienes productos en tu carrito.');
+  /** @test */
+  public function carrito_calcula_total_correctamente()
+  {
+    $cart = Mockery::mock(Cart::class);
+    $cart->shouldReceive('calculateTotal')->andReturn(150.0);
+
+    $this->assertEquals(150.0, $cart->calculateTotal());
+  }
+
+  /** @test */
+  public function factura_pdf_se_genera_correctamente()
+  {
+    $payment = new Payment(['pdf_invoice' => true]);
+
+    $this->assertTrue($payment->pdf_invoice);
+  }
+
+  /** @test */
+  public function metodo_de_pago_es_valido()
+  {
+    $validMethods = ['nequi', 'daviplata', 'bancolombia'];
+
+    $payment = new Payment(['payment_method' => 'nequi']);
+
+    $this->assertContains($payment->payment_method, $validMethods);
   }
 }

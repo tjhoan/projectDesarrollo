@@ -2,33 +2,74 @@
 
 @section('content')
     <style>
-        /* Estilos similares a los productos */
-        .hover:bg-gray-100 {
-            transition: background-color 0.3s ease;
+        .responsive-table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 6px;
+            padding: 0.5rem;
+        }
+
+        .responsive-table-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .responsive-table-container::-webkit-scrollbar-thumb {
+            background: #9ca3af;
+            border-radius: 10px;
+        }
+
+        .responsive-table-container::-webkit-scrollbar-track {
+            background: #f3f4f6;
+        }
+
+        table {
+            width: 100%;
+            min-width: 500px;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 6px;
+            font-size: 14px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 640px) {
+            .responsive-table-container {
+                padding: 0.25rem;
+            }
+
+            th,
+            td {
+                font-size: 12px;
+                padding: 4px;
+            }
         }
     </style>
 
     <div class="flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-bold mt-4" style="margin-left: 50px">Gestión de Administradores</h2>
+        <h2 class="text-2xl font-bold mt-4" style="margin-left: 10px">Gestión de Administradores</h2>
         <a href="{{ route('admins.create') }}" class="bg-green-500 text-white px-4 py-2 rounded-lg shadow mr-4 mt-4">Crear Administrador</a>
     </div>
 
-    <!-- Tabla de Administradores -->
-    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+    <!-- Contenedor responsivo de la tabla de Administradores -->
+    <div class="responsive-table-container">
         <table class="min-w-full bg-white">
             <thead>
                 <tr class="bg-gray-200">
-                    <th class="py-3 px-4 border-b text-left">Nombre</th>
-                    <th class="py-3 px-4 border-b text-left">Correo Electrónico</th>
-                    <th class="py-3 px-4 border-b text-left">Acciones</th>
+                    <th class="py-3 px-5 border-b text-left text-gray-600 font-semibold">Nombre</th>
+                    <th class="py-3 px-5 border-b text-left text-gray-600 font-semibold">Correo Electrónico</th>
+                    <th class="py-3 px-5 border-b text-left text-gray-600 font-semibold">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($admins as $admin)
-                    <tr id="admin-{{ $admin->id }}" class="hover:bg-gray-100">
-                        <td class="py-3 px-4 border-b">{{ $admin->name }}</td>
-                        <td class="py-3 px-4 border-b">{{ $admin->email }}</td>
-                        <td class="py-3 px-4 border-b">
+                    <tr id="admin-{{ $admin->id }}" class="hover:bg-gray-100 transition duration-300 ease-in-out">
+                        <td class="py-3 px-5 border-b">{{ $admin->name }}</td>
+                        <td class="py-3 px-5 border-b">{{ $admin->email }}</td>
+                        <td class="py-3 px-5 border-b">
                             <button type="button" class="bg-red-500 text-white px-2 py-1 rounded shadow hover:bg-red-600 delete-btn" data-id="{{ $admin->id }}">Eliminar</button>
                         </td>
                     </tr>
@@ -38,11 +79,11 @@
     </div>
 
     <script>
-        // Función para eliminar un administrador usando AJAX y SweetAlert
+        // Configurar los botones de eliminación
         document.querySelectorAll('.delete-btn').forEach(button => {
             button.addEventListener('click', function() {
-                const adminId = this.getAttribute('data-id');
-                // Confirmación de eliminación
+                const adminId = this.getAttribute('data-id'); // Obtener el ID del administrador
+                // Confirmar acción con SweetAlert2
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: 'No podrás revertir esto una vez eliminado.',
@@ -54,7 +95,7 @@
                     cancelButtonText: 'Cancelar'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Si el usuario confirma, realizamos la petición DELETE
+                        // Realizar solicitud DELETE vía fetch
                         fetch(`/admin/admins/${adminId}`, {
                             method: 'DELETE',
                             headers: {
@@ -63,7 +104,7 @@
                             }
                         }).then(response => {
                             if (response.ok) {
-                                // Eliminamos la fila del administrador y mostramos un mensaje de éxito con SweetAlert
+                                // Eliminar fila de la tabla si es exitoso
                                 document.getElementById(`admin-${adminId}`).remove();
                                 Swal.fire(
                                     'Eliminado',
@@ -71,7 +112,7 @@
                                     'success'
                                 );
                             } else {
-                                // Mensaje de error si algo sale mal
+                                // Mostrar error si algo falla
                                 Swal.fire(
                                     'Error',
                                     'Hubo un problema al eliminar el administrador.',

@@ -219,7 +219,7 @@ class AdminUnitTest extends TestCase
   }
 
   /** @test */
-  public function test_almacenar_crea_nuevo_admin()
+  public function test_crea_nuevo_admin()
   {
     // Crear un administrador para autenticación
     $admin = Admin::factory()->create()->first();
@@ -249,7 +249,7 @@ class AdminUnitTest extends TestCase
   }
 
   /** @test */
-  public function test_almacenar_falla_cuando_las_contraseñas_no_coinciden()
+  public function test_falla_cuando_las_contraseñas_no_coinciden()
   {
     // Crear un administrador para autenticación
     $admin = Admin::factory()->create()->first();
@@ -273,7 +273,7 @@ class AdminUnitTest extends TestCase
   }
 
   /** @test */
-  public function test_delete_admin()
+  public function puede_eliminar_un_admin()
   {
     // Crear un administrador para autenticación
     $authAdmin = Admin::factory()->create()->first();

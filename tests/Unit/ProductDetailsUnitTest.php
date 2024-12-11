@@ -8,7 +8,7 @@ use App\Models\Product;
 
 class ProductDetailsUnitTest extends TestCase
 {
-  use RefreshDatabase; // Esto asegura que la base de datos se reinicie después de cada prueba
+  use RefreshDatabase;
 
   /** @test */
   public function test_muestra_los_detalles_del_producto_correctamente()
@@ -18,7 +18,6 @@ class ProductDetailsUnitTest extends TestCase
 
     // Hacer una solicitud GET a la ruta de detalles del producto usando la URL directamente
     $response = $this->get(route('products.details', $product->id));
-
 
     // Verificar que la respuesta es exitosa (código 200)
     $response->assertStatus(200);
@@ -33,7 +32,7 @@ class ProductDetailsUnitTest extends TestCase
 
     // Si el producto tiene alguna imagen o categoría, también verificamos
     if ($product->images->isNotEmpty()) {
-      $response->assertSee($product->images->first()->url);  // Asegura que la URL de la primera imagen se vea
+      $response->assertSee($product->images->first()->url);
     }
 
     $response->assertSee($product->category->name);  // Verifica que la categoría del producto esté en la vista
