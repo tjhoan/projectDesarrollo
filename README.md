@@ -1,4 +1,4 @@
-# Ecommerce Laravel 8
+# Ecommerce 🛒🛍️ Laravel 8
 Este es un proyecto de ecommerce (tienda virtual) para la venta de ropa, desarrollado en **Laravel** 8 y con base de datos en MySQL. El proyecto está dockerizado para facilitar su desarrollo y **despliegue**, y cuenta con un flujo de trabajo automatizado utilizando **GitHub Actions** para desplegar la aplicación en una instancia EC2 de **AWS**.
 
 ## Tabla de Contenidos
@@ -106,7 +106,8 @@ chmod +x init.sh #asignar permisos
 ./init.sh
 ```
 
-[!NOTE] Los comandos proporcionados están destinados a sistemas Linux.
+> [!NOTE]
+> Los comandos proporcionados están destinados a sistemas Linux.
 
 ### Este script realiza automáticamente las siguientes acciones:
 

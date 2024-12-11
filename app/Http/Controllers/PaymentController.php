@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use TCPDF;
+use App\Models\Product;
 
 class PaymentController extends Controller
 {
@@ -102,6 +103,20 @@ class PaymentController extends Controller
 
         // Vaciar el carrito después del pago
         try {
+            foreach ($cart->items as $cartItem) {
+                // Verificar si la cantidad es mayor a 2
+                if ($cartItem->quantity > 2) {
+                    // Ajustar la cantidad en la base de datos
+                    $product = Product::find($cartItem->product_id);
+                    if ($product) {
+                        // Restar la cantidad comprada a la base de datos
+                        $product->quantity -= $cartItem->quantity;
+                        $product->save();
+                    }
+                }
+            }
+
+            // Eliminar los productos del carrito
             $cart->items()->delete();
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Hubo un problema al vaciar el carrito.');
